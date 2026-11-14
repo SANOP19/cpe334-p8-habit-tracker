@@ -17,6 +17,8 @@
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
 Version 0.1 was written before Sprint 1 implementation; each feature PR then filled in the **Actual test / result** column. Version 0.9 is the state at the Sprint 1 release (`v0.1.0-sprint1`).
 
+**Reading “Delivered in”:** `PR n (#m)` names the planned work package PR n and its GitHub **Issue** #m. The merged GitHub pull requests are: PR1 #24, PR2 (F-01) #26, PR3 (F-02) #27, PR4 (F-03) #28, PR5 (F-04) #29, PR6 (F-05) #30, PR7 #31, PR8 #32–#33, release #34. Where a cell shows a bare `#12`–`#14`, it is a pull-request number.
+
 ---
 
 ## 1. Functional requirements
@@ -69,6 +71,7 @@ Version 0.1 was written before Sprint 1 implementation; each feature PR then fil
 | NFR-08 | CC-03 | 1 | No secret in Git or client code | Diff review in every PR; `.env.example` check; GitHub secret scanning enabled | Every PR; release check | Release check on `3ed2771`: no `.env` file ever committed (full history), no credential-bearing connection string and none of the real local seed/DB passwords in any tracked file; only synthetic test-fixture passwords in tests; GitHub secret scanning and push protection enabled, 0 alerts | Verified |
 | NFR-09 | F-04 | 1 | AC-19, AC-20 | TEST-19, TEST-20 with mocked clock | PR5 (#20) | `server/tests/logging.test.ts` TEST-19, TEST-19b (midnight crossing 17:30 UTC = 00:30 Bangkok), TEST-20 — pass | Verified |
 | NFR-10 | F-04 | 1 | AC-22 | TEST-22 | PR5 (#20) | `server/tests/logging.test.ts` TEST-22 (two simultaneous submissions, repeated 5×) — pass | Verified |
+| CC-05 | CC-05 | 3 | Sprint 3 contract | Sprint 3 STS (regression of all Sprint 1–3 AC) | Sprint 3 | — | Later sprint |
 
 ## 4. Acceptance criteria not tied to a single FR/BR/NFR
 
@@ -88,7 +91,7 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 |---|---|---|
 | FR-10..FR-14, BR-10..BR-12 have no AC yet | Expected: later-sprint features are allocated but not elaborated | Written in the Sprint 2 and Sprint 3 contracts |
 | BR-11 streak rule is a draft | Behaviour on a day not yet recorded is undecided | Decide in the F-07 contract |
-| Q-01..Q-03 (back-dating window, progress formula, Sprint 3 scope) are open | Answers could change BR-03, D-08 or Sprint 3 | Ask the instructor/TA; record in `docs/srs.md` §6.2 |
+| Q-01..Q-03 (back-dating window, progress formula, Sprint 3 scope) have working team decisions, TA reply pending | Answers could change BR-03, D-08 or Sprint 3 | Ask the instructor/TA; record in `docs/srs.md` §6.2 |
 | ~~Q-04 (whole numbers or decimals) is open~~ | Closed | Decimals supported; decided in the F-04 contract and recorded in `docs/srs.md` §6.2 (PR #29) |
 | ~~Seed has one participant; cross-participant tests need two~~ | Closed | `participant2@example.test` added to the seed in PR6 (#21), TEST-S2 |
 

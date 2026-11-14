@@ -43,7 +43,8 @@ Requirements: FR-01..FR-09, BR-01..BR-09, NFR-01..NFR-10 — **all Verified** (`
 |---|---|---|
 | Goal revision/pause/archive, history and streak, weekly/monthly summaries (FR-10..FR-13, BR-10, BR-11) | Not in Sprint 1 by plan | Sprint 2 contracts |
 | Reminder placeholders (FR-14, BR-12), hardening | Not in Sprint 1 by plan | Sprint 3 |
-| Questions Q-01..Q-03 (back-dating window, uncapped percent, Sprint 3 scope) not yet answered by the instructor/TA | The current decisions (D-05, D-08) may change | Ask the TA; record in `docs/srs.md` §6.2; any change follows the change process |
+| Questions Q-01..Q-03 (back-dating window, uncapped percent, Sprint 3 scope) not yet answered by the instructor/TA (working decisions recorded in SRS §6.2) | The current decisions (D-05, D-08) may change | Ask the TA; record in `docs/srs.md` §6.2; any change follows the change process |
+| Entry note has no length limit (F-04 contract intends 500 characters) | A very long note is stored as sent | Add a 422 check and test in a later sprint |
 | Editing or deleting an entry | Not supported (excluded in SRS §3.3) | Later change request if needed |
 | The date picker uses the device's date | A device outside Thailand may offer a date the server rejects; the server message explains it | Acceptable for Sprint 1 |
 | No CI, Docker or cloud deployment yet | Tests run locally only | Lab 5 |

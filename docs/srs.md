@@ -164,8 +164,8 @@ Authentication and session; template creation and publication; goal setting; dai
 ### 6.2 Questions and resolution
 | ID | Question | Raised | Resolution | Status |
 |---|---|---|---|---|
-| Q-01 | Is a 7-day back-dating window (D-05) acceptable for the Sprint 1 date rule? | P0 | Ask the instructor/TA; record the answer here | Open |
-| Q-02 | Is an uncapped percentage (D-08) acceptable, or should progress be capped at 100%? | P0 | Ask the instructor/TA; record the answer here | Open |
-| Q-03 | Is Sprint 3 (reminder placeholders plus hardening) enough scope, or should another feature be added? | P0 | Ask the instructor/TA during the sprint plan (P4d) | Open |
+| Q-01 | Is a 7-day back-dating window (D-05) acceptable for the Sprint 1 date rule? | P0 | Ask the instructor/TA; record the answer here | Resolved for Sprint 1 by team decision. Working decision: 7-day window kept (D-05). No TA reply by the Sprint 1 release; revisit if the TA objects |
+| Q-02 | Is an uncapped percentage (D-08) acceptable, or should progress be capped at 100%? | P0 | Ask the instructor/TA; record the answer here | Resolved for Sprint 1 by team decision. Working decision: uncapped percentage kept (D-08). No TA reply by the Sprint 1 release; revisit if the TA objects |
+| Q-03 | Is Sprint 3 (reminder placeholders plus hardening) enough scope, or should another feature be added? | P0 | Ask the instructor/TA during the sprint plan (P4d) | Resolved for Sprint 1 by team decision. Working decision: Sprint 3 stays as planned (F-09 + CC-05). No TA reply by the Sprint 1 release; reconfirm at the Sprint 2 checkpoint |
 | Q-04 | Are entry values whole numbers or decimals, and how many decimal places? | P3a | Floating-point (decimal) numbers are supported (e.g. 1.5 hours, 3.25 km), stored as Float in PostgreSQL / Prisma, validated as finite numbers without arbitrary digit restriction. Decided in F-04 contract. | Resolved: decimals supported |
 | Q-05 | Should a program manager see anonymous, aggregated usage of their templates? | P3a | Not in the stakeholder brief; excluded by D-09 to avoid an unverified privacy design | Resolved: excluded |

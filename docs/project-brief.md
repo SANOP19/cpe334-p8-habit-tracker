@@ -25,16 +25,16 @@ This brief is the shared starting point. The formal documents (`docs/srs.md`, `d
 
 | ID | Topic | Decision | Status |
 |---|---|---|---|
-| D-01 | Context | Study and exercise habit programme for university students | proposed |
-| D-02 | Roles | `PARTICIPANT`, `PROGRAM_MANAGER`; one role per account; seeded accounts only | proposed |
-| D-03 | Duplicate entries | One entry per goal per calendar day (no accumulation). Editing an entry is not in Sprint 1 | proposed |
-| D-04 | Calendar day | "Today" is decided by server time in Asia/Bangkok | proposed |
-| D-05 | Back-dating | An entry may be recorded for today or up to 6 days before today (7 days including today) | proposed |
-| D-06 | Template | Fields: name, unit, minValue, maxValue (minValue < maxValue). Status `DRAFT` → `PUBLISHED`. A published template cannot be changed in Sprint 1 | proposed |
-| D-07 | Goal | A goal links one participant to one published template with a dailyTarget inside [minValue, maxValue]. At most one active goal per participant per template | proposed |
-| D-08 | Progress | percent = value ÷ dailyTarget × 100 (not capped); `achieved` is true when value ≥ dailyTarget | proposed |
-| D-09 | Privacy | Program managers cannot read individual goals, entries or progress | proposed |
-| D-10 | Error codes | Not signed in → 401. Wrong role → 403. Record that belongs to another participant → 404 (do not reveal that it exists). Validation failure → 422. Conflict with existing data → 409 | proposed |
+| D-01 | Context | Study and exercise habit programme for university students | agreed |
+| D-02 | Roles | `PARTICIPANT`, `PROGRAM_MANAGER`; one role per account; seeded accounts only | agreed |
+| D-03 | Duplicate entries | One entry per goal per calendar day (no accumulation). Editing an entry is not in Sprint 1 | agreed |
+| D-04 | Calendar day | "Today" is decided by server time in Asia/Bangkok | agreed |
+| D-05 | Back-dating | An entry may be recorded for today or up to 6 days before today (7 days including today) | agreed |
+| D-06 | Template | Fields: name, unit, minValue, maxValue (minValue < maxValue). Status `DRAFT` → `PUBLISHED`. A published template cannot be changed in Sprint 1 | agreed |
+| D-07 | Goal | A goal links one participant to one published template with a dailyTarget inside [minValue, maxValue]. At most one active goal per participant per template | agreed |
+| D-08 | Progress | percent = value ÷ dailyTarget × 100 (not capped); `achieved` is true when value ≥ dailyTarget | agreed |
+| D-09 | Privacy | Program managers cannot read individual goals, entries or progress | agreed |
+| D-10 | Error codes | Not signed in → 401. Wrong role → 403. Record that belongs to another participant → 404 (do not reveal that it exists). Validation failure → 422. Conflict with existing data → 409 | agreed |
 | D-11 | Session | Server-side sessions stored in the database: random token in an HttpOnly cookie, only its hash stored, fixed expiry; logout deletes the session row | **agreed** |
 | D-12 | Stack | Same stack as TokTickIT (section 3) | **agreed** |
 | D-13 | Questions for TA | Back-dating window, progress formula, whether Sprint 3 needs an extra feature | open |

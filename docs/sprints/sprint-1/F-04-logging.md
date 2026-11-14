@@ -19,7 +19,7 @@
 2. Under each goal, the participant can record a daily activity entry by providing:
    - `entryDate`: date in `YYYY-MM-DD` format (defaults to today in `Asia/Bangkok`, allowed range is today and the past 6 days — 7 calendar days total).
    - `value`: numeric amount achieved (decimals allowed per Q-04 decision, must be within the template's `minValue` and `maxValue`).
-   - `note`: optional brief note or reflection (string, up to 500 characters, or null/empty).
+   - `note`: optional brief note or reflection (string, or null/empty; a 500-character limit is the intended maximum but is not enforced in Sprint 1 — listed as a known limitation).
 3. The client submits `POST /api/goals/:id/entries`.
 4. The server validates authentication, role, ownership, body shape, date window, value range, and duplicate constraints (§1.2).
 5. On success, the entry is saved and returned with HTTP 201 Created. The UI updates the goal's logged entries and displays "Entry saved."
@@ -59,7 +59,7 @@ Validation runs in the following strict order (SDS §5.3):
 - Template range 0–30: value 0.0 and 30.0 accepted; -0.01 and 30.01 rejected.
 - Allowed date range: exactly 7 calendar days (`today`, `today - 1`, ..., `today - 6`).
   - Example if today is `2026-11-14`: `2026-11-14` (today) accepted; `2026-11-08` (6 days ago) accepted; `2026-11-07` (7 days ago) rejected with 422 `DATE_TOO_OLD`; `2026-11-15` (tomorrow) rejected with 422 `DATE_IN_FUTURE`.
-- Note: `null`, `undefined`, or empty string `""` accepted as `null` or omitted; valid string up to 500 chars stored cleanly.
+- Note: `null`, `undefined`, or empty string `""` accepted as `null` or omitted; any string is stored trimmed (the intended 500-character maximum is not enforced in Sprint 1).
 
 ---
 
