@@ -53,10 +53,8 @@ export async function getTestPrisma(): Promise<PrismaClient> {
 
 export async function resetDatabase(): Promise<void> {
   const db = await getTestPrisma();
-  // Clear tables in reverse dependency order
-  await db.activityEntry.deleteMany();
-  await db.goal.deleteMany();
-  await db.activityTemplate.deleteMany();
-  await db.session.deleteMany();
-  await db.user.deleteMany();
+  // Atomic truncation with CASCADE to handle foreign keys and reset identity sequences
+  await db.$executeRawUnsafe(
+    `TRUNCATE TABLE "activity_entries", "goals", "activity_templates", "sessions", "users" RESTART IDENTITY CASCADE;`
+  );
 }
