@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { apiRequest } from "./api";
 import type { User } from "./types";
 import { Layout, type Page } from "./components/Layout";
-import { EmptyState } from "./components/EmptyState";
+import { GoalsPage } from "./components/GoalsPage";
 import { Loading } from "./components/Loading";
 import { SignInPage } from "./components/SignInPage";
 import { TemplatesPage } from "./components/TemplatesPage";
@@ -61,14 +61,7 @@ export function App() {
       displayName={user.displayName}
       onSignOut={signOut}
     >
-      {page === "templates" ? (
-        <TemplatesPage role={user.role} />
-      ) : (
-        <>
-          <h1 className="h4">Goals</h1>
-          <EmptyState message="This page is added in a later part." />
-        </>
-      )}
+      {page === "goals" && user.role === "PARTICIPANT" ? <GoalsPage /> : <TemplatesPage role={user.role} />}
     </Layout>
   );
 }
