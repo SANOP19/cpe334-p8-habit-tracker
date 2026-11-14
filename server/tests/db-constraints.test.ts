@@ -64,7 +64,7 @@ describe("P1 Database Schema Constraints against Real PostgreSQL", () => {
     ).rejects.toThrow();
   });
 
-  it("inserting a template with minValue >= maxValue fails database CHECK constraint (BR-05)", async () => {
+  it("inserting a template with minValue >= maxValue fails database CHECK constraint (D-06 / AC-08)", async () => {
     const manager = await prisma.user.create({
       data: {
         email: "manager-check@example.test",

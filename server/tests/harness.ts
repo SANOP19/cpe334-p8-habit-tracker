@@ -6,24 +6,29 @@ dotenv.config();
 import { PrismaClient } from "@prisma/client";
 import { prisma, setPrisma } from "../src/lib/prisma.js";
 
-const testDbUrl = process.env.DATABASE_URL_TEST || process.env.DATABASE_URL;
+const testDbUrl = process.env.DATABASE_URL_TEST;
 
 if (!testDbUrl) {
   throw new Error(
-    "Missing test database configuration: DATABASE_URL_TEST or DATABASE_URL must be defined."
+    "Missing required environment variable: DATABASE_URL_TEST must be defined to run tests against a dedicated test database."
   );
 }
 
 // Safety check: ensure we are not wiping a development or production database
-if (
-  process.env.DATABASE_URL &&
-  process.env.DATABASE_URL_TEST &&
-  process.env.DATABASE_URL === process.env.DATABASE_URL_TEST &&
-  process.env.NODE_ENV !== "test"
-) {
+if (process.env.DATABASE_URL && testDbUrl === process.env.DATABASE_URL) {
   throw new Error(
-    "Safety check failed: DATABASE_URL_TEST cannot be identical to DATABASE_URL outside of test environment."
+    "Safety check failed: DATABASE_URL_TEST cannot be identical to DATABASE_URL. Tests must run against a dedicated test database."
   );
+}
+
+function getSafeDbTarget(connectionString: string): string {
+  try {
+    const u = new URL(connectionString);
+    const port = u.port ? `:${u.port}` : ":5432";
+    return `${u.hostname}${port}${u.pathname}`;
+  } catch {
+    return "unknown-database-target";
+  }
 }
 
 let testClient: PrismaClient | null = null;
@@ -43,8 +48,9 @@ export async function getTestPrisma(): Promise<PrismaClient> {
       await testClient.$connect();
       setPrisma(testClient);
     } catch (err: any) {
+      const safeTarget = getSafeDbTarget(testDbUrl);
       throw new Error(
-        `Failed to connect to PostgreSQL test database at "${testDbUrl}". Tests require a running PostgreSQL instance with migrations applied.\nDetails: ${err.message}`
+        `Failed to connect to PostgreSQL test database at "${safeTarget}". Tests require a running PostgreSQL instance with migrations applied.\nDetails: ${err.message}`
       );
     }
   }
