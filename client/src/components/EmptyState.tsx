@@ -1,4 +1,3 @@
-// Stub: implemented after the failing tests are recorded.
-export function EmptyState(_props: { message: string }) {
-  return null;
+export function EmptyState({ message }: { message: string }) {
+  return <p className="text-secondary fst-italic my-3">{message}</p>;
 }

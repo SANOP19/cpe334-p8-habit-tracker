@@ -8,6 +8,16 @@ function jsonResponse(status: number, body: unknown): Response {
   });
 }
 
+// Resolves with the rejection reason; fails the test if the promise resolves instead.
+function rejectionOf(promise: Promise<unknown>): Promise<ApiError> {
+  return promise.then(
+    () => {
+      throw new Error("expected the request to be rejected");
+    },
+    (reason: ApiError) => reason,
+  );
+}
+
 describe("apiRequest", () => {
   const fetchMock = vi.fn();
 
@@ -42,7 +52,7 @@ describe("apiRequest", () => {
       jsonResponse(422, { error: { code: "VALUE_OUT_OF_RANGE", message: "Value must be between 0 and 20" } }),
     );
 
-    const error = await apiRequest("/api/goals/1/entries", { method: "POST", body: {} }).catch((e) => e);
+    const error = await rejectionOf(apiRequest("/api/goals/1/entries", { method: "POST", body: {} }));
     expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(422);
     expect(error.code).toBe("VALUE_OUT_OF_RANGE");
@@ -52,7 +62,7 @@ describe("apiRequest", () => {
   it("uses a generic error when the body is not the expected shape", async () => {
     fetchMock.mockResolvedValue(new Response("Internal Server Error", { status: 500 }));
 
-    const error = await apiRequest("/api/health").catch((e) => e);
+    const error = await rejectionOf(apiRequest("/api/health"));
     expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(500);
     expect(error.code).toBe("UNKNOWN_ERROR");
@@ -62,7 +72,7 @@ describe("apiRequest", () => {
   it("reports a network failure as an ApiError", async () => {
     fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
 
-    const error = await apiRequest("/api/health").catch((e) => e);
+    const error = await rejectionOf(apiRequest("/api/health"));
     expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(0);
     expect(error.code).toBe("NETWORK_ERROR");
