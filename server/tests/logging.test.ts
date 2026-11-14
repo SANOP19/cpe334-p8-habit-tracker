@@ -184,6 +184,31 @@ describe("F-04 Daily activity logging", () => {
     expect(await prisma.activityEntry.count()).toBe(0);
   });
 
+  it("TEST-19b (NFR-09): midnight crossing proves Asia/Bangkok is used instead of UTC", async () => {
+    // 2026-11-14T17:30:00Z is 2026-11-14 in UTC, but 00:30 on 2026-11-15 in Asia/Bangkok (UTC+7)
+    clock.setMock("2026-11-14T17:30:00Z");
+
+    // Today in Bangkok (15 Nov) -> 201
+    const todayRes = await postEntry(aCookie, aGoal.id, { entryDate: "2026-11-15", value: 20 });
+    expect(todayRes.status).toBe(201);
+    expect(todayRes.body.entry.entryDate).toBe("2026-11-15");
+
+    // Tomorrow in Bangkok (16 Nov) -> 422 DATE_IN_FUTURE
+    const tomorrowRes = await postEntry(aCookie, aGoal.id, { entryDate: "2026-11-16", value: 20 });
+    expect(tomorrowRes.status).toBe(422);
+    expect(tomorrowRes.body.error.code).toBe("DATE_IN_FUTURE");
+
+    // 6 days ago in Bangkok (9 Nov) -> 201
+    const sixDaysAgoRes = await postEntry(aCookie, aGoal.id, { entryDate: "2026-11-09", value: 20 });
+    expect(sixDaysAgoRes.status).toBe(201);
+    expect(sixDaysAgoRes.body.entry.entryDate).toBe("2026-11-09");
+
+    // 7 days ago in Bangkok (8 Nov) -> 422 DATE_TOO_OLD
+    const sevenDaysAgoRes = await postEntry(aCookie, aGoal.id, { entryDate: "2026-11-08", value: 20 });
+    expect(sevenDaysAgoRes.status).toBe(422);
+    expect(sevenDaysAgoRes.body.error.code).toBe("DATE_TOO_OLD");
+  });
+
   it("TEST-20 (AC-20): 6 days ago is accepted; 7 days ago is rejected with 422 DATE_TOO_OLD", async () => {
     clock.setMock("2026-11-14T12:00:00+07:00"); // Today is 2026-11-14
 

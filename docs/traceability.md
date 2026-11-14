@@ -8,6 +8,7 @@
 | 0.3 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | F-02 results filled in (PR3, Issue #18) |
 | 0.4 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | F-03 results; AC-32 delivered in PR4 instead of PR6 (PR4, Issue #19) |
 | 0.5 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | F-04 results filled in (PR5, Issue #20) |
+| 0.6 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Review feedback addressed: NFR-04 partly verified; TEST-19b midnight probe added (PR5, Issue #20) |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -58,12 +59,12 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | `server/tests/auth.test.ts` TEST-04 — pass for F-01, F-02, F-03, and F-04 endpoints; later PRs add theirs | Partly verified |
 | NFR-02 | F-01 | 1 | AC-06 | TEST-06 | PR2 (#17) | `server/tests/auth.test.ts` TEST-06 and `server/tests/seed.test.ts` — pass | Verified |
 | NFR-03 | F-01 | 1 | AC-05, AC-33 | TEST-05, TEST-33 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05, TEST-33 — pass | Verified |
-| NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR5 (#20) | `server/tests/logging.test.ts` TEST-28 (persisted across client reconnect) — pass | Verified |
+| NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR5 (#20) | `server/tests/logging.test.ts` TEST-28 (persisted across client reconnect) — pass; real app restart in PR7 | Partly verified |
 | NFR-05 | CC-01 | 1 | AC-29 | TEST-29 | PR6 (#21) | Error handler (500 → `INTERNAL_ERROR`, malformed JSON → 422) tested in `server/tests/health.test.ts` (PR #12) | Foundation |
 | NFR-06 | CC-02 | 1 | Clean clone runs by following README | Recorded clean-clone check by the member who did not write the README | PR7 (#22) | — | Planned |
 | NFR-07 | CC-04 | 1 | Loading / empty / error states on main screens | Component tests + TEST-27 (E2E) + screenshots | PR2–PR7 | Shared components tested in `client/tests/components.test.tsx` (PR #9) | Foundation |
 | NFR-08 | CC-03 | 1 | No secret in Git or client code | Diff review in every PR; `.env.example` check; GitHub secret scanning enabled | Every PR | — | Planned |
-| NFR-09 | F-04 | 1 | AC-19, AC-20 | TEST-19, TEST-20 with mocked clock | PR5 (#20) | `server/tests/logging.test.ts` TEST-19, TEST-20 with clock in Asia/Bangkok — pass | Verified |
+| NFR-09 | F-04 | 1 | AC-19, AC-20 | TEST-19, TEST-20 with mocked clock | PR5 (#20) | `server/tests/logging.test.ts` TEST-19, TEST-19b (midnight crossing 17:30 UTC = 00:30 Bangkok), TEST-20 — pass | Verified |
 | NFR-10 | F-04 | 1 | AC-22 | TEST-22 | PR5 (#20) | `server/tests/logging.test.ts` TEST-22 (two simultaneous submissions, repeated 5×) — pass | Verified |
 
 ## 4. Acceptance criteria not tied to a single FR/BR/NFR

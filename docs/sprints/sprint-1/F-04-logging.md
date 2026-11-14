@@ -3,6 +3,7 @@
 | Version | Date | Author | Reviewer | Change |
 |---|---|---|---|---|
 | 1.0 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Contract written before implementation (PR5, Issue #20) |
+| 1.1 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Review feedback: TEST-19b midnight probe added, NFR-04 clarified |
 
 **Requirements:** FR-08 · BR-01 (value within template range) · BR-02 (no future date) · BR-03 (today and up to 6 days back) · BR-04 (one entry per goal per day) · BR-05 (own goal entries only) · NFR-04 (persistence across restart) · NFR-09 (Asia/Bangkok timezone) · NFR-10 (concurrency safety) · role matrix (SDS §5.4)
 **Acceptance criteria:** AC-17, AC-18, AC-19, AC-20, AC-21, AC-22, AC-23, and **AC-28** (cross-cutting persistence verified with entries)
@@ -138,6 +139,7 @@ Uses existing `activity_entries` table from P1 baseline migration:
 | TEST-18b | AC-18 | API + DB | Template range 10–50 | Post entries with values 9.99, 50.01, -1.0 | All return 422 `VALUE_OUT_OF_RANGE`; 0 rows stored |
 | TEST-18c | AC-18 | API | Goal exists | Post `{ value: "25", entryDate: today }`, `{ value: null }`, `{ entryDate: "invalid-date" }` | 422 `VALIDATION_ERROR` with field details |
 | TEST-19 | AC-19 | API + DB | Clock set to fixed Bangkok date | Post entry with `entryDate = tomorrow` | 422 `DATE_IN_FUTURE`; no row stored |
+| TEST-19b | NFR-09 | API + DB | Clock set to 17:30 UTC (= 00:30 Bangkok) | Post 15 Nov, 16 Nov, 9 Nov, 8 Nov | 15 & 9 Nov -> 201; 16 Nov -> 422 `DATE_IN_FUTURE`; 8 Nov -> 422 `DATE_TOO_OLD` |
 | TEST-20 | AC-20 | API + DB | Clock set to fixed Bangkok date | Post entry for `today - 6 days`, then post entry for `today - 7 days` | 6 days ago -> 201 Created; 7 days ago -> 422 `DATE_TOO_OLD` |
 | TEST-21 | AC-21 | API + DB | Entry already exists for date D | Post second entry for date D on same goal | 409 `DUPLICATE_ENTRY`; exactly 1 row exists |
 | TEST-22 | AC-22 | Integration | Goal exists, no entry for date D | Send 2 simultaneous POST requests for date D (repeated 5×) | Exactly one 201 and one 409; exactly 1 row stored |
