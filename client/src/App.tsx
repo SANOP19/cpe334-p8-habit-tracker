@@ -5,6 +5,7 @@ import { Layout, type Page } from "./components/Layout";
 import { EmptyState } from "./components/EmptyState";
 import { Loading } from "./components/Loading";
 import { SignInPage } from "./components/SignInPage";
+import { TemplatesPage } from "./components/TemplatesPage";
 
 // App shell. F-01 adds session handling; templates (F-02) and goals (F-03..F-05) replace the placeholders.
 export function App() {
@@ -60,8 +61,14 @@ export function App() {
       displayName={user.displayName}
       onSignOut={signOut}
     >
-      <h1 className="h4">{page === "goals" ? "Goals" : "Templates"}</h1>
-      <EmptyState message="This page is added in a later part." />
+      {page === "templates" ? (
+        <TemplatesPage role={user.role} />
+      ) : (
+        <>
+          <h1 className="h4">Goals</h1>
+          <EmptyState message="This page is added in a later part." />
+        </>
+      )}
     </Layout>
   );
 }

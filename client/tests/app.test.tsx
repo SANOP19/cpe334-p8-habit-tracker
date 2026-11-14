@@ -29,9 +29,12 @@ describe("TEST-UI-02 App session handling", () => {
   });
 
   it("shows the user's name and role from /api/auth/me, and returns to Sign in after signing out", async () => {
-    fetchMock
-      .mockResolvedValueOnce(jsonResponse(200, { user: morgan }))
-      .mockResolvedValueOnce(new Response(null, { status: 204 }));
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url === "/api/auth/me") return jsonResponse(200, { user: morgan });
+      if (url === "/api/templates") return jsonResponse(200, { templates: [] });
+      if (url === "/api/auth/logout") return new Response(null, { status: 204 });
+      return jsonResponse(404, { error: { code: "NOT_FOUND", message: "Not found" } });
+    });
     render(<App />);
 
     expect(await screen.findByText("Morgan")).toBeInTheDocument();
@@ -41,8 +44,9 @@ describe("TEST-UI-02 App session handling", () => {
     await userEvent.click(screen.getByRole("button", { name: "Sign out" }));
 
     expect(await screen.findByRole("button", { name: "Sign in" })).toBeInTheDocument();
-    expect(fetchMock.mock.calls[1][0]).toBe("/api/auth/logout");
-    expect(fetchMock.mock.calls[1][1].method).toBe("POST");
+    const logoutCall = fetchMock.mock.calls.find(([url]) => url === "/api/auth/logout");
+    expect(logoutCall).toBeDefined();
+    expect(logoutCall![1].method).toBe("POST");
     expect(screen.queryByText("Morgan")).not.toBeInTheDocument();
   });
 });
