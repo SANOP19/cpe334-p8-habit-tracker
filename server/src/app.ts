@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/error-handler.js";
 import { authRouter } from "./routes/auth.js";
+import { templatesRouter } from "./routes/templates.js";
 
 export const app = express();
 
@@ -31,6 +32,9 @@ app.get("/api/health", (_req, res) => {
 
 // F-01 Authentication and session
 app.use("/api/auth", authRouter);
+
+// F-02 Activity template management
+app.use("/api/templates", templatesRouter);
 
 // Test route to verify unexpected error handling in test environment
 if (process.env.NODE_ENV === "test") {

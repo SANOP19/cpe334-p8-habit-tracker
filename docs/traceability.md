@@ -5,6 +5,7 @@
 |---|---|---|---|---|
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | First version: baseline mapped to features, sprints, AC and planned tests (PR1, Issue #16) |
 | 0.2 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | F-01 results filled in (PR2, Issue #17) |
+| 0.3 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | F-02 results filled in (PR3, Issue #18) |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -19,9 +20,9 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | FR-01 | F-01 | 1 | AC-01, AC-02 | TEST-01, TEST-02 | PR2 (#17) | `server/tests/auth.test.ts` TEST-01, TEST-02a/b/c; `client/tests/signin.test.tsx` TEST-UI-01 — pass (`docs/evidence/F-01/green-run-*.txt`) | Verified |
 | FR-02 | F-01 | 1 | AC-05 | TEST-05 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05 (×2); `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
 | FR-03 | F-01 | 1 | AC-03 | TEST-03 | PR2 (#17) | `server/tests/auth.test.ts` TEST-03; `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
-| FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | — | Planned |
-| FR-05 | F-02 | 1 | AC-10, AC-30, AC-31 | TEST-10, TEST-30, TEST-31 | PR3 (#18) | — | Planned |
-| FR-06 | F-02 | 1 | AC-11 | TEST-11 | PR3 (#18) | — | Planned |
+| FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | `server/tests/templates.test.ts` TEST-07, TEST-08, TEST-08b; `client/tests/templates.test.tsx` TEST-UI-03 — pass (`docs/evidence/F-02/green-run-*.txt`) | Verified |
+| FR-05 | F-02 | 1 | AC-10, AC-30, AC-31 | TEST-10, TEST-30, TEST-31 | PR3 (#18) | `server/tests/templates.test.ts` TEST-10, TEST-30, TEST-31; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
+| FR-06 | F-02 | 1 | AC-11 | TEST-11 | PR3 (#18) | `server/tests/templates.test.ts` TEST-11a, TEST-11b; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
 | FR-07 | F-03 | 1 | AC-12 | TEST-12 | PR4 (#19) | — | Planned |
 | FR-08 | F-04 | 1 | AC-17 | TEST-17 | PR5 (#20) | — | Planned |
 | FR-09 | F-05 | 1 | AC-24, AC-27 | TEST-24, TEST-27 (E2E) | PR6 (#21), PR7 (#22) | — | Planned |
@@ -40,7 +41,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | BR-03 | F-04 | 1 | AC-20 | TEST-20 (boundary, TDD evidence) | PR5 (#20) | — | Planned |
 | BR-04 | F-04 | 1 | AC-21, AC-22 | TEST-21 (TDD evidence), TEST-22 | PR5 (#20) | DB unique index tested in `server/tests/db-constraints.test.ts` (PR #12) | Foundation |
 | BR-05 | F-04, F-05 | 1 | AC-23, AC-25 | TEST-23, TEST-25 (TDD evidence) | PR5 (#20), PR6 (#21) | — | Planned |
-| BR-06 | F-02 | 1 | AC-09 | TEST-09 | PR3 (#18) | — | Planned |
+| BR-06 | F-02 | 1 | AC-09 | TEST-09 | PR3 (#18) | `server/tests/templates.test.ts` TEST-09, TEST-09b; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
 | BR-07 | F-05 | 1 | AC-26, AC-32 | TEST-26 (TDD evidence), TEST-32 | PR6 (#21) | — | Planned |
 | BR-08 | F-03 | 1 | AC-13, AC-14 | TEST-13, TEST-14 | PR4 (#19) | — | Planned |
 | BR-09 | F-03 | 1 | AC-15 | TEST-15 | PR4 (#19) | DB partial unique index tested in `server/tests/db-constraints.test.ts` (PR #12) | Foundation |
@@ -52,7 +53,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 
 | Req | Feature / responsibility | Sprint | AC or verification target | Planned verification | Delivered in | Actual test / result | Status |
 |---|---|---|---|---|---|---|---|
-| NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | `server/tests/auth.test.ts` TEST-04 — pass for the F-01 endpoints; later PRs add theirs | Partly verified |
+| NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | `server/tests/auth.test.ts` TEST-04 — pass for F-01 & F-02 endpoints; later PRs add theirs | Partly verified |
 | NFR-02 | F-01 | 1 | AC-06 | TEST-06 | PR2 (#17) | `server/tests/auth.test.ts` TEST-06 and `server/tests/seed.test.ts` — pass | Verified |
 | NFR-03 | F-01 | 1 | AC-05, AC-33 | TEST-05, TEST-33 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05, TEST-33 — pass | Verified |
 | NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR5 (#20) | — | Planned |

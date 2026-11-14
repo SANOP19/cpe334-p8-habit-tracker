@@ -7,3 +7,16 @@ export interface User {
   displayName: string;
   role: Role;
 }
+
+export type TemplateStatus = "DRAFT" | "PUBLISHED";
+
+export interface ActivityTemplate {
+  id: number;
+  name: string;
+  unit: string;
+  minValue: number;
+  maxValue: number;
+  status: TemplateStatus;
+  createdById: number;
+  createdAt: string;
+}

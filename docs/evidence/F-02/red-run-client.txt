@@ -1,0 +1,295 @@
+
+> habit-tracker-client@0.1.0 test
+> vitest run
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/uSER/OneDrive/Desktop/CPE334 softend/cpe334-p8-habit-tracker/client[39m
+
+ [32m✓[39m tests/api.test.ts [2m([22m[2m6 tests[22m[2m)[22m[90m 6[2mms[22m[39m
+ [32m✓[39m tests/components.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[90m 36[2mms[22m[39m
+ [32m✓[39m tests/layout.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[90m 44[2mms[22m[39m
+ [32m✓[39m tests/app.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[90m 74[2mms[22m[39m
+ [32m✓[39m tests/signin.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 309[2mms[22m[39m
+ [31m❯[39m tests/templates.test.tsx [2m([22m[2m5 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 5022[2mms[22m[39m
+[31m   [31m×[31m F-02 Activity Template UI[2m > [22mTEST-UI-03: Program Manager view[2m > [22mrenders create form, loads templates, and submits a new draft template[33m 1013[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: Daily Meditation. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[31m   [31m×[31m F-02 Activity Template UI[2m > [22mTEST-UI-03: Program Manager view[2m > [22mdisplays error message when minValue >= maxValue[33m 1003[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: /no templates/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[31m   [31m×[31m F-02 Activity Template UI[2m > [22mTEST-UI-04: Publish action & Participant view[2m > [22mmanager can publish a draft template and see its status change to PUBLISHED[33m 1003[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: Daily Meditation. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[31m   [31m×[31m F-02 Activity Template UI[2m > [22mTEST-UI-04: Publish action & Participant view[2m > [22mparticipant view shows only published templates and no create form or publish button[33m 1001[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: Daily Steps. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[31m   [31m×[31m F-02 Activity Template UI[2m > [22mTEST-UI-04: Publish action & Participant view[2m > [22mparticipant view displays empty state when no published templates exist[33m 1002[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: No published activity templates available.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[2m | [22m[1m[32m19 passed[39m[22m[90m (24)[39m
+[2m   Start at [22m 20:49:47
+[2m   Duration [22m 6.13s[2m (transform 157ms, setup 513ms, collect 790ms, tests 5.49s, environment 3.33s, prepare 692ms)[22m
+
+
+[90mstderr[2m | tests/signin.test.tsx[2m > [22m[2mTEST-UI-01 SignInPage[2m > [22m[2mdisables the button while the request is in progress
+[22m[39mWarning: An update to SignInPage inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at SignInPage (C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\client\src\components\SignInPage.tsx:11:23)
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 5 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.tsx[2m > [22mF-02 Activity Template UI[2m > [22mTEST-UI-03: Program Manager view[2m > [22mrenders create form, loads templates, and submits a new draft template
+[31m[1mTestingLibraryElementError[22m: Unable to find an element with the text: Daily Meditation. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[90m [2m❯[22m waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+[36m [2m❯[22m tests/templates.test.tsx:[2m82:27[22m[39m
+    [90m 80| [39m      [34mrender[39m([33m<[39m[33mTemplatesPage[39m [33mrole[39m[33m=[39m[32m"PROGRAM_MANAGER"[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m 81| [39m
+    [90m 82| [39m      [34mexpect[39m([35mawait[39m screen[33m.[39m[34mfindByText[39m([32m"Daily Meditation"[39m))[33m.[39m[34mtoBeInTheDoc[39m…
+    [90m   | [39m                          [31m^[39m
+    [90m 83| [39m      [34mexpect[39m(screen[33m.[39m[34mgetByText[39m([32m"DRAFT"[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+    [90m 84| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.tsx[2m > [22mF-02 Activity Template UI[2m > [22mTEST-UI-03: Program Manager view[2m > [22mdisplays error message when minValue >= maxValue
+[31m[1mTestingLibraryElementError[22m: Unable to find an element with the text: /no templates/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[90m [2m❯[22m waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+[36m [2m❯[22m tests/templates.test.tsx:[2m122:27[22m[39m
+    [90m120| [39m      [34mrender[39m([33m<[39m[33mTemplatesPage[39m [33mrole[39m[33m=[39m[32m"PROGRAM_MANAGER"[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m121| [39m
+    [90m122| [39m      [34mexpect[39m([35mawait[39m screen[33m.[39m[34mfindByText[39m([36m/no templates/i[39m))[33m.[39m[34mtoBeInTheDocume[39m…
+    [90m   | [39m                          [31m^[39m
+    [90m123| [39m
+    [90m124| [39m      [35mawait[39m userEvent[33m.[39m[34mtype[39m(screen[33m.[39m[34mgetByLabelText[39m([32m"Template name"[39m)[33m,[39m [32m"In[39m…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.tsx[2m > [22mF-02 Activity Template UI[2m > [22mTEST-UI-04: Publish action & Participant view[2m > [22mmanager can publish a draft template and see its status change to PUBLISHED
+[31m[1mTestingLibraryElementError[22m: Unable to find an element with the text: Daily Meditation. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[90m [2m❯[22m waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+[36m [2m❯[22m tests/templates.test.tsx:[2m147:27[22m[39m
+    [90m145| [39m      [34mrender[39m([33m<[39m[33mTemplatesPage[39m [33mrole[39m[33m=[39m[32m"PROGRAM_MANAGER"[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m146| [39m
+    [90m147| [39m      [34mexpect[39m([35mawait[39m screen[33m.[39m[34mfindByText[39m([32m"Daily Meditation"[39m))[33m.[39m[34mtoBeInTheDoc[39m…
+    [90m   | [39m                          [31m^[39m
+    [90m148| [39m      [35mconst[39m publishBtn [33m=[39m screen[33m.[39m[34mgetByRole[39m([32m"button"[39m[33m,[39m { name[33m:[39m [32m"Publish"[39m …
+    [90m149| [39m      [34mexpect[39m(publishBtn)[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.tsx[2m > [22mF-02 Activity Template UI[2m > [22mTEST-UI-04: Publish action & Participant view[2m > [22mparticipant view shows only published templates and no create form or publish button
+[31m[1mTestingLibraryElementError[22m: Unable to find an element with the text: Daily Steps. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[90m [2m❯[22m waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+[36m [2m❯[22m tests/templates.test.tsx:[2m169:27[22m[39m
+    [90m167| [39m      [34mrender[39m([33m<[39m[33mTemplatesPage[39m [33mrole[39m[33m=[39m[32m"PARTICIPANT"[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m168| [39m
+    [90m169| [39m      [34mexpect[39m([35mawait[39m screen[33m.[39m[34mfindByText[39m([32m"Daily Steps"[39m))[33m.[39m[34mtoBeInTheDocument[39m…
+    [90m   | [39m                          [31m^[39m
+    [90m170| [39m      [34mexpect[39m(screen[33m.[39m[34mqueryByLabelText[39m([32m"Template name"[39m))[33m.[39mnot[33m.[39m[34mtoBeInTheDo[39m…
+    [90m171| [39m      [34mexpect[39m(screen[33m.[39m[34mqueryByRole[39m([32m"button"[39m[33m,[39m { name[33m:[39m [32m"Create template"[39m })…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.tsx[2m > [22mF-02 Activity Template UI[2m > [22mTEST-UI-04: Publish action & Participant view[2m > [22mparticipant view displays empty state when no published templates exist
+[31m[1mTestingLibraryElementError[22m: Unable to find an element with the text: No published activity templates available.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div>[31m
+      [0mTemplates Stub[0m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+[90m [2m❯[22m waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[90m [2m❯[22m node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+[36m [2m❯[22m tests/templates.test.tsx:[2m180:27[22m[39m
+    [90m178| [39m      [34mrender[39m([33m<[39m[33mTemplatesPage[39m [33mrole[39m[33m=[39m[32m"PARTICIPANT"[39m [33m/[39m[33m>[39m)[33m;[39m
+    [90m179| [39m
+    [90m180| [39m      [34mexpect[39m([35mawait[39m screen[33m.[39m[34mfindByText[39m([32m"No published activity templates [39m…
+    [90m   | [39m                          [31m^[39m
+    [90m181| [39m    })[33m;[39m
+    [90m182| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯[22m[39m
+
