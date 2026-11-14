@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int                @id @default(autoincrement())
+  email        String             @unique
+  passwordHash String
+  displayName  String
+  role         Role
+  createdAt    DateTime           @default(now())
+
+  sessions     Session[]
+  templates    ActivityTemplate[]
+  goals        Goal[]
+
+  @@map("users")
+}
+
+enum Role {
+  PARTICIPANT
+  PROGRAM_MANAGER
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model ActivityTemplate {
+  id          Int            @id @default(autoincrement())
+  name        String
+  unit        String
+  minValue    Float
+  maxValue    Float
+  status      TemplateStatus @default(DRAFT)
+  createdById Int
+  createdAt   DateTime       @default(now())
+
+  createdBy   User           @relation(fields: [createdById], references: [id])
+  goals       Goal[]
+
+  @@map("activity_templates")
+}
+
+enum TemplateStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Goal {
+  id            Int             @id @default(autoincrement())
+  participantId Int
+  templateId    Int
+  dailyTarget   Float
+  status        GoalStatus      @default(ACTIVE)
+  createdAt     DateTime        @default(now())
+
+  participant   User            @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  template      ActivityTemplate @relation(fields: [templateId], references: [id])
+  entries       ActivityEntry[]
+
+  @@map("goals")
+}
+
+enum GoalStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+model ActivityEntry {
+  id        Int      @id @default(autoincrement())
+  goalId    Int
+  entryDate String
+  value     Float
+  note      String?
+  createdAt DateTime @default(now())
+
+  goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@unique([goalId, entryDate])
+  @@map("activity_entries")
+}

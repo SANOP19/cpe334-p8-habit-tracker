@@ -1,8 +1,13 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { prisma } from "../src/lib/prisma.js";
 import { seedDatabase } from "../prisma/seed.js";
+import { resetDatabase } from "./harness.js";
 
 describe("P1 Password Security & Seed Integrity", () => {
+  beforeEach(async () => {
+    await resetDatabase();
+  });
+
   it("seeded password in database is stored as a bcrypt hash, not plain text", async () => {
     await seedDatabase();
 
@@ -18,5 +23,6 @@ describe("P1 Password Security & Seed Integrity", () => {
     // Must NEVER match raw password
     expect(manager?.passwordHash).not.toBe("change-me-manager-password");
     expect(manager?.passwordHash).not.toBe("AdminInitial123!");
+    expect(manager?.passwordHash).not.toBe("TestManagerPass123!");
   });
 });

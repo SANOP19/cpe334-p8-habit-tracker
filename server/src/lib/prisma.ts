@@ -1,4 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { PrismaClient } from "@prisma/client";
 
-// Stub client for TDD red phase
-export const prisma = new PrismaClient();
+export let prisma = new PrismaClient();
+
+export function setPrisma(customClient: any) {
+  prisma = customClient;
+}
