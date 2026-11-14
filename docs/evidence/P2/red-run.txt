@@ -1,0 +1,322 @@
+
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+
+ × tests/api.test.ts > apiRequest > returns the parsed JSON body on success
+   → promise rejected "Error: not implemented" instead of resolving
+ × tests/api.test.ts > apiRequest > sends the session cookie and a JSON body
+   → not implemented
+ × tests/api.test.ts > apiRequest > turns a 4xx error body into an ApiError with status, code and message
+   → expected Error: not implemented to be an instance of ApiError
+ × tests/api.test.ts > apiRequest > uses a generic error when the body is not the expected shape
+   → expected Error: not implemented to be an instance of ApiError
+ × tests/api.test.ts > apiRequest > reports a network failure as an ApiError
+   → expected Error: not implemented to be an instance of ApiError
+ × tests/api.test.ts > apiRequest > returns undefined for 204 No Content
+   → promise rejected "Error: not implemented" instead of resolving
+ × tests/layout.test.tsx > navigation by role > shows only Sign in when nobody is signed in
+   → expected [] to deeply equal [ 'Sign in' ]
+ × tests/layout.test.tsx > navigation by role > shows Templates and Goals to a participant
+   → expected [] to deeply equal [ 'Templates', 'Goals' ]
+ × tests/layout.test.tsx > navigation by role > shows Templates but not Goals to a program manager
+   → expected [] to deeply equal [ 'Templates' ]
+ × tests/layout.test.tsx > navigation by role > renders the links for the current role and marks the active one
+   → Unable to find an accessible element with the role "button" and name "Templates"
+
+There are no accessible roles. But there might be some inaccessible roles. If you wish to access them, then set the `hidden` option to `true`. Learn more about this here: https://testing-library.com/docs/dom-testing-library/api-queries#byrole
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ × tests/components.test.tsx > shared UI states (NFR-07) > Loading shows an accessible status with its label
+   → Unable to find an accessible element with the role "status"
+
+There are no accessible roles. But there might be some inaccessible roles. If you wish to access them, then set the `hidden` option to `true`. Learn more about this here: https://testing-library.com/docs/dom-testing-library/api-queries#byrole
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ × tests/components.test.tsx > shared UI states (NFR-07) > EmptyState shows the message it is given
+   → Unable to find an element with the text: No goals yet. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ × tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage shows the server message in an alert
+   → Unable to find an accessible element with the role "alert"
+
+There are no accessible roles. But there might be some inaccessible roles. If you wish to access them, then set the `hidden` option to `true`. Learn more about this here: https://testing-library.com/docs/dom-testing-library/api-queries#byrole
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div />
+  </div>
+</body>
+ × tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage renders nothing when there is no message
+   → expect(element).toBeEmptyDOMElement()
+
+Received:
+  "<div></div>"
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/api.test.ts > apiRequest > returns the parsed JSON body on success
+AssertionError: promise rejected "Error: not implemented" instead of resolving
+ ❯ tests/api.test.ts:25:43
+     23|   it("returns the parsed JSON body on success", async () => {
+     24|     fetchMock.mockResolvedValue(jsonResponse(200, { status: "ok" }));
+     25|     await expect(apiRequest("/api/health")).resolves.toEqual({ status:…
+       |                                           ^
+     26|   });
+     27| 
+
+Caused by: Error: not implemented
+ ❯ Module.apiRequest src/api.ts:18:9
+ ❯ tests/api.test.ts:25:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/api.test.ts > apiRequest > sends the session cookie and a JSON body
+Error: not implemented
+ ❯ Module.apiRequest src/api.ts:18:9
+     16| 
+     17| export async function apiRequest<T = unknown>(_path: string, _options:…
+     18|   throw new Error("not implemented");
+       |         ^
+     19| }
+     20| 
+ ❯ tests/api.test.ts:30:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/api.test.ts > apiRequest > turns a 4xx error body into an ApiError with status, code and message
+AssertionError: expected Error: not implemented to be an instance of ApiError
+ ❯ tests/api.test.ts:46:19
+     44| 
+     45|     const error = await apiRequest("/api/goals/1/entries", { method: "…
+     46|     expect(error).toBeInstanceOf(ApiError);
+       |                   ^
+     47|     expect(error.status).toBe(422);
+     48|     expect(error.code).toBe("VALUE_OUT_OF_RANGE");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/api.test.ts > apiRequest > uses a generic error when the body is not the expected shape
+AssertionError: expected Error: not implemented to be an instance of ApiError
+ ❯ tests/api.test.ts:56:19
+     54| 
+     55|     const error = await apiRequest("/api/health").catch((e) => e);
+     56|     expect(error).toBeInstanceOf(ApiError);
+       |                   ^
+     57|     expect(error.status).toBe(500);
+     58|     expect(error.code).toBe("UNKNOWN_ERROR");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/api.test.ts > apiRequest > reports a network failure as an ApiError
+AssertionError: expected Error: not implemented to be an instance of ApiError
+ ❯ tests/api.test.ts:66:19
+     64| 
+     65|     const error = await apiRequest("/api/health").catch((e) => e);
+     66|     expect(error).toBeInstanceOf(ApiError);
+       |                   ^
+     67|     expect(error.status).toBe(0);
+     68|     expect(error.code).toBe("NETWORK_ERROR");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/api.test.ts > apiRequest > returns undefined for 204 No Content
+AssertionError: promise rejected "Error: not implemented" instead of resolving
+ ❯ tests/api.test.ts:73:68
+     71|   it("returns undefined for 204 No Content", async () => {
+     72|     fetchMock.mockResolvedValue(new Response(null, { status: 204 }));
+     73|     await expect(apiRequest("/api/auth/logout", { method: "POST" })).r…
+       |                                                                    ^
+     74|   });
+     75| });
+
+Caused by: Error: not implemented
+ ❯ Module.apiRequest src/api.ts:18:9
+ ❯ tests/api.test.ts:73:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/components.test.tsx > shared UI states (NFR-07) > Loading shows an accessible status with its label
+TestingLibraryElementError: Unable to find an accessible element with the role "status"
+
+There are no accessible roles. But there might be some inaccessible roles. If you wish to access them, then set the `hidden` option to `true`. Learn more about this here: https://testing-library.com/docs/dom-testing-library/api-queries#byrole
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/components.test.tsx:10:19
+      8|   it("Loading shows an accessible status with its label", () => {
+      9|     render(<Loading label="Loading goals" />);
+     10|     expect(screen.getByRole("status")).toHaveTextContent("Loading goal…
+       |                   ^
+     11|   });
+     12| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/components.test.tsx > shared UI states (NFR-07) > EmptyState shows the message it is given
+TestingLibraryElementError: Unable to find an element with the text: No goals yet. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/components.test.tsx:15:19
+     13|   it("EmptyState shows the message it is given", () => {
+     14|     render(<EmptyState message="No goals yet" />);
+     15|     expect(screen.getByText("No goals yet")).toBeInTheDocument();
+       |                   ^
+     16|   });
+     17| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage shows the server message in an alert
+TestingLibraryElementError: Unable to find an accessible element with the role "alert"
+
+There are no accessible roles. But there might be some inaccessible roles. If you wish to access them, then set the `hidden` option to `true`. Learn more about this here: https://testing-library.com/docs/dom-testing-library/api-queries#byrole
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div />
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/components.test.tsx:20:19
+     18|   it("ErrorMessage shows the server message in an alert", () => {
+     19|     render(<ErrorMessage message="Value must be between 0 and 20" />);
+     20|     expect(screen.getByRole("alert")).toHaveTextContent("Value must be…
+       |                   ^
+     21|   });
+     22| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage renders nothing when there is no message
+Error: expect(element).toBeEmptyDOMElement()
+
+Received:
+  "<div></div>"
+ ❯ tests/components.test.tsx:25:23
+     23|   it("ErrorMessage renders nothing when there is no message", () => {
+     24|     const { container } = render(<ErrorMessage message={null} />);
+     25|     expect(container).toBeEmptyDOMElement();
+       |                       ^
+     26|   });
+     27| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/layout.test.tsx > navigation by role > shows only Sign in when nobody is signed in
+AssertionError: expected [] to deeply equal [ 'Sign in' ]
+
+- Expected
++ Received
+
+- Array [
+-   "Sign in",
+- ]
++ Array []
+
+ ❯ tests/layout.test.tsx:8:51
+      6| describe("navigation by role", () => {
+      7|   it("shows only Sign in when nobody is signed in", () => {
+      8|     expect(navItemsFor(null).map((i) => i.label)).toEqual(["Sign in"]);
+       |                                                   ^
+      9|   });
+     10| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/layout.test.tsx > navigation by role > shows Templates and Goals to a participant
+AssertionError: expected [] to deeply equal [ 'Templates', 'Goals' ]
+
+- Expected
++ Received
+
+- Array [
+-   "Templates",
+-   "Goals",
+- ]
++ Array []
+
+ ❯ tests/layout.test.tsx:12:60
+     10| 
+     11|   it("shows Templates and Goals to a participant", () => {
+     12|     expect(navItemsFor("PARTICIPANT").map((i) => i.label)).toEqual(["T…
+       |                                                            ^
+     13|   });
+     14| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  tests/layout.test.tsx > navigation by role > shows Templates but not Goals to a program manager
+AssertionError: expected [] to deeply equal [ 'Templates' ]
+
+- Expected
++ Received
+
+- Array [
+-   "Templates",
+- ]
++ Array []
+
+ ❯ tests/layout.test.tsx:16:64
+     14| 
+     15|   it("shows Templates but not Goals to a program manager", () => {
+     16|     expect(navItemsFor("PROGRAM_MANAGER").map((i) => i.label)).toEqual…
+       |                                                                ^
+     17|   });
+     18| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  tests/layout.test.tsx > navigation by role > renders the links for the current role and marks the active one
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name "Templates"
+
+There are no accessible roles. But there might be some inaccessible roles. If you wish to access them, then set the `hidden` option to `true`. Learn more about this here: https://testing-library.com/docs/dom-testing-library/api-queries#byrole
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/layout.test.tsx:25:19
+     23|       </Layout>,
+     24|     );
+     25|     expect(screen.getByRole("button", { name: "Templates" })).toBeInTh…
+       |                   ^
+     26|     expect(screen.getByRole("button", { name: "Goals" })).toHaveAttrib…
+     27|     expect(screen.queryByRole("button", { name: "Sign in" })).not.toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+ Test Files  3 failed (3)
+      Tests  14 failed (14)
+   Start at  18:29:59
+   Duration  1.82s (transform 83ms, setup 591ms, collect 355ms, tests 120ms, environment 2.80s, prepare 560ms)
+
