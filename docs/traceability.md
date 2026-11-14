@@ -4,6 +4,7 @@
 | Version | Date | Author | Reviewer | Change |
 |---|---|---|---|---|
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | First version: baseline mapped to features, sprints, AC and planned tests (PR1, Issue #16) |
+| 0.2 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | F-01 results filled in (PR2, Issue #17) |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -15,9 +16,9 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 
 | Req | Feature | Sprint | AC | Planned test | Delivered in | Actual test / result | Status |
 |---|---|---|---|---|---|---|---|
-| FR-01 | F-01 | 1 | AC-01, AC-02 | TEST-01, TEST-02 | PR2 (#17) | — | Planned |
-| FR-02 | F-01 | 1 | AC-05 | TEST-05 | PR2 (#17) | — | Planned |
-| FR-03 | F-01 | 1 | AC-03 | TEST-03 | PR2 (#17) | — | Planned |
+| FR-01 | F-01 | 1 | AC-01, AC-02 | TEST-01, TEST-02 | PR2 (#17) | `server/tests/auth.test.ts` TEST-01, TEST-02a/b/c; `client/tests/signin.test.tsx` TEST-UI-01 — pass (`docs/evidence/F-01/green-run-*.txt`) | Verified |
+| FR-02 | F-01 | 1 | AC-05 | TEST-05 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05 (×2); `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
+| FR-03 | F-01 | 1 | AC-03 | TEST-03 | PR2 (#17) | `server/tests/auth.test.ts` TEST-03; `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
 | FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | — | Planned |
 | FR-05 | F-02 | 1 | AC-10, AC-30, AC-31 | TEST-10, TEST-30, TEST-31 | PR3 (#18) | — | Planned |
 | FR-06 | F-02 | 1 | AC-11 | TEST-11 | PR3 (#18) | — | Planned |
@@ -51,9 +52,9 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 
 | Req | Feature / responsibility | Sprint | AC or verification target | Planned verification | Delivered in | Actual test / result | Status |
 |---|---|---|---|---|---|---|---|
-| NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | — | Planned |
-| NFR-02 | F-01 | 1 | AC-06 | TEST-06 | PR2 (#17) | Seed hashing tested in `server/tests/seed.test.ts` (PR #12) | Foundation |
-| NFR-03 | F-01 | 1 | AC-05, AC-33 | TEST-05, TEST-33 | PR2 (#17) | — | Planned |
+| NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | `server/tests/auth.test.ts` TEST-04 — pass for the F-01 endpoints; later PRs add theirs | Partly verified |
+| NFR-02 | F-01 | 1 | AC-06 | TEST-06 | PR2 (#17) | `server/tests/auth.test.ts` TEST-06 and `server/tests/seed.test.ts` — pass | Verified |
+| NFR-03 | F-01 | 1 | AC-05, AC-33 | TEST-05, TEST-33 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05, TEST-33 — pass | Verified |
 | NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR5 (#20) | — | Planned |
 | NFR-05 | CC-01 | 1 | AC-29 | TEST-29 | PR6 (#21) | Error handler (500 → `INTERNAL_ERROR`, malformed JSON → 422) tested in `server/tests/health.test.ts` (PR #12) | Foundation |
 | NFR-06 | CC-02 | 1 | Clean clone runs by following README | Recorded clean-clone check by the member who did not write the README | PR7 (#22) | — | Planned |

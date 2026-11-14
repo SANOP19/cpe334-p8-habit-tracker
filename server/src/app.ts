@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/error-handler.js";
+import { authRouter } from "./routes/auth.js";
 
 export const app = express();
 
@@ -27,6 +28,9 @@ app.use(express.json());
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
+
+// F-01 Authentication and session
+app.use("/api/auth", authRouter);
 
 // Test route to verify unexpected error handling in test environment
 if (process.env.NODE_ENV === "test") {

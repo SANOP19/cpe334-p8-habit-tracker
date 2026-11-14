@@ -20,23 +20,33 @@ export function navItemsFor(role: Role | null): NavItem[] {
   return [{ page: "templates", label: "Templates" }];
 }
 
+export const ROLE_LABELS: Record<Role, string> = {
+  PARTICIPANT: "Participant",
+  PROGRAM_MANAGER: "Program Manager",
+};
+
 export function Layout({
   role,
   active,
   onNavigate,
   children,
+  displayName,
+  onSignOut,
 }: {
   role: Role | null;
   active: Page;
   onNavigate: (page: Page) => void;
   children: ReactNode;
+  /** Shown with the role label and a Sign out button when the user is signed in (F-01). */
+  displayName?: string;
+  onSignOut?: () => void;
 }) {
   return (
     <>
       <nav className="navbar navbar-expand bg-body-tertiary border-bottom">
         <div className="container">
           <span className="navbar-brand">Habit Tracker</span>
-          <ul className="navbar-nav">
+          <ul className="navbar-nav me-auto">
             {navItemsFor(role).map((item) => (
               <li className="nav-item" key={item.page}>
                 <button
@@ -50,6 +60,17 @@ export function Layout({
               </li>
             ))}
           </ul>
+          {role && displayName && (
+            <div className="d-flex align-items-center gap-2">
+              <span className="fw-semibold">{displayName}</span>
+              <span className="badge text-bg-secondary">{ROLE_LABELS[role]}</span>
+              {onSignOut && (
+                <button type="button" className="btn btn-outline-secondary btn-sm" onClick={onSignOut}>
+                  Sign out
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </nav>
       <main className="container py-4">{children}</main>

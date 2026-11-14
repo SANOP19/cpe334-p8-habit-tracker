@@ -1,0 +1,58 @@
+
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-01 (AC-01): valid sign-in returns the user, sets an HttpOnly session cookie and stores only the token hash
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-01 (AC-01): email is matched case-insensitively
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-02a/b (AC-02): wrong password and unknown email get the same 401 and create no session
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-02c (AC-02): missing email or password is a 422 validation error
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-03 (AC-03): /me returns the identity of each session's own user
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-04 (AC-04): every protected endpoint rejects a missing or unknown session with 401 and no data
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-05 (AC-05): sign-out deletes the session, clears the cookie and the old cookie stops working
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-05 (AC-05): signing out one session does not end another session of the same user
+stdout | tests/auth.test.ts > F-01 Authentication and session > TEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in
+Seeding Habit Tracker database...
+
+stdout | tests/auth.test.ts > F-01 Authentication and session > TEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in
+Habit Tracker seeding completed successfully.
+
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in
+ ✓ tests/auth.test.ts > F-01 Authentication and session > TEST-33 (AC-33): an expired session is rejected with 401 and removed
+ ✓ tests/db-constraints.test.ts > P1 Database Schema Constraints against Real PostgreSQL > inserting a second activity_entries row with the same goalId + entryDate fails (BR-04 unique constraint)
+ ✓ tests/db-constraints.test.ts > P1 Database Schema Constraints against Real PostgreSQL > inserting a template with minValue >= maxValue fails database CHECK constraint (D-06 / AC-08)
+ ✓ tests/db-constraints.test.ts > P1 Database Schema Constraints against Real PostgreSQL > inserting a second ACTIVE goal for the same participant and template fails partial unique index (BR-09)
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seeded passwords are stored as salted bcrypt hashes in the database and never as plain text
+Seeding Habit Tracker database...
+
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seeded passwords are stored as salted bcrypt hashes in the database and never as plain text
+Habit Tracker seeding completed successfully.
+
+ ✓ tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seeded passwords are stored as salted bcrypt hashes in the database and never as plain text
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seedDatabase throws an error when seed passwords are missing from the environment
+Seeding Habit Tracker database...
+
+ ✓ tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seedDatabase throws an error when seed passwords are missing from the environment
+ ✓ tests/health.test.ts > P1 Health Endpoint and Global Error Handler > GET /api/health returns 200 with { status: 'ok' }
+stderr | tests/health.test.ts > P1 Health Endpoint and Global Error Handler > unhandled runtime error returns 500 with sanitized code and generic message (NFR-05)
+Internal Server Error: Error: Simulated unhandled database failure
+    at C:\Users\nopni\Project_SE\server\src\app.ts:38:11
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\nopni\Project_SE\server\node_modules\body-parser\lib\types\json.js:117:7)
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+
+ ✓ tests/health.test.ts > P1 Health Endpoint and Global Error Handler > unhandled runtime error returns 500 with sanitized code and generic message (NFR-05)
+ ✓ tests/health.test.ts > P1 Health Endpoint and Global Error Handler > sending malformed JSON payload returns 422 with VALIDATION_ERROR
+ ✓ tests/require-role.test.ts > TEST-R1 requireRole > rejects a participant from a program-manager-only route with 403 FORBIDDEN
+ ✓ tests/require-role.test.ts > TEST-R1 requireRole > lets a program manager through
+ ✓ tests/require-role.test.ts > TEST-R1 requireRole > accepts any of several allowed roles
+
+ Test Files  5 passed (5)
+      Tests  21 passed (21)
+   Start at  20:36:25
+   Duration  3.60s (transform 93ms, setup 0ms, collect 968ms, tests 1.35s, environment 1ms, prepare 491ms)
+
