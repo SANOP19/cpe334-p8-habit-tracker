@@ -1,0 +1,23 @@
+
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+
+ ✓ tests/api.test.ts > apiRequest > returns the parsed JSON body on success
+ ✓ tests/api.test.ts > apiRequest > sends the session cookie and a JSON body
+ ✓ tests/api.test.ts > apiRequest > turns a 4xx error body into an ApiError with status, code and message
+ ✓ tests/api.test.ts > apiRequest > uses a generic error when the body is not the expected shape
+ ✓ tests/api.test.ts > apiRequest > reports a network failure as an ApiError
+ ✓ tests/api.test.ts > apiRequest > returns undefined for 204 No Content
+ ✓ tests/layout.test.tsx > navigation by role > shows only Sign in when nobody is signed in
+ ✓ tests/layout.test.tsx > navigation by role > shows Templates and Goals to a participant
+ ✓ tests/layout.test.tsx > navigation by role > shows Templates but not Goals to a program manager
+ ✓ tests/layout.test.tsx > navigation by role > renders the links for the current role and marks the active one
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > Loading shows an accessible status with its label
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > EmptyState shows the message it is given
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage shows the server message in an alert
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage renders nothing when there is no message
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  18:30:47
+   Duration  1.65s (transform 63ms, setup 484ms, collect 308ms, tests 114ms, environment 2.58s, prepare 469ms)
+
