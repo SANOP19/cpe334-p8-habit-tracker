@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+test-results/
+playwright-report/
+uploads/
+# course materials and private planning notes (not part of the product)
+specs/
+PROJECT_PLAN.md
