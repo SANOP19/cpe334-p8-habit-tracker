@@ -74,8 +74,14 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "sessions_tokenHash_key" ON "sessions"("tokenHash");
 
--- CreateIndex
+-- CreateIndex: BR-04 unique (goalId, entryDate)
 CREATE UNIQUE INDEX "activity_entries_goalId_entryDate_key" ON "activity_entries"("goalId", "entryDate");
+
+-- CreateIndex: BR-09 unique active goal per participant per template
+CREATE UNIQUE INDEX "goals_participant_template_active_idx" ON "goals" ("participantId", "templateId") WHERE status = 'ACTIVE';
+
+-- CheckConstraint: template minValue must be less than maxValue
+ALTER TABLE "activity_templates" ADD CONSTRAINT "activity_templates_min_less_than_max" CHECK ("minValue" < "maxValue");
 
 -- AddForeignKey
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -91,4 +97,3 @@ ALTER TABLE "goals" ADD CONSTRAINT "goals_templateId_fkey" FOREIGN KEY ("templat
 
 -- AddForeignKey
 ALTER TABLE "activity_entries" ADD CONSTRAINT "activity_entries_goalId_fkey" FOREIGN KEY ("goalId") REFERENCES "goals"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-

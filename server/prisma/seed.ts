@@ -6,70 +6,63 @@ import { Role, TemplateStatus } from "@prisma/client";
 import { prisma } from "../src/lib/prisma.js";
 
 export async function seedDatabase() {
-  console.log("Seeding HabitPulse database...");
+  console.log("Seeding Habit Tracker database...");
 
-  const managerPassword =
-    process.env.SEED_MANAGER_PASSWORD || "TestManagerPass123!";
-  const participantPassword =
-    process.env.SEED_PARTICIPANT_PASSWORD || "TestParticipantPass123!";
+  const managerPassword = process.env.SEED_MANAGER_PASSWORD;
+  const participantPassword = process.env.SEED_PARTICIPANT_PASSWORD;
+
+  if (!managerPassword || !participantPassword) {
+    throw new Error(
+      "Missing required seed passwords: SEED_MANAGER_PASSWORD and SEED_PARTICIPANT_PASSWORD must be defined in the environment."
+    );
+  }
 
   const managerHash = await bcrypt.hash(managerPassword, 10);
   const participantHash = await bcrypt.hash(participantPassword, 10);
 
-  // 1. Program Manager
+  // 1. Program Manager (fictional persona with reserved .test domain)
   const manager = await prisma.user.upsert({
-    where: { email: "manager@habitpulse.com" },
-    update: { passwordHash: managerHash, displayName: "Coach Alex" },
+    where: { email: "manager@example.test" },
+    update: { passwordHash: managerHash, displayName: "Dr. Morgan Staff" },
     create: {
-      email: "manager@habitpulse.com",
+      email: "manager@example.test",
       passwordHash: managerHash,
-      displayName: "Coach Alex",
+      displayName: "Dr. Morgan Staff",
       role: Role.PROGRAM_MANAGER,
     },
   });
 
-  // 2. Participants
+  // 2. Participant (fictional persona with reserved .test domain)
   await prisma.user.upsert({
-    where: { email: "participant1@habitpulse.com" },
-    update: { passwordHash: participantHash, displayName: "Nara Kosiyaporn" },
+    where: { email: "participant@example.test" },
+    update: { passwordHash: participantHash, displayName: "Alex Student" },
     create: {
-      email: "participant1@habitpulse.com",
+      email: "participant@example.test",
       passwordHash: participantHash,
-      displayName: "Nara Kosiyaporn",
+      displayName: "Alex Student",
       role: Role.PARTICIPANT,
     },
   });
 
-  await prisma.user.upsert({
-    where: { email: "participant2@habitpulse.com" },
-    update: { passwordHash: participantHash, displayName: "Nitithorn Ketkaew" },
-    create: {
-      email: "participant2@habitpulse.com",
-      passwordHash: participantHash,
-      displayName: "Nitithorn Ketkaew",
-      role: Role.PARTICIPANT,
-    },
-  });
-
-  // 3. Published Template
+  // 3. Published Template (Study / Reading habit)
   const existingTemplate = await prisma.activityTemplate.findFirst({
-    where: { name: "Running" },
+    where: { name: "Daily Reading" },
   });
 
   if (!existingTemplate) {
     await prisma.activityTemplate.create({
       data: {
-        name: "Running",
-        unit: "km",
-        minValue: 0.1,
-        maxValue: 42.195,
+        name: "Daily Reading",
+        unit: "pages",
+        minValue: 1.0,
+        maxValue: 200.0,
         status: TemplateStatus.PUBLISHED,
         createdById: manager.id,
       },
     });
   }
 
-  console.log("Seeding completed successfully.");
+  console.log("Habit Tracker seeding completed successfully.");
 }
 
 if (process.env.NODE_ENV !== "test" && process.env.NODE_ENV !== "testing") {
