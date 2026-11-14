@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ok 1 [chromium] › e2e\journey.spec.ts:32:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out (774ms)
+
+  1 passed (3.9s)
