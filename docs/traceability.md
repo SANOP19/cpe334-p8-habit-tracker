@@ -1,0 +1,96 @@
+# Requirements Traceability Matrix
+## Habit and Activity Tracking System — CPE 334 Theme 8
+
+| Version | Date | Author | Reviewer | Change |
+|---|---|---|---|---|
+| 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | First version: baseline mapped to features, sprints, AC and planned tests (PR1, Issue #16) |
+
+**Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
+**Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
+This version is written before Sprint 1 feature implementation; the **Actual test / result** column is filled in as each feature PR merges.
+
+---
+
+## 1. Functional requirements
+
+| Req | Feature | Sprint | AC | Planned test | Delivered in | Actual test / result | Status |
+|---|---|---|---|---|---|---|---|
+| FR-01 | F-01 | 1 | AC-01, AC-02 | TEST-01, TEST-02 | PR2 (#17) | — | Planned |
+| FR-02 | F-01 | 1 | AC-05 | TEST-05 | PR2 (#17) | — | Planned |
+| FR-03 | F-01 | 1 | AC-03 | TEST-03 | PR2 (#17) | — | Planned |
+| FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | — | Planned |
+| FR-05 | F-02 | 1 | AC-10, AC-30, AC-31 | TEST-10, TEST-30, TEST-31 | PR3 (#18) | — | Planned |
+| FR-06 | F-02 | 1 | AC-11 | TEST-11 | PR3 (#18) | — | Planned |
+| FR-07 | F-03 | 1 | AC-12 | TEST-12 | PR4 (#19) | — | Planned |
+| FR-08 | F-04 | 1 | AC-17 | TEST-17 | PR5 (#20) | — | Planned |
+| FR-09 | F-05 | 1 | AC-24, AC-27 | TEST-24, TEST-27 (E2E) | PR6 (#21), PR7 (#22) | — | Planned |
+| FR-10 | F-06 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
+| FR-11 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
+| FR-12 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
+| FR-13 | F-08 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
+| FR-14 | F-09 | 3 | Sprint 3 contract | Sprint 3 STS | Sprint 3 | — | Later sprint |
+
+## 2. Business rules
+
+| Req | Feature | Sprint | AC | Planned test | Delivered in | Actual test / result | Status |
+|---|---|---|---|---|---|---|---|
+| BR-01 | F-04 | 1 | AC-18 | TEST-18 (boundary) | PR5 (#20) | — | Planned |
+| BR-02 | F-04 | 1 | AC-19 | TEST-19 | PR5 (#20) | — | Planned |
+| BR-03 | F-04 | 1 | AC-20 | TEST-20 (boundary, TDD evidence) | PR5 (#20) | — | Planned |
+| BR-04 | F-04 | 1 | AC-21, AC-22 | TEST-21 (TDD evidence), TEST-22 | PR5 (#20) | DB unique index tested in `server/tests/db-constraints.test.ts` (PR #12) | Foundation |
+| BR-05 | F-04, F-05 | 1 | AC-23, AC-25 | TEST-23, TEST-25 (TDD evidence) | PR5 (#20), PR6 (#21) | — | Planned |
+| BR-06 | F-02 | 1 | AC-09 | TEST-09 | PR3 (#18) | — | Planned |
+| BR-07 | F-05 | 1 | AC-26, AC-32 | TEST-26 (TDD evidence), TEST-32 | PR6 (#21) | — | Planned |
+| BR-08 | F-03 | 1 | AC-13, AC-14 | TEST-13, TEST-14 | PR4 (#19) | — | Planned |
+| BR-09 | F-03 | 1 | AC-15 | TEST-15 | PR4 (#19) | DB partial unique index tested in `server/tests/db-constraints.test.ts` (PR #12) | Foundation |
+| BR-10 | F-06 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
+| BR-11 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
+| BR-12 | F-09 | 3 | Sprint 3 contract | Sprint 3 STS | Sprint 3 | — | Later sprint |
+
+## 3. Non-functional requirements
+
+| Req | Feature / responsibility | Sprint | AC or verification target | Planned verification | Delivered in | Actual test / result | Status |
+|---|---|---|---|---|---|---|---|
+| NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | — | Planned |
+| NFR-02 | F-01 | 1 | AC-06 | TEST-06 | PR2 (#17) | Seed hashing tested in `server/tests/seed.test.ts` (PR #12) | Foundation |
+| NFR-03 | F-01 | 1 | AC-05, AC-33 | TEST-05, TEST-33 | PR2 (#17) | — | Planned |
+| NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR5 (#20) | — | Planned |
+| NFR-05 | CC-01 | 1 | AC-29 | TEST-29 | PR6 (#21) | Error handler (500 → `INTERNAL_ERROR`, malformed JSON → 422) tested in `server/tests/health.test.ts` (PR #12) | Foundation |
+| NFR-06 | CC-02 | 1 | Clean clone runs by following README | Recorded clean-clone check by the member who did not write the README | PR7 (#22) | — | Planned |
+| NFR-07 | CC-04 | 1 | Loading / empty / error states on main screens | Component tests + TEST-27 (E2E) + screenshots | PR2–PR7 | Shared components tested in `client/tests/components.test.tsx` (PR #9) | Foundation |
+| NFR-08 | CC-03 | 1 | No secret in Git or client code | Diff review in every PR; `.env.example` check; GitHub secret scanning enabled | Every PR | — | Planned |
+| NFR-09 | F-04 | 1 | AC-19, AC-20 | TEST-19, TEST-20 with mocked clock | PR5 (#20) | — | Planned |
+| NFR-10 | F-04 | 1 | AC-22 | TEST-22 | PR5 (#20) | — | Planned |
+
+## 4. Acceptance criteria not tied to a single FR/BR/NFR
+
+| AC | What it verifies | Source | Test | Delivered in |
+|---|---|---|---|---|
+| AC-16 | Manager creating a goal → 403 | Role matrix (SDS §5.4) | TEST-16 | PR4 (#19) |
+| AC-02 | Same 401 message for unknown email and wrong password | SDS §5.3 (no account enumeration) | TEST-02 | PR2 (#17) |
+| AC-08 | minValue ≥ maxValue → 422 | Decision D-06 | TEST-08 | PR3 (#18) |
+
+Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
+
+---
+
+## 5. Coverage gaps
+
+| Gap | Impact | Plan |
+|---|---|---|
+| FR-10..FR-14, BR-10..BR-12 have no AC yet | Expected: later-sprint features are allocated but not elaborated | Written in the Sprint 2 and Sprint 3 contracts |
+| BR-11 streak rule is a draft | Behaviour on a day not yet recorded is undecided | Decide in the F-07 contract |
+| Q-01..Q-03 (back-dating window, progress formula, Sprint 3 scope) are open | Answers could change BR-03, D-08 or Sprint 3 | Ask the instructor/TA; record in `docs/srs.md` §6.2 |
+| Q-04 (whole numbers or decimals) is open | Affects BR-01 boundary tests | Decide in the F-04 contract (PR5) |
+| Seed has one participant; cross-participant tests need two | AC-25 cannot be demonstrated with seed data | Second participant added in PR6 (#21) |
+
+## 6. Approved changes to the baseline
+
+| Change | Where | Reason |
+|---|---|---|
+| BR-08 requires dailyTarget > 0; AC-13 updated | PR #13 | A zero target would make the progress formula divide by zero |
+| NFR-09 (timezone) and NFR-10 (concurrency) added | PR #13; added to brief in PR1 | Make two important quality properties explicit and testable |
+| A proposed cross-platform NFR was removed | PR #13 | Could not be verified on the team's machines |
+| AC-30, AC-31, AC-32 added | PR1 | Role-matrix cases found without tests in the P4b review |
+| AC-33 added | PR1 | NFR-03 includes session expiry, but AC-05 covered only logout |
+| Work allocation reduced from ~30 parts to 8 PRs | PR1 (brief §11) | Fewer review round-trips; no requirement or AC removed |
