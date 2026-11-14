@@ -22,6 +22,7 @@ const PROTECTED_ENDPOINTS: Array<{ method: "get" | "post"; path: string }> = [
   { method: "get", path: "/api/goals/1" },
   { method: "get", path: "/api/goals/1/entries" },
   { method: "post", path: "/api/goals/1/entries" },
+  { method: "get", path: "/api/goals/1/progress" },
 ];
 
 const sha256 = (value: string) => createHash("sha256").update(value).digest("hex");

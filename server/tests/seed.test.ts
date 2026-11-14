@@ -49,4 +49,16 @@ describe("P1 Password Security & Seed Integrity against Real PostgreSQL", () => 
     process.env.SEED_MANAGER_PASSWORD = origManagerPw;
     process.env.SEED_PARTICIPANT_PASSWORD = origPartPw;
   });
+  it("TEST-S2 (F-05): seed creates a second participant and stays idempotent", async () => {
+    process.env.SEED_MANAGER_PASSWORD = "ManagerSecurePassword123!";
+    process.env.SEED_PARTICIPANT_PASSWORD = "ParticipantSecurePassword123!";
+
+    await seedDatabase();
+    await seedDatabase();
+
+    const second = await prisma.user.findUnique({ where: { email: "participant2@example.test" } });
+    expect(second?.role).toBe("PARTICIPANT");
+    expect(second?.displayName).toBe("Blake Student");
+    expect(await prisma.user.count()).toBe(3);
+  });
 });
