@@ -78,9 +78,8 @@ A fundamental principle of the system design is that **the API service layer and
 | **BR-05** | Participant privacy isolation | Scoped database queries (`where: { id: goalId, participantId: user.id }`) | `404 NOT_FOUND` |
 | **BR-06** | Role authorization for templates (Manager only) | Express Role Guard (`user.role !== 'PROGRAM_MANAGER'`) | `403 FORBIDDEN` |
 | **BR-07** | Program manager barred from participant data | Express Role Guard (`user.role !== 'PARTICIPANT'`) | `403 FORBIDDEN` |
-| **BR-08** | Goal `dailyTarget > 0` inside template `[minValue, maxValue]` | API Service Layer (range & positivity check) | `422 TARGET_OUT_OF_RANGE` |
+| **BR-08** | Goal requires published template and positive dailyTarget inside `[minValue, maxValue]` | API Service Layer (status guard & target check) | `422 TEMPLATE_NOT_PUBLISHED` / `422 TARGET_OUT_OF_RANGE` |
 | **BR-09** | One active goal per participant per template | **Dual Layer:** API Service check + PostgreSQL partial unique index | `409 DUPLICATE_ACTIVE_GOAL` |
-| **BR-10** | Goal creation from `PUBLISHED` templates only | API Service Layer (`template.status === 'PUBLISHED'`) | `422 TEMPLATE_NOT_PUBLISHED` |
 | **D-06 / Invariant** | Template `minValue < maxValue` | API Validation Layer + DB `CHECK ("minValue" < "maxValue")` | `422 INVALID_RANGE` |
 | **D-06 / Invariant** | Published template cannot be re-published or modified | API Service State Guard (`status === 'PUBLISHED'`) | `409 ALREADY_PUBLISHED` |
 | **D-06 / Invariant** | Template modification restricted to creator manager | API Service Ownership Guard (`template.createdById === user.id`) | `404 NOT_FOUND` |
@@ -304,7 +303,7 @@ All configuration parameters and operational secrets are decoupled from code and
 | `PORT` | Optional | `3000` | Port on which the Express HTTP server listens. |
 | `NODE_ENV` | Optional | `development` | Runtime environment (`development`, `test`, `production`). |
 | `DATABASE_URL` | **Required** | `postgresql://user:pass@localhost:5432/habittracker?schema=public` | PostgreSQL connection string for development and production. |
-| `DATABASE_URL_TEST` | Optional | `postgresql://user:pass@localhost:5432/habittracker_test?schema=public` | Dedicated PostgreSQL test database URL used strictly by automated tests. |
+| `DATABASE_URL_TEST` | **Required for tests** | `postgresql://user:pass@localhost:5432/habittracker_test?schema=public` | Dedicated PostgreSQL test database URL used strictly by automated tests. |
 | `SESSION_TTL_HOURS` | Optional | `24` | Lifespan of user sessions in hours. |
 | `BCRYPT_ROUNDS` | Optional | `10` *(planned for F-01)* | Salt work factor for bcrypt password hashing. |
 | `TZ` | **Required** | `Asia/Bangkok` | Authoritative timezone for server-side calendar day computations (D-04). |
