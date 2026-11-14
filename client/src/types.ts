@@ -38,3 +38,13 @@ export interface ActivityEntry {
   note: string | null;
   createdAt: string;
 }
+
+// F-05: progress returned by GET /api/goals/:id/progress
+export interface GoalProgress {
+  goalId: number;
+  dailyTarget: number;
+  unit: string;
+  entriesCount: number;
+  achievedCount: number;
+  days: Array<{ entryDate: string; value: number; percent: number; achieved: boolean }>;
+}

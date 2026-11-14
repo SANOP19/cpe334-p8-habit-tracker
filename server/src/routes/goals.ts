@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma.js";
 import { clock } from "../lib/clock.js";
 import { requireAuth, requireRole } from "../middlewares/auth.js";
 import { AppError } from "../middlewares/error-handler.js";
+import { calculateProgress } from "../lib/progress.js";
 
 // F-03 Goal setting & F-04 Daily activity logging — docs/sprints/sprint-1/F-04-logging.md
 export const goalsRouter = Router();
@@ -237,6 +238,32 @@ goalsRouter.get("/:id/entries", async (req, res, next) => {
       select: entrySelect,
     });
     res.status(200).json({ entries });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/goals/:id/progress — F-05 (AC-24..AC-26). Owner only; managers already stopped by the router guard.
+goalsRouter.get("/:id/progress", async (req, res, next) => {
+  try {
+    const goalId = Number(req.params.id);
+    if (!isPositiveInteger(goalId)) throw goalNotFound();
+
+    const goal = await prisma.goal.findFirst({
+      where: { id: goalId, participantId: req.user!.id },
+      select: {
+        id: true,
+        dailyTarget: true,
+        template: { select: { unit: true } },
+        entries: { select: { entryDate: true, value: true } },
+      },
+    });
+    if (!goal) throw goalNotFound();
+
+    const summary = calculateProgress(goal.dailyTarget, goal.entries);
+    res.status(200).json({
+      progress: { goalId: goal.id, dailyTarget: goal.dailyTarget, unit: goal.template.unit, ...summary },
+    });
   } catch (err) {
     next(err);
   }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiRequest, ApiError } from "../api";
-import type { Goal, ActivityEntry } from "../types";
+import type { Goal, ActivityEntry, GoalProgress } from "../types";
 import { EmptyState } from "./EmptyState";
 import { ErrorMessage } from "./ErrorMessage";
 import { Loading } from "./Loading";
@@ -38,6 +38,23 @@ function GoalCard({ goal }: GoalCardProps) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  // F-05: progress from the server (authoritative calculation); undefined = loading, null = unavailable
+  const [progress, setProgress] = useState<GoalProgress | null | undefined>(undefined);
+  const [progressVersion, setProgressVersion] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+    apiRequest<{ progress?: GoalProgress }>(`/api/goals/${goal.id}/progress`)
+      .then((data) => {
+        if (active) setProgress(data?.progress && Array.isArray(data.progress.days) ? data.progress : null);
+      })
+      .catch(() => {
+        if (active) setProgress(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [goal.id, progressVersion]);
 
   useEffect(() => {
     let active = true;
@@ -84,6 +101,7 @@ function GoalCard({ goal }: GoalCardProps) {
       setValue("");
       setNote("");
       setEntries((prev) => [res.entry, ...prev.filter((item) => item.entryDate !== res.entry.entryDate)]);
+      setProgressVersion((v) => v + 1);
     } catch (err) {
       setSaveError(err instanceof ApiError ? err.message : "Failed to record activity.");
     } finally {
@@ -91,6 +109,7 @@ function GoalCard({ goal }: GoalCardProps) {
     }
   }
 
+  const progressByDate = new Map((progress?.days ?? []).map((d) => [d.entryDate, d]));
   const todayStr = getTodayString();
   const minDateStr = getPastDateString(6);
 
@@ -171,6 +190,12 @@ function GoalCard({ goal }: GoalCardProps) {
           </form>
 
           <h6 className="h6 mb-2">Logged entries</h6>
+          {progress && (
+            <p className="small mb-2">
+              Achieved {progress.achievedCount} of {progress.entriesCount} logged days
+            </p>
+          )}
+          {progress === null && <p className="small text-muted mb-2">Progress is not available right now.</p>}
           {loadingEntries ? (
             <div className="text-muted small">Loading entries...</div>
           ) : entries.length === 0 ? (
@@ -184,6 +209,14 @@ function GoalCard({ goal }: GoalCardProps) {
                     <span>{`${entry.value} ${goal.template.unit}`}</span>
                     {entry.note && <span className="text-muted ms-2">{entry.note}</span>}
                   </div>
+                  {progressByDate.has(entry.entryDate) && (
+                    <div className="d-flex align-items-center gap-2">
+                      <span>{progressByDate.get(entry.entryDate)!.percent}%</span>
+                      {progressByDate.get(entry.entryDate)!.achieved && (
+                        <span className="badge text-bg-success">Achieved</span>
+                      )}
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
