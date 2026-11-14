@@ -4,7 +4,7 @@
 |---|---|
 | Product | Habit and Activity Tracking System (CPE 334, Theme 8) |
 | Release | `v0.1.0-sprint1` (tag on the merge commit of the release PR into `main`) |
-| Release candidate | `staging/sprint-1` at `3ed2771` (+ this documentation PR) |
+| Release candidate | `staging/sprint-1` at `3ed2771` (+ documentation PRs #32 and #33) |
 | Team | Nitithorn Ketkaew (67070505203) · Nara Kosiyaporn (67070505218) |
 
 ## 1. Scope delivered

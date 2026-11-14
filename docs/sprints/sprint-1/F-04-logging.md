@@ -152,7 +152,7 @@ Uses existing `activity_entries` table from P1 baseline migration:
 ---
 
 ## 7. Feature Definition of Done
-- All tests in §6 pass on PostgreSQL (`habit_tracker_test`); all existing suites (P1, F-01, F-02, F-03) pass; server and client builds pass.
+- All tests in §6 pass on PostgreSQL (`habittracker_test`); all existing suites (P1, F-01, F-02, F-03) pass; server and client builds pass.
 - Commits follow strict 3-commit order: `docs(contract)` → `test(red)` → `feat(F-04)`.
 - Red test execution logs saved in `docs/evidence/F-04/red-run-*.txt` and committed before implementation.
 - `docs/traceability.md` rows for FR-08, BR-01, BR-02, BR-03, BR-04, NFR-04, NFR-09, NFR-10 updated to Verified.

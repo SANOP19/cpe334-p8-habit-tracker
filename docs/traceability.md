@@ -17,7 +17,7 @@
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
 Version 0.1 was written before Sprint 1 implementation; each feature PR then filled in the **Actual test / result** column. Version 0.9 is the state at the Sprint 1 release (`v0.1.0-sprint1`).
 
-**Reading “Delivered in”:** `PR n (#m)` names the planned work package PR n and its GitHub **Issue** #m. The merged GitHub pull requests are: PR1 #24, PR2 (F-01) #26, PR3 (F-02) #27, PR4 (F-03) #28, PR5 (F-04) #29, PR6 (F-05) #30, PR7 #31, PR8 #32–#33, release #34. Where a cell shows a bare `#12`–`#14`, it is a pull-request number.
+**Reading “Delivered in”:** `PR n (#m)` names the planned work package PR n and its GitHub **Issue** #m. The merged GitHub pull requests are: PR1 #24, PR2 (F-01) #26, PR3 (F-02) #27, PR4 (F-03) #28, PR5 (F-04) #29, PR6 (F-05) #30, PR7 #31, PR8 #32–#33, release #34. References written “PR #12”–“PR #14” and “PR #13” in the change tables are GitHub pull-request numbers.
 
 ---
 

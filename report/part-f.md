@@ -181,7 +181,7 @@ Tests that passed *before* their implementation and are therefore **not** used a
 | Integration | merged into staging as `0945644` | merged into staging as `9273884` |
 | Release | PR #34 `staging/sprint-1` → `main`, approved by Nara (re-ran all suites on `2bafb18`), merged as `bfd125f`, tag `v0.1.0-sprint1` | same |
 
-![Issue #20 (F-04) — closed, linked to the contract and PR](images/gh-issue-20.png)
+![Issue #20 (F-04) — closed; names the contract file and branch. The merging PR #29 refers back to this Issue in its description (the Issue was closed by hand, so GitHub's Development panel does not list the PR)](images/gh-issue-20.png)
 
 ![PR #29 — commits in contract → failing tests → implementation → review-fix order](images/gh-pr-29-commits.png)
 

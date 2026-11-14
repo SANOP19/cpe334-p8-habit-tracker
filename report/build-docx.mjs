@@ -275,7 +275,7 @@ for (const part of config.parts) {
     // put the source line right after the document title
     children.push(els[0], srcLine, ...els.slice(1));
   });
-  children.push(new Paragraph({ children: [new Bookmark({ id: `end${part.id}`, children: [new TextRun({ text: "", size: 2 })] })] }));
+  children.push(new Paragraph({ spacing: { before: 0, after: 0, line: 20, lineRule: "exact" }, children: [new Bookmark({ id: `end${part.id}`, children: [new TextRun({ text: "", size: 2 })] })] }));
 }
 
 // ---------------------------------------------------------------- render Mermaid diagrams to PNG

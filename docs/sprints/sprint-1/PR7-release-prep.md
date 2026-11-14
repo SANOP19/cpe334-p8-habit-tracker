@@ -30,7 +30,7 @@
    - Architecture overview & technology stack
    - Prerequisites (Node.js 24 LTS, PostgreSQL 16+, npm)
    - Configuration & environment variables setup (`.env.example` reference with placeholder values only — zero secrets committed)
-   - Database initialization: migration (`npm run db:migrate`), seeding (`npm run seed`)
+   - Database initialization: migration (`npm run migrate`), seeding (`npm run seed`)
    - Development server startup (backend on port 3000, Vite frontend on port 5173 with proxy)
    - Test execution: server suite, client suite, and E2E Playwright test
    - Safe demo accounts guide

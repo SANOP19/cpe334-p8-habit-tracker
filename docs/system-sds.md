@@ -215,6 +215,7 @@ A reproducible seed script is implemented in `server/prisma/seed.ts` and execute
 - **Deterministic Baseline Data:**
   - **Program Manager:** `manager@example.test` (Name: "Dr. Morgan Staff", Role: `PROGRAM_MANAGER`). Password loaded from required environment variable `SEED_MANAGER_PASSWORD`.
   - **Participant:** `participant@example.test` (Name: "Alex Student", Role: `PARTICIPANT`). Password loaded from required environment variable `SEED_PARTICIPANT_PASSWORD`.
+  - **Second participant:** `participant2@example.test` (Name: "Blake Student", Role: `PARTICIPANT`), added with F-05 so that cross-participant privacy (AC-25) can be demonstrated. Password loaded from `SEED_PARTICIPANT_PASSWORD`.
   - **Sample Published Template:** "Daily Reading" (unit: "pages", `minValue`: 1, `maxValue`: 200, `status`: `PUBLISHED`).
 - **Security:** Passwords are never written in code or documentation; missing seed password variables cause `seed.ts` to abort immediately with a clear error.
 
