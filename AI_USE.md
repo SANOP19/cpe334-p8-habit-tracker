@@ -31,8 +31,7 @@ Compiled for the Sprint 1 release (PR8). Sources: each PR's description and revi
 | Reviews | Assistance | Reviewer |
 |---|---|---|
 | P1, P3b, P4a, PR3, PR5, PR7 (incl. three clean-clone runs) | Claude Code ran the tests, red-commit re-runs, probes and clean clones, and drafted the review text; the reviewer read and posted it | Nitithorn |
-| PR1, PR2 | Antigravity ran checks and drafted reviews | Nara |
-| P0, P2, P3a, P4b, PR4, PR6, PR8 | *To be confirmed by Nara in the PR8 review* | Nara |
+| P0, P2, P3a, P4b, PR1, PR2, PR4, PR6, PR8 | Antigravity ran checks and drafted reviews; reviewer inspected and posted (confirmed by Nara in the PR #32 review) | Nara |
 
 ## What AI was not trusted with
 - No secret was ever given to an AI tool; local passwords stay in `server/.env` (ignored by Git).
