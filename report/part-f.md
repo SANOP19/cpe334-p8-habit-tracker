@@ -15,7 +15,7 @@ All evidence in this part was produced from release `v0.1.0-sprint1` — merge c
 | Test | `npm test` (server + client + E2E) · `npm run test:restart` (NFR-04) · `npm run build` |
 | Test accounts | Seeded synthetic accounts `manager@example.test`, `participant@example.test`, `participant2@example.test`; passwords come only from the local `server/.env` (never in Git or this report) |
 
-**Clean-clone check (NFR-06):** performed by Nitithorn, who did not write the README, on commit `19c33fa` from an empty test database following only the README: install, migrate, seed, server 63 / client 34 / E2E 1 passed, restart check and build passed — 74 s. Two earlier runs failed (missing `prisma generate`, `migrate dev` needing CREATEDB, test database not migrated, Prisma client generated into the wrong folder); each failure was reported in PR #31 and fixed before approval.
+**Clean-clone check (NFR-06):** performed by Nitithorn, who did not write the README, on commit `19c33fa` from an empty test database following only the README: install, migrate, seed, server 63 / client 34 / E2E 1 passed, restart check and build passed — 74 s, excluding the initial database provisioning. Two earlier runs failed (missing `prisma generate`, `migrate dev` needing CREATEDB, test database not migrated, Prisma client generated into the wrong folder); each failure was reported in PR #31 and fixed before approval.
 
 ## F.2 Program demonstrations
 

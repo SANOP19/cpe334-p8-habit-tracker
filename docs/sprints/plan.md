@@ -64,4 +64,4 @@ Features are defined in `docs/features.md`; requirement coverage is in `docs/tra
 | Completion outcome | All baseline requirements implemented or explicitly reported; full regression suite passing on the final release; remaining defects and debt listed |
 | Checkpoint | Progress shown at Deliverable 2; completed for the final delivery |
 
-Question Q-03 (whether Sprint 3 needs an additional feature) is open with the instructor/TA; any added feature will be recorded as an approved change in `docs/traceability.md` §6.
+Question Q-03 (whether Sprint 3 needs an additional feature) has a working team decision (SRS §6.2: Sprint 3 stays as planned) but the instructor/TA has not answered; any added feature will be recorded as an approved change in `docs/traceability.md` §6.

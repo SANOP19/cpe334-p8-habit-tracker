@@ -27,7 +27,7 @@ Requirements: FR-01..FR-09, BR-01..BR-09, NFR-01..NFR-10 — **all Verified** (`
 | `npm run test:e2e` | **1 passed** (TEST-27 participant journey) | `docs/evidence/release/e2e.txt` |
 | `npm run test:restart` | **NFR-04 VERIFIED** (data survives stop/start of the server) | `docs/evidence/release/restart.txt` |
 | `npm run build` | server `tsc` and client `tsc && vite build` succeed | `docs/evidence/release/build.txt` |
-| Clean clone (NFR-06) | Pass — README only, empty test DB, 74 s | PR #31 approval review |
+| Clean clone (NFR-06) | Pass — README only, empty test DB, 74 s excluding database provisioning | PR #31 approval review |
 | Secret check (NFR-08) | Pass — no `.env` in history, no real credentials in tracked files, 0 secret-scanning alerts | `docs/traceability.md` NFR-08 |
 
 **Failed or skipped tests: none.**

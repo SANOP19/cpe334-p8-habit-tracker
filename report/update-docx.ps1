@@ -15,7 +15,7 @@ try {
     $doc.Repaginate()
   }
   $doc.SaveAs2($OutDocx, 16)          # wdFormatDocumentDefault (.docx)
-  $doc.ExportAsFixedFormat($OutPdf, 17) # wdExportFormatPDF
+  $doc.ExportAsFixedFormat($OutPdf, 17, $false, 0, 0, 1, 1, 0, $true, $true, 1, $true, $true, $false) # PDF with document properties and heading bookmarks
   "pages: " + $doc.ComputeStatistics(2) # wdStatisticPages
   $doc.Close($false)
 } finally {

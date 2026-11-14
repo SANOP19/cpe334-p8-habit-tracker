@@ -206,7 +206,7 @@ Database schema changes are managed strictly using **Prisma Migrate**:
   ```bash
   npx prisma migrate deploy
   ```
-- All migration SQL files are committed to version control alongside `server/prisma/migration_lock.toml` to guarantee deterministic database states across all team members and deployment targets.
+- All migration SQL files are committed to version control alongside `server/prisma/migrations/migration_lock.toml` to guarantee deterministic database states across all team members and deployment targets.
 
 ### 2.4 Reproducible database seed strategy
 
