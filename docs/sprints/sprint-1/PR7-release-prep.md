@@ -3,6 +3,7 @@
 | Version | Date | Author | Reviewer | Change |
 |---|---|---|---|---|
 | 1.0 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Contract written before implementation (PR7, Issue #22) |
+| 1.1 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Addressed review feedback: dedicated E2E account, migrate:deploy & migrate:test, postinstall prisma generate, NFR-04 restart verification script, and clean README instructions |
 
 **Requirements:** FR-09 (full habit tracking lifecycle) · NFR-06 (clean-clone repeatability) · NFR-07 (UI feedback states) · NFR-08 (zero secrets) · NFR-04 (data integrity)
 **Acceptance criteria:** AC-27 (end-to-end participant journey), NFR-06 (clean clone following README)

@@ -4,27 +4,59 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { prisma } from "../server/src/lib/prisma.js";
 
-const PARTICIPANT_EMAIL = "participant@example.test";
-const PARTICIPANT_PASSWORD = process.env.SEED_PARTICIPANT_PASSWORD || "ParticipantPass123!";
+// Load environment variables directly from server/.env
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, "../server/.env") });
+
+const PARTICIPANT_PASSWORD = process.env.SEED_PARTICIPANT_PASSWORD;
+if (!PARTICIPANT_PASSWORD) {
+  throw new Error("Missing required SEED_PARTICIPANT_PASSWORD in environment (checked server/.env).");
+}
+
+// Dedicated E2E participant account so that demo data for participant@example.test is never deleted
+const E2E_PARTICIPANT_EMAIL = "e2e-participant@example.test";
+const E2E_DISPLAY_NAME = "E2E Student";
 
 test.describe.serial("TEST-27 (AC-27): Participant Lifecycle Journey E2E", () => {
-  let participantUserId: number;
+  let e2eUserId: number;
 
   test.beforeAll(async () => {
-    // Clean up any pre-existing goals and entries for participant@example.test to ensure repeatability
-    const user = await prisma.user.findUnique({ where: { email: PARTICIPANT_EMAIL } });
-    if (user) {
-      participantUserId = user.id;
-      await prisma.activityEntry.deleteMany({ where: { goal: { participantId: user.id } } });
-      await prisma.goal.deleteMany({ where: { participantId: user.id } });
+    // Locate seeded participant to reuse role and password hash or verify seed
+    const seedUser = await prisma.user.findUnique({ where: { email: "participant@example.test" } });
+    if (!seedUser) {
+      throw new Error("Base seed user participant@example.test not found. Run 'npm run seed' first.");
     }
+
+    // Upsert dedicated E2E participant account with the same password hash
+    const user = await prisma.user.upsert({
+      where: { email: E2E_PARTICIPANT_EMAIL },
+      update: {
+        passwordHash: seedUser.passwordHash,
+        displayName: E2E_DISPLAY_NAME,
+      },
+      create: {
+        email: E2E_PARTICIPANT_EMAIL,
+        passwordHash: seedUser.passwordHash,
+        displayName: E2E_DISPLAY_NAME,
+        role: seedUser.role,
+      },
+    });
+
+    e2eUserId = user.id;
+
+    // Clean up only the dedicated E2E participant's goals and entries (leaves participant@example.test intact)
+    await prisma.activityEntry.deleteMany({ where: { goal: { participantId: e2eUserId } } });
+    await prisma.goal.deleteMany({ where: { participantId: e2eUserId } });
+    await prisma.session.deleteMany({ where: { userId: e2eUserId } });
   });
 
   test.afterAll(async () => {
-    // Clean up test data after the run
-    if (participantUserId) {
-      await prisma.activityEntry.deleteMany({ where: { goal: { participantId: participantUserId } } });
-      await prisma.goal.deleteMany({ where: { participantId: participantUserId } });
+    // Clean up dedicated test data after the run
+    if (e2eUserId) {
+      await prisma.activityEntry.deleteMany({ where: { goal: { participantId: e2eUserId } } });
+      await prisma.goal.deleteMany({ where: { participantId: e2eUserId } });
+      await prisma.session.deleteMany({ where: { userId: e2eUserId } });
+      await prisma.user.delete({ where: { id: e2eUserId } }).catch(() => {});
     }
     await prisma.$disconnect();
   });
@@ -39,14 +71,14 @@ test.describe.serial("TEST-27 (AC-27): Participant Lifecycle Journey E2E", () =>
     await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
 
     // -------------------------------------------------------------------------
-    // Step 2: Sign in as participant
+    // Step 2: Sign in as dedicated E2E participant
     // -------------------------------------------------------------------------
-    await page.fill("#signin-email", PARTICIPANT_EMAIL);
+    await page.fill("#signin-email", E2E_PARTICIPANT_EMAIL);
     await page.fill("#signin-password", PARTICIPANT_PASSWORD);
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    // Verify navigation to authenticated shell
-    await expect(page.getByText("Alex Student")).toBeVisible();
+    // Verify navigation to authenticated shell with dedicated participant credentials
+    await expect(page.getByText(E2E_DISPLAY_NAME)).toBeVisible();
     await expect(page.getByText("Participant")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Activity Templates" })).toBeVisible();
 
@@ -104,6 +136,6 @@ test.describe.serial("TEST-27 (AC-27): Participant Lifecycle Journey E2E", () =>
     // -------------------------------------------------------------------------
     await page.getByRole("button", { name: "Sign out" }).click();
     await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
-    await expect(page.getByText("Alex Student")).not.toBeVisible();
+    await expect(page.getByText(E2E_DISPLAY_NAME)).not.toBeVisible();
   });
 });

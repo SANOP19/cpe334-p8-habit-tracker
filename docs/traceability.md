@@ -61,7 +61,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | `server/tests/auth.test.ts` TEST-04 — pass for the F-01..F-05 endpoints; later PRs add theirs | Partly verified |
 | NFR-02 | F-01 | 1 | AC-06 | TEST-06 | PR2 (#17) | `server/tests/auth.test.ts` TEST-06 and `server/tests/seed.test.ts` — pass | Verified |
 | NFR-03 | F-01 | 1 | AC-05, AC-33 | TEST-05, TEST-33 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05, TEST-33 — pass | Verified |
-| NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR5 (#20) | `server/tests/logging.test.ts` TEST-28 (persisted across client reconnect) — pass; real app restart in PR7 | Partly verified |
+| NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR7 (#22) | `server/tests/logging.test.ts` TEST-28 (client reconnect) and real process restart script `scripts/verify-nfr04-restart.cjs` (`docs/evidence/PR7/nfr04-restart.txt`) — pass | Verified |
 | NFR-05 | CC-01 | 1 | AC-29 | TEST-29 | PR6 (#21) | `server/tests/progress.test.ts` TEST-29 (401, 403, 404, 409, 422, malformed JSON, unknown route, 500) and `health.test.ts` — pass | Verified |
 | NFR-06 | CC-02 | 1 | Clean clone runs by following README | Recorded clean-clone check by the member who did not write the README | PR7 (#22) | README complete; E2E and build automated; ready for reviewer clean-clone check | Ready for check |
 | NFR-07 | CC-04 | 1 | Loading / empty / error states on main screens | Component tests + TEST-27 (E2E) + screenshots | PR2–PR7 | Shared components tested in `client/tests/components.test.tsx` (PR #9) | Foundation |

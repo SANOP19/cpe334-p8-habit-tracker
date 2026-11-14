@@ -7,8 +7,11 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "migrate": "prisma migrate dev",
+    "migrate": "prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
+    "migrate:test": "node -e \"require('dotenv').config();require('child_process').execSync('npx prisma migrate deploy',{stdio:'inherit',env:{...process.env,DATABASE_URL:process.env.DATABASE_URL_TEST}})\"",
+    "postinstall": "prisma generate",
     "seed": "tsx prisma/seed.ts",
     "test": "vitest run"
   },

@@ -7,27 +7,27 @@
  ✓ tests/api.test.ts > apiRequest > uses a generic error when the body is not the expected shape
  ✓ tests/api.test.ts > apiRequest > reports a network failure as an ApiError
  ✓ tests/api.test.ts > apiRequest > returns undefined for 204 No Content
- ✓ tests/components.test.tsx > shared UI states (NFR-07) > Loading shows an accessible status with its label
- ✓ tests/components.test.tsx > shared UI states (NFR-07) > EmptyState shows the message it is given
- ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage shows the server message in an alert
- ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage renders nothing when there is no message
  ✓ tests/layout.test.tsx > navigation by role > shows only Sign in when nobody is signed in
  ✓ tests/layout.test.tsx > navigation by role > shows Templates and Goals to a participant
  ✓ tests/layout.test.tsx > navigation by role > shows Templates but not Goals to a program manager
  ✓ tests/layout.test.tsx > navigation by role > renders the links for the current role and marks the active one
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > Loading shows an accessible status with its label
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > EmptyState shows the message it is given
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage shows the server message in an alert
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage renders nothing when there is no message
  ✓ tests/progress.test.tsx > TEST-UI-08 progress on the Goals page > shows the achieved summary, each entry's percentage and an Achieved badge only when the target was met
  ✓ tests/progress.test.tsx > TEST-UI-08 progress on the Goals page > keeps the card usable and shows a quiet note when progress cannot be loaded
  ✓ tests/app.test.tsx > TEST-UI-02 App session handling > shows the Sign in page when /api/auth/me returns 401
  ✓ tests/app.test.tsx > TEST-UI-02 App session handling > shows the user's name and role from /api/auth/me, and returns to Sign in after signing out
  ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-05: participant sets a goal from a published template
  ✓ tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-UI-07: participant logs an activity entry and sees it added to the history
+ ✓ tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-UI-07: displays server error when logging fails and keeps input values
  ✓ tests/signin.test.tsx > TEST-UI-01 SignInPage > posts the credentials and reports the signed-in user
  ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-05: a rejected goal shows the server message and keeps the typed value
  ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-05: program managers do not see Set goal
  ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-06: Goals page shows the empty state when there are no goals
  ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-06: Goals page lists the participant's goals
  ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-06: Goals page shows an error when loading fails
- ✓ tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-UI-07: displays server error when logging fails and keeps input values
  ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-03: Program Manager view > renders create form, loads templates, and submits a new draft template
  ✓ tests/signin.test.tsx > TEST-UI-01 SignInPage > shows the server message on 401, keeps the email and clears the password
  ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-03: Program Manager view > displays error message when minValue >= maxValue
@@ -38,6 +38,6 @@
 
  Test Files  9 passed (9)
       Tests  34 passed (34)
-   Start at  22:35:32
-   Duration  2.53s (transform 377ms, setup 2.06s, collect 2.35s, tests 1.58s, environment 10.75s, prepare 1.24s)
+   Start at  22:57:02
+   Duration  1.65s (transform 319ms, setup 882ms, collect 1.79s, tests 1.36s, environment 5.81s, prepare 1.00s)
 

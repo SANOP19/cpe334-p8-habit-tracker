@@ -92,6 +92,6 @@ Habit Tracker seeding completed successfully.
 
  Test Files  9 passed (9)
       Tests  63 passed (63)
-   Start at  22:35:24
-   Duration  6.94s (transform 115ms, setup 0ms, collect 1.67s, tests 3.81s, environment 1ms, prepare 555ms)
+   Start at  22:56:55
+   Duration  6.23s (transform 97ms, setup 0ms, collect 1.47s, tests 3.47s, environment 1ms, prepare 476ms)
 

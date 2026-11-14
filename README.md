@@ -1,4 +1,4 @@
-# Habit and Activity Tracking System (HabitPulse)
+# Habit and Activity Tracking System
 
 CPE 334 Software Engineering Group Project · Semester 1/2026 · KMUTT  
 **Theme 8: Habit and Activity Tracking System**
@@ -14,19 +14,34 @@ CPE 334 Software Engineering Group Project · Semester 1/2026 · KMUTT
 ---
 
 ## 2. System Overview & Architecture
-HabitPulse is a web-based habit and activity tracking platform designed for university students and program managers.
+Habit and Activity Tracking System is a web-based habit and activity tracking platform designed for university students and program managers.
 - **Frontend:** React 18, TypeScript, Vite, Bootstrap 5 (Responsive Single Page Application with client proxy).
 - **Backend:** Node.js 24 LTS, Express, TypeScript, Prisma ORM, PostgreSQL.
-- **Security:** Session-based authentication stored in PostgreSQL, random 256-bit token delivered via HttpOnly/SameSite/Secure cookies, only SHA-256 token hashes stored in DB, bcrypt password hashing with salt rounds = 10, role-based access control (`PARTICIPANT` vs `PROGRAM_MANAGER`).
+- **Security:** Session-based authentication stored in PostgreSQL, random 256-bit token delivered via HttpOnly/SameSite (and Secure in production) cookies, only SHA-256 token hashes stored in DB, bcrypt password hashing with salt rounds = 10, role-based access control (`PARTICIPANT` vs `PROGRAM_MANAGER`).
 - **Testing:** Vitest, Supertest, React Testing Library, Playwright for End-to-End browser automation.
 
 ---
 
-## 3. Prerequisites
+## 3. Prerequisites & Database Setup
 Before setting up the project, ensure you have:
 1. **Node.js:** v24.x LTS (v20+ supported)
 2. **PostgreSQL:** v16+ or v18 running locally
 3. **npm:** v10+
+
+### Database Provisioning
+Connect to your local PostgreSQL instance (via `psql` or pgAdmin) as superuser and create a dedicated role and two databases:
+
+```sql
+-- Create role (credentials are examples; use alphanumeric characters only)
+CREATE ROLE habituser WITH LOGIN PASSWORD 'habitpassword';
+
+-- Create development and test databases
+CREATE DATABASE habittracker OWNER habituser;
+CREATE DATABASE habittracker_test OWNER habituser;
+```
+
+> [!NOTE]
+> Use alphanumeric characters (letters and digits only) for the password to avoid URL encoding complications in the `DATABASE_URL` and `DATABASE_URL_TEST` connection strings.
 
 ---
 
@@ -64,15 +79,27 @@ To setup and run the application from a clean repository clone:
 npm install
 npm --prefix server install
 npm --prefix client install
+
+# Install Playwright Chromium browser binary for E2E tests
+npx playwright install chromium
 ```
 
-### 5.2 Initialize Database (Migrations & Seed)
-Ensure your PostgreSQL daemon is running, then run migrations and database seed:
-```bash
-# Run Prisma migrations
-npm --prefix server run migrate
+> [!NOTE]
+> `npm --prefix server install` automatically runs `prisma generate` via its `postinstall` script to build the `@prisma/client` bindings.
 
-# Seed initial accounts and template
+### 5.2 Initialize Database (Migrations & Seed)
+Ensure your PostgreSQL daemon is running, then run migrations on both dev and test databases, followed by seeding:
+
+```bash
+# 1. Apply committed migrations to development database (uses migrate deploy, no CREATEDB shadow DB needed)
+npm run migrate
+# (or: npm --prefix server run migrate:deploy)
+
+# 2. Apply committed migrations to test database (required for test:server)
+npm run migrate:test
+# (or: npm --prefix server run migrate:test)
+
+# 3. Seed initial accounts and template
 npm run seed
 ```
 
@@ -120,6 +147,9 @@ npm run test:client
 
 # End-to-End browser tests (Playwright):
 npm run test:e2e
+
+# NFR-04 Application Restart & Data Persistence verification:
+npm run test:restart
 ```
 
 ### 7.3 Production Builds

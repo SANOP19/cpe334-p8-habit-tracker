@@ -1,0 +1,28 @@
+
+> habit-tracker@1.0.0 test:restart
+> node scripts/verify-nfr04-restart.cjs
+
+================================================================
+NFR-04 Verification: Application Restart & Data Persistence
+================================================================
+[Phase 1] Starting initial backend server on port 3009...
+[Phase 1] Initial server is UP and responding to /api/health.
+[Phase 2] Signing in as participant@example.test...
+[Phase 2] Signed in successfully. Session cookie obtained.
+[Phase 3] Fetching goals for participant...
+[Phase 3] Using goal id 6.
+[Phase 4] Recording activity entry (date: 2026-11-10, value: 48, note: "NFR-04 Restart Proof [1794671800217]")...
+[Phase 4] Activity entry created successfully (HTTP 201 Created).
+[Phase 5] Stopping server process (PID: 21248)...
+[Phase 5] Confirmed: Server process is completely DOWN (connection refused).
+[Phase 6] Starting a NEW backend server process on port 3009...
+[Phase 6] New server process is UP and healthy (PID: 20904).
+[Phase 7] Reading back entries from the new server process...
+[Phase 7] SUCCESS: Found persisted entry in PostgreSQL after complete server reboot:
+         id:        10
+         entryDate: 2026-11-10
+         value:     48
+         note:      NFR-04 Restart Proof [1794671800217]
+================================================================
+NFR-04 VERIFIED: Data survives application shutdown and restart.
+================================================================

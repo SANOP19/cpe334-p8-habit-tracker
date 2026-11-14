@@ -13,7 +13,10 @@
     "build": "npm run build:server && npm run build:client",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
-    "seed": "npm run seed --prefix server"
+    "migrate": "npm --prefix server run migrate",
+    "migrate:test": "npm --prefix server run migrate:test",
+    "seed": "npm run seed --prefix server",
+    "test:restart": "node scripts/verify-nfr04-restart.cjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
