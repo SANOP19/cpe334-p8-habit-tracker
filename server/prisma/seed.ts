@@ -44,6 +44,18 @@ export async function seedDatabase() {
     },
   });
 
+  // 2b. Second participant (F-05): lets the team demonstrate that one participant cannot see another's data (AC-25)
+  await prisma.user.upsert({
+    where: { email: "participant2@example.test" },
+    update: { passwordHash: participantHash, displayName: "Blake Student" },
+    create: {
+      email: "participant2@example.test",
+      passwordHash: participantHash,
+      displayName: "Blake Student",
+      role: Role.PARTICIPANT,
+    },
+  });
+
   // 3. Published Template (Study / Reading habit)
   const existingTemplate = await prisma.activityTemplate.findFirst({
     where: { name: "Daily Reading" },
