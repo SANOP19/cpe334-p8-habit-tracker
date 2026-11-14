@@ -90,7 +90,7 @@ Docker, CI/CD and cloud deployment are not part of Deliverable 1; the design onl
 | BR-05 | A participant can access only their own goals and entries | 404 | 1 |
 | BR-06 | Only a program manager can create or publish templates | 403 | 1 |
 | BR-07 | A program manager cannot access participants' goals, entries or progress | 403 | 1 |
-| BR-08 | A goal needs a published template and a dailyTarget within its range | 422 | 1 |
+| BR-08 | A goal needs a published template and a positive dailyTarget within its range (dailyTarget > 0) | 422 | 1 |
 | BR-09 | At most one active goal per participant per template | 409 | 1 |
 | BR-10 | Revising a goal does not change the meaning of past progress | defined in Sprint 2 contract | 2 |
 | BR-11 | Streak rule | defined in Sprint 2 contract | 2 |
@@ -199,7 +199,7 @@ Error body for every failure: `{ "error": { "code": "...", "message": "..." } }`
 | | AC-10 | Manager publishes → status `PUBLISHED` | TEST-10 | API + DB |
 | | AC-11 | Participant sees only published templates | TEST-11 | API |
 | F-03 | AC-12 | Participant creates a valid goal → 201 and stored | TEST-12 | API + DB |
-| | AC-13 | dailyTarget outside range → 422 | TEST-13 | Unit + API |
+| | AC-13 | dailyTarget outside range or non-positive (<= 0) → 422 | TEST-13 | Unit + API |
 | | AC-14 | Draft or unknown template → 422 | TEST-14 | API |
 | | AC-15 | Second active goal for the same template → 409 | TEST-15 | API + DB |
 | | AC-16 | Manager creating a goal → 403 | TEST-16 | API |

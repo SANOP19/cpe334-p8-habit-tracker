@@ -76,14 +76,14 @@ Authentication and session; template creation and publication; goal setting; dai
 
 | ID | Observable System Behaviour | Actor | Sprint | Primary Verification |
 |---|---|---|:---:|---|
-| **FR-01** | A registered user provides valid email and password credentials, and the system issues an authenticated server-side session stored in an HttpOnly cookie. | User | 1 | Integration test `TEST-01` |
-| **FR-02** | An authenticated user requests logout; the system destroys the session record in the database and clears the session cookie. | User | 1 | Integration test `TEST-05` |
+| **FR-01** | A seeded user provides valid email and password credentials, and the system issues an authenticated server-side session stored in an HttpOnly cookie. | User | 1 | Integration test `TEST-01` |
+| **FR-02** | An authenticated user requests logout; the system destroys the session record in the database and clears the session cookie. | User | 1 | API test `TEST-05` |
 | **FR-03** | An authenticated user queries current identity; the system returns their unique ID, display name, and authorized role (`PARTICIPANT` or `PROGRAM_MANAGER`). | User | 1 | API test `TEST-03` |
 | **FR-04** | A program manager creates a new activity template specifying name, unit, minValue, and maxValue (`minValue < maxValue`), initialized in `DRAFT` status. | Program Manager | 1 | API test `TEST-07` |
 | **FR-05** | A program manager publishes an existing draft template they own; status changes from `DRAFT` to `PUBLISHED` making it selectable by participants. | Program Manager | 1 | API test `TEST-10` |
 | **FR-06** | A participant retrieves the catalog of all published templates; a program manager retrieves all templates they created across draft and published statuses. | Participant / Program Manager | 1 | API test `TEST-11` |
 | **FR-07** | A participant selects a published template and establishes a habit goal with a personal `dailyTarget` bounded by the template's `[minValue, maxValue]`. | Participant | 1 | Integration test `TEST-12` |
-| **FR-08** | A participant records an activity entry (entry date, numeric value, optional note) for their active goal within allowable date and value constraints. | Participant | 1 | Integration test `TEST-17` |
+| **FR-08** | A participant records an activity entry (entry date, numeric value, optional note) for their own goal within allowable date and value constraints. | Participant | 1 | Integration test `TEST-17` |
 | **FR-09** | A participant views their daily entry records and computed progress metrics (`percent` achieved against `dailyTarget`) for their own habit goals. | Participant | 1 | API test `TEST-24` |
 | **FR-10** | A participant revises target values, pauses, or archives an active goal while preserving prior historical entry integrity. | Participant | 2 | Sprint 2 contract verification |
 | **FR-11** | A participant accesses longitudinal historical views of logged activities and past goal revision milestones. | Participant | 2 | Sprint 2 contract verification |
@@ -97,18 +97,18 @@ Authentication and session; template creation and publication; goal setting; dai
 
 | ID | Rule Specification | Violation Response | Layer Enforced | Sprint |
 |---|---|:---:|---|:---:|
-| **BR-01** | **Target & Entry Value Boundedness:** An activity entry value must be a valid numeric quantity within the referenced template's defined `[minValue, maxValue]` range, inclusive. | `422 Unprocessable Entity` | Domain / API validation | 1 |
+| **BR-01** | **Entry Value Within Range:** An activity entry value must be a valid numeric quantity within the referenced template's defined `[minValue, maxValue]` range, inclusive. | `422 Unprocessable Entity` | Domain / API validation | 1 |
 | **BR-02** | **No Future Date Logging:** An entry date cannot be in the future relative to the current calendar date calculated by server time in `Asia/Bangkok` timezone. | `422 Unprocessable Entity` | Domain / API validation | 1 |
 | **BR-03** | **7-Day Rolling Back-Dating Window:** An entry date can be recorded for today or up to 6 calendar days prior to today (exactly 7 calendar days eligible). Dates 7 or more days in the past are rejected. | `422 Unprocessable Entity` | Domain / API validation | 1 |
 | **BR-04** | **Single Entry Per Goal Per Calendar Day:** Exactly one entry is permitted per habit goal per calendar day; accumulation or duplicate submission for the same date is rejected. | `409 Conflict` | Database unique constraint `@@unique([goalId, entryDate])` | 1 |
 | **BR-05** | **Participant Privacy Isolation:** A participant cannot view, modify, or infer the existence of another participant's goals, entries, or progress. | `404 Not Found` (no existence leak) | API service / Query scoping | 1 |
-| **BR-06** | **Program Manager Data Segregation:** Program managers are strictly prohibited from viewing individual participant goals, entry logs, or personal progress analytics. | `403 Forbidden` | Authorization middleware | 1 |
-| **BR-07** | **Template Value Invariant:** A template's `minValue` must be strictly less than its `maxValue` (`minValue < maxValue`). | `422 Unprocessable Entity` | Domain validation / DB Check | 1 |
-| **BR-08** | **Template Immutability Post-Publication:** Once an activity template is published (`status = PUBLISHED`), its name, unit, and bounds cannot be modified in Sprint 1. | `409 Conflict` | Domain / State guard | 1 |
+| **BR-06** | **Role Authorization for Templates:** Only program managers may create or publish templates; a participant attempting either receives 403. | `403 Forbidden` | Authorization middleware | 1 |
+| **BR-07** | **Program Manager Data Segregation:** Program managers are strictly prohibited from viewing individual participant goals, entry logs, or personal progress analytics. | `403 Forbidden` | Authorization middleware | 1 |
+| **BR-08** | **Positive Goal Target in Range:** Goal creation requires a strictly positive `dailyTarget` (`dailyTarget > 0`) that falls inside the published template's `[minValue, maxValue]` range, inclusive. Zero or negative target is rejected. | `422 Unprocessable Entity` | Domain / API validation | 1 |
 | **BR-09** | **One Active Goal Per Template:** A participant may hold at most one active goal (`status = ACTIVE`) per activity template at any given time. | `409 Conflict` | Database partial unique index | 1 |
 | **BR-10** | **Goal Creation From Published Templates Only:** Habit goals can only be established against templates that are currently in `PUBLISHED` status. | `422 Unprocessable Entity` | Domain validation | 1 |
-| **BR-11** | **Template Ownership Isolation:** Only the program manager who authored a template may publish it. | `404 Not Found` | Query scoping / Authorization | 1 |
-| **BR-12** | **Unauthenticated Access Block:** All protected endpoints require a valid, unexpired server-side session. | `401 Unauthorized` | Authentication middleware | 1 |
+| **BR-11** | **Consecutive-Day Streak Calculation:** Streaks count consecutive calendar days where logged activity met or exceeded `dailyTarget` (draft — finalised in the Sprint 2 contract). | — | Domain service calculation | 2 |
+| **BR-12** | **Historical Invariance Upon Revision:** Modifying a goal target creates a new revision milestone and never alters or recalculates past recorded activity percentages. | — | Domain / Data model design | 2 |
 
 ---
 
@@ -118,7 +118,7 @@ Authentication and session; template creation and publication; goal setting; dai
 |---|---|---|---|
 | **NFR-01** | **Timezone Consistency** | All calendar day calculations, "today" definitions, and rolling back-dating window validations must strictly use the `Asia/Bangkok` timezone (`UTC+07:00`) regardless of host system configuration. | Automated boundary unit tests with mocked clocks (`Asia/Bangkok`) |
 | **NFR-02** | **Cryptographic Password Security** | All stored passwords must be salted and hashed using `bcrypt` (work factor $\ge 10$). Plaintext passwords must never be stored, logged, or returned via any API response. | Database seed / account creation integration inspection (`TEST-06`) |
-| **NFR-03** | **Session Hygiene & Split-Secret Storage** | Session tokens must use cryptographically secure random bytes (min 32 bytes entropy). Plaintext tokens are transmitted solely via `HttpOnly`, `SameSite=Lax` cookies; database records store solely cryptographic SHA-256 hashes of tokens with fixed 24-hour expiration. | Authentication harness & cookie attribute tests (`TEST-01`, `TEST-05`) |
+| **NFR-03** | **Session Hygiene & Invalidation** | After logout, the next request with the old cookie returns 401; a session past `expiresAt` returns 401. Plaintext tokens are transmitted solely via `HttpOnly`, `SameSite=Lax` cookies; database records store solely cryptographic SHA-256 hashes of tokens with fixed 24-hour expiration. | Authentication harness & cookie attribute tests (`TEST-01`, `TEST-05`) |
 | **NFR-04** | **Concurrency & Uniqueness Robustness** | Under concurrent identical submission attempts for the same goal and calendar date, exactly one record must succeed, and duplicate submissions must receive `409 Conflict` without data corruption. | Concurrent submission integration test (`TEST-22`) |
 | **NFR-05** | **Uniform Error & Safe Failure Disclosure** | Every application error must return a standard JSON envelope `{"error": {"code": string, "message": string}}` with zero exposure of stack traces, database schema details, SQL statements, or system paths. | API contract testing across all error code classes (`TEST-29`) |
 | **NFR-06** | **Deterministic Baseline & Fast Setup** | The full test suite across server and client must execute and pass in under 60 seconds on a clean development environment following standard `npm install` and seed execution. | Clean-clone script timing and execution log capture |
