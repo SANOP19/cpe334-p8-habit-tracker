@@ -20,3 +20,12 @@ export interface ActivityTemplate {
   createdById: number;
   createdAt: string;
 }
+
+export interface Goal {
+  id: number;
+  templateId: number;
+  dailyTarget: number;
+  status: "ACTIVE" | "PAUSED" | "ARCHIVED";
+  createdAt: string;
+  template: Pick<ActivityTemplate, "id" | "name" | "unit" | "minValue" | "maxValue">;
+}

@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/error-handler.js";
 import { authRouter } from "./routes/auth.js";
 import { templatesRouter } from "./routes/templates.js";
+import { goalsRouter } from "./routes/goals.js";
 
 export const app = express();
 
@@ -35,6 +36,9 @@ app.use("/api/auth", authRouter);
 
 // F-02 Activity template management
 app.use("/api/templates", templatesRouter);
+
+// F-03 Goal setting
+app.use("/api/goals", goalsRouter);
 
 // Test route to verify unexpected error handling in test environment
 if (process.env.NODE_ENV === "test") {

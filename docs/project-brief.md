@@ -256,7 +256,7 @@ The team agreed to reduce the number of PRs. Each feature PR contains its contra
 | PR2 | #17 | F-01 Authentication and session | Nitithorn | Nara | #12 |
 | PR3 | #18 | F-02 Activity template management | Nara | Nitithorn | PR2 |
 | PR4 | #19 | F-03 Goal setting | Nitithorn | Nara | PR3 |
-| PR5 | #20 | F-04 Daily activity logging (main TDD evidence, done together) | Nara | Nitithorn | PR4 |
+| PR5 | #20 | F-04 Daily activity logging (main TDD evidence) | Nara | Nitithorn | PR4 |
 | PR6 | #21 | F-05 Progress and privacy isolation (adds the second seeded participant) | Nitithorn | Nara | PR5 |
 | PR7 | #22 | Release preparation: E2E journey, README, full test run | Nara | Nitithorn (clean-clone check) | PR6 |
 | PR8 | #23 | Release `staging/sprint-1` → `main`, tag `v0.1.0-sprint1` | Nitithorn | Nara | PR7 |

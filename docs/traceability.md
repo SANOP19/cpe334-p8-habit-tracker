@@ -6,6 +6,7 @@
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | First version: baseline mapped to features, sprints, AC and planned tests (PR1, Issue #16) |
 | 0.2 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | F-01 results filled in (PR2, Issue #17) |
 | 0.3 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | F-02 results filled in (PR3, Issue #18) |
+| 0.4 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | F-03 results; AC-32 delivered in PR4 instead of PR6 (PR4, Issue #19) |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -23,7 +24,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | `server/tests/templates.test.ts` TEST-07, TEST-08, TEST-08b; `client/tests/templates.test.tsx` TEST-UI-03 — pass (`docs/evidence/F-02/green-run-*.txt`) | Verified |
 | FR-05 | F-02 | 1 | AC-10, AC-30, AC-31 | TEST-10, TEST-30, TEST-31 | PR3 (#18) | `server/tests/templates.test.ts` TEST-10, TEST-30, TEST-31; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
 | FR-06 | F-02 | 1 | AC-11 | TEST-11 | PR3 (#18) | `server/tests/templates.test.ts` TEST-11a, TEST-11b; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
-| FR-07 | F-03 | 1 | AC-12 | TEST-12 | PR4 (#19) | — | Planned |
+| FR-07 | F-03 | 1 | AC-12 | TEST-12 | PR4 (#19) | `server/tests/goals.test.ts` TEST-12; `client/tests/goals.test.tsx` TEST-UI-05/06 — pass (`docs/evidence/F-03/green-run-*.txt`) | Verified |
 | FR-08 | F-04 | 1 | AC-17 | TEST-17 | PR5 (#20) | — | Planned |
 | FR-09 | F-05 | 1 | AC-24, AC-27 | TEST-24, TEST-27 (E2E) | PR6 (#21), PR7 (#22) | — | Planned |
 | FR-10 | F-06 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
@@ -40,11 +41,11 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | BR-02 | F-04 | 1 | AC-19 | TEST-19 | PR5 (#20) | — | Planned |
 | BR-03 | F-04 | 1 | AC-20 | TEST-20 (boundary, TDD evidence) | PR5 (#20) | — | Planned |
 | BR-04 | F-04 | 1 | AC-21, AC-22 | TEST-21 (TDD evidence), TEST-22 | PR5 (#20) | DB unique index tested in `server/tests/db-constraints.test.ts` (PR #12) | Foundation |
-| BR-05 | F-04, F-05 | 1 | AC-23, AC-25 | TEST-23, TEST-25 (TDD evidence) | PR5 (#20), PR6 (#21) | — | Planned |
+| BR-05 | F-03, F-04, F-05 | 1 | AC-23, AC-25 | TEST-G1 (goals), TEST-23, TEST-25 (TDD evidence) | PR4 (#19), PR5 (#20), PR6 (#21) | Goals: `server/tests/goals.test.ts` TEST-G1 — pass. Entries and progress: still to come | Partly verified |
 | BR-06 | F-02 | 1 | AC-09 | TEST-09 | PR3 (#18) | `server/tests/templates.test.ts` TEST-09, TEST-09b; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
-| BR-07 | F-05 | 1 | AC-26, AC-32 | TEST-26 (TDD evidence), TEST-32 | PR6 (#21) | — | Planned |
-| BR-08 | F-03 | 1 | AC-13, AC-14 | TEST-13, TEST-14 | PR4 (#19) | — | Planned |
-| BR-09 | F-03 | 1 | AC-15 | TEST-15 | PR4 (#19) | DB partial unique index tested in `server/tests/db-constraints.test.ts` (PR #12) | Foundation |
+| BR-07 | F-03, F-05 | 1 | AC-26, AC-32 | TEST-26 (TDD evidence), TEST-32 | PR4 (#19) for AC-32, PR6 (#21) for AC-26 | AC-32: `server/tests/goals.test.ts` TEST-32 — pass. AC-26: still to come | Partly verified |
+| BR-08 | F-03 | 1 | AC-13, AC-14 | TEST-13, TEST-14 | PR4 (#19) | `server/tests/goals.test.ts` TEST-13a/b/c, TEST-14 — pass | Verified |
+| BR-09 | F-03 | 1 | AC-15 | TEST-15 | PR4 (#19) | `server/tests/goals.test.ts` TEST-15a, TEST-15b (concurrent, repeated 5×) and `db-constraints.test.ts` — pass | Verified |
 | BR-10 | F-06 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | BR-11 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | BR-12 | F-09 | 3 | Sprint 3 contract | Sprint 3 STS | Sprint 3 | — | Later sprint |
@@ -53,7 +54,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 
 | Req | Feature / responsibility | Sprint | AC or verification target | Planned verification | Delivered in | Actual test / result | Status |
 |---|---|---|---|---|---|---|---|
-| NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | `server/tests/auth.test.ts` TEST-04 — pass for F-01 & F-02 endpoints; later PRs add theirs | Partly verified |
+| NFR-01 | F-01 | 1 | AC-04 | TEST-04 (every protected endpoint; extended by each feature PR) | PR2 (#17) onwards | `server/tests/auth.test.ts` TEST-04 — pass for F-01, F-02 and F-03 endpoints; later PRs add theirs | Partly verified |
 | NFR-02 | F-01 | 1 | AC-06 | TEST-06 | PR2 (#17) | `server/tests/auth.test.ts` TEST-06 and `server/tests/seed.test.ts` — pass | Verified |
 | NFR-03 | F-01 | 1 | AC-05, AC-33 | TEST-05, TEST-33 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05, TEST-33 — pass | Verified |
 | NFR-04 | CC-02 | 1 | AC-28 | TEST-28 | PR5 (#20) | — | Planned |
@@ -68,7 +69,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 
 | AC | What it verifies | Source | Test | Delivered in |
 |---|---|---|---|---|
-| AC-16 | Manager creating a goal → 403 | Role matrix (SDS §5.4) | TEST-16 | PR4 (#19) |
+| AC-16 | Manager creating a goal → 403 | Role matrix (SDS §5.4) | TEST-16 — pass | PR4 (#19) |
 | AC-02 | Same 401 message for unknown email and wrong password | SDS §5.3 (no account enumeration) | TEST-02 | PR2 (#17) |
 | AC-08 | minValue ≥ maxValue → 422 | Decision D-06 | TEST-08 | PR3 (#18) |
 
@@ -95,4 +96,5 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 | A proposed cross-platform NFR was removed | PR #13 | Could not be verified on the team's machines |
 | AC-30, AC-31, AC-32 added | PR1 | Role-matrix cases found without tests in the P4b review |
 | AC-33 added | PR1 | NFR-03 includes session expiry, but AC-05 covered only logout |
+| AC-32 verified in PR4 (F-03) instead of PR6 (F-05) | PR4 | The goal endpoints and their role guard are built in F-03, so the manager-403 check belongs with them |
 | Work allocation reduced from ~30 parts to 8 PRs | PR1 (brief §11) | Fewer review round-trips; no requirement or AC removed |

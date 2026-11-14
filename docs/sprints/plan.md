@@ -30,7 +30,7 @@ Features are defined in `docs/features.md`; requirement coverage is in `docs/tra
 | PR2 | F-01 | Nitithorn | Nara |
 | PR3 | F-02 | Nara | Nitithorn |
 | PR4 | F-03 | Nitithorn | Nara |
-| PR5 | F-04 (main TDD evidence, done together) | Nara | Nitithorn |
+| PR5 | F-04 (main TDD evidence) | Nara | Nitithorn |
 | PR6 | F-05 | Nitithorn | Nara |
 | PR7 | Release preparation: E2E journey, README, full run | Nara | Nitithorn |
 | PR8 | Release to `main` and tag | Nitithorn | Nara |

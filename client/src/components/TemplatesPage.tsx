@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { apiRequest, ApiError } from "../api";
-import type { ActivityTemplate } from "../types";
+import type { ActivityTemplate, Goal } from "../types";
 import type { Role } from "./Layout";
 import { ErrorMessage } from "./ErrorMessage";
 import { EmptyState } from "./EmptyState";
@@ -215,6 +215,7 @@ export function TemplatesPage({ role }: { role: Role }) {
                   <p className="card-text text-muted mb-2">
                     Target range: {t.minValue} – {t.maxValue} {t.unit}
                   </p>
+                  {!isManager && <SetGoalForm template={t} />}
                   {isManager && t.status === "DRAFT" && (
                     <button
                       type="button"
@@ -232,5 +233,74 @@ export function TemplatesPage({ role }: { role: Role }) {
         </div>
       )}
     </div>
+  );
+}
+
+// F-03: participant sets a daily goal from a published template — docs/sprints/sprint-1/F-03-goals.md §4
+function SetGoalForm({ template }: { template: ActivityTemplate }) {
+  const [open, setOpen] = useState(false);
+  const [target, setTarget] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+  const inputId = `goal-target-${template.id}`;
+
+  async function handleSave(e: FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      await apiRequest<{ goal: Goal }>("/api/goals", {
+        method: "POST",
+        body: { templateId: template.id, dailyTarget: Number(target) },
+      });
+      setSaved(true);
+      setOpen(false);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Failed to save the goal.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (saved) {
+    return <p className="text-success mb-0">Goal saved.</p>;
+  }
+
+  if (!open) {
+    return (
+      <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setOpen(true)}>
+        Set goal
+      </button>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSave} className="mt-2">
+      <ErrorMessage message={error} />
+      <label htmlFor={inputId} className="form-label">
+        Daily target ({template.unit})
+      </label>
+      <input
+        id={inputId}
+        type="number"
+        step="any"
+        min={template.minValue}
+        max={template.maxValue}
+        required
+        className="form-control mb-2"
+        value={target}
+        onChange={(e) => setTarget(e.target.value)}
+      />
+      <div className="d-flex align-items-center gap-2">
+        <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>
+          Save goal
+        </button>
+        <button type="button" className="btn btn-link btn-sm" onClick={() => setOpen(false)} disabled={saving}>
+          Cancel
+        </button>
+        {saving && <Loading label="Saving goal" />}
+      </div>
+    </form>
   );
 }
