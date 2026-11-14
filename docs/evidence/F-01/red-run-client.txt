@@ -1,0 +1,331 @@
+
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+
+ ✓ tests/api.test.ts > apiRequest > returns the parsed JSON body on success
+ ✓ tests/api.test.ts > apiRequest > sends the session cookie and a JSON body
+ ✓ tests/api.test.ts > apiRequest > turns a 4xx error body into an ApiError with status, code and message
+ ✓ tests/api.test.ts > apiRequest > uses a generic error when the body is not the expected shape
+ ✓ tests/api.test.ts > apiRequest > reports a network failure as an ApiError
+ ✓ tests/api.test.ts > apiRequest > returns undefined for 204 No Content
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > Loading shows an accessible status with its label
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > EmptyState shows the message it is given
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage shows the server message in an alert
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage renders nothing when there is no message
+ ✓ tests/layout.test.tsx > navigation by role > shows only Sign in when nobody is signed in
+ ✓ tests/layout.test.tsx > navigation by role > shows Templates and Goals to a participant
+ ✓ tests/layout.test.tsx > navigation by role > shows Templates but not Goals to a program manager
+ ✓ tests/layout.test.tsx > navigation by role > renders the links for the current role and marks the active one
+ × tests/signin.test.tsx > TEST-UI-01 SignInPage > posts the credentials and reports the signed-in user
+   → Unable to find a label with the text of: Email
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ × tests/signin.test.tsx > TEST-UI-01 SignInPage > shows the server message on 401, keeps the email and clears the password
+   → Unable to find a label with the text of: Email
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ × tests/signin.test.tsx > TEST-UI-01 SignInPage > disables the button while the request is in progress
+   → Unable to find a label with the text of: Email
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ × tests/app.test.tsx > TEST-UI-02 App session handling > shows the Sign in page when /api/auth/me returns 401
+   → Cannot read properties of undefined (reading '0')
+ × tests/app.test.tsx > TEST-UI-02 App session handling > shows the user's name and role from /api/auth/me, and returns to Sign in after signing out 1022ms
+   → Unable to find an element with the text: Morgan. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <nav
+      class="navbar navbar-expand bg-body-tertiary border-bottom"
+    >
+      <div
+        class="container"
+      >
+        <span
+          class="navbar-brand"
+        >
+          Habit Tracker
+        </span>
+        <ul
+          class="navbar-nav"
+        >
+          <li
+            class="nav-item"
+          >
+            <button
+              aria-current="page"
+              class="nav-link btn btn-link active"
+              type="button"
+            >
+              Sign in
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main
+      class="container py-4"
+    >
+      <h1
+        class="h4"
+      >
+        Sign in
+      </h1>
+      <p
+        class="text-secondary fst-italic my-3"
+      >
+        This page is added in a later part.
+      </p>
+    </main>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <nav
+      class="navbar navbar-expand bg-body-tertiary border-bottom"
+    >
+      <div
+        class="container"
+      >
+        <span
+          class="navbar-brand"
+        >
+          Habit Tracker
+        </span>
+        <ul
+          class="navbar-nav"
+        >
+          <li
+            class="nav-item"
+          >
+            <button
+              aria-current="page"
+              class="nav-link btn btn-link active"
+              type="button"
+            >
+              Sign in
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main
+      class="container py-4"
+    >
+      <h1
+        class="h4"
+      >
+        Sign in
+      </h1>
+      <p
+        class="text-secondary fst-italic my-3"
+      >
+        This page is added in a later part.
+      </p>
+    </main>
+  </div>
+</body>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/app.test.tsx > TEST-UI-02 App session handling > shows the Sign in page when /api/auth/me returns 401
+TypeError: Cannot read properties of undefined (reading '0')
+ ❯ tests/app.test.tsx:28:34
+     26| 
+     27|     expect(await screen.findByRole("button", { name: "Sign in" })).toB…
+     28|     expect(fetchMock.mock.calls[0][0]).toBe("/api/auth/me");
+       |                                  ^
+     29|   });
+     30| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/app.test.tsx > TEST-UI-02 App session handling > shows the user's name and role from /api/auth/me, and returns to Sign in after signing out
+TestingLibraryElementError: Unable to find an element with the text: Morgan. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <nav
+      class="navbar navbar-expand bg-body-tertiary border-bottom"
+    >
+      <div
+        class="container"
+      >
+        <span
+          class="navbar-brand"
+        >
+          Habit Tracker
+        </span>
+        <ul
+          class="navbar-nav"
+        >
+          <li
+            class="nav-item"
+          >
+            <button
+              aria-current="page"
+              class="nav-link btn btn-link active"
+              type="button"
+            >
+              Sign in
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main
+      class="container py-4"
+    >
+      <h1
+        class="h4"
+      >
+        Sign in
+      </h1>
+      <p
+        class="text-secondary fst-italic my-3"
+      >
+        This page is added in a later part.
+      </p>
+    </main>
+  </div>
+</body>
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <nav
+      class="navbar navbar-expand bg-body-tertiary border-bottom"
+    >
+      <div
+        class="container"
+      >
+        <span
+          class="navbar-brand"
+        >
+          Habit Tracker
+        </span>
+        <ul
+          class="navbar-nav"
+        >
+          <li
+            class="nav-item"
+          >
+            <button
+              aria-current="page"
+              class="nav-link btn btn-link active"
+              type="button"
+            >
+              Sign in
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main
+      class="container py-4"
+    >
+      <h1
+        class="h4"
+      >
+        Sign in
+      </h1>
+      <p
+        class="text-secondary fst-italic my-3"
+      >
+        This page is added in a later part.
+      </p>
+    </main>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/app.test.tsx:37:25
+     35|     render(<App />);
+     36| 
+     37|     expect(await screen.findByText("Morgan")).toBeInTheDocument();
+       |                         ^
+     38|     expect(screen.getByText("Program Manager")).toBeInTheDocument();
+     39|     expect(screen.queryByRole("button", { name: "Goals" })).not.toBeIn…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/signin.test.tsx > TEST-UI-01 SignInPage > posts the credentials and reports the signed-in user
+TestingLibraryElementError: Unable to find a label with the text of: Email
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/signin.test.tsx:25:33
+     23|     render(<SignInPage onSignedIn={onSignedIn} />);
+     24| 
+     25|     await userEvent.type(screen.getByLabelText("Email"), "alex@example…
+       |                                 ^
+     26|     await userEvent.type(screen.getByLabelText("Password"), "secret-pa…
+     27|     await userEvent.click(screen.getByRole("button", { name: "Sign in"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/signin.test.tsx > TEST-UI-01 SignInPage > shows the server message on 401, keeps the email and clears the password
+TestingLibraryElementError: Unable to find a label with the text of: Email
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/signin.test.tsx:43:33
+     41|     render(<SignInPage onSignedIn={onSignedIn} />);
+     42| 
+     43|     await userEvent.type(screen.getByLabelText("Email"), "alex@example…
+       |                                 ^
+     44|     await userEvent.type(screen.getByLabelText("Password"), "wrong");
+     45|     await userEvent.click(screen.getByRole("button", { name: "Sign in"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/signin.test.tsx > TEST-UI-01 SignInPage > disables the button while the request is in progress
+TestingLibraryElementError: Unable to find a label with the text of: Email
+
+Ignored nodes: comments, script, style
+<body>
+  <div />
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/signin.test.tsx:58:33
+     56|     render(<SignInPage onSignedIn={() => {}} />);
+     57| 
+     58|     await userEvent.type(screen.getByLabelText("Email"), "alex@example…
+       |                                 ^
+     59|     await userEvent.type(screen.getByLabelText("Password"), "secret-pa…
+     60|     await userEvent.click(screen.getByRole("button", { name: "Sign in"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  5 failed | 14 passed (19)
+   Start at  20:21:28
+   Duration  3.54s (transform 177ms, setup 1.21s, collect 1.42s, tests 1.23s, environment 6.13s, prepare 962ms)
+

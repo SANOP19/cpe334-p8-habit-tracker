@@ -1,0 +1,256 @@
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/uSER/OneDrive/Desktop/CPE334 softend/cpe334-p8-habit-tracker/server[39m
+
+ [31m❯[39m tests/templates.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m9 failed[39m[2m)[22m[33m 481[2mms[22m[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-07 (AC-07): program manager creates a draft template with valid fields (201 Created)[90m 105[2mms[22m[31m[39m
+[31m     → expected 404 to be 201 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-08 (AC-08): minValue >= maxValue is rejected with 422 VALIDATION_ERROR (INVALID_RANGE)[90m 41[2mms[22m[31m[39m
+[31m     → expected 404 to be 422 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-08b (AC-08): missing required fields returns 422 VALIDATION_ERROR with field details[90m 40[2mms[22m[31m[39m
+[31m     → expected 404 to be 422 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-09 (AC-09): participant attempting to create a template receives 403 FORBIDDEN[90m 44[2mms[22m[31m[39m
+[31m     → expected 404 to be 403 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-10 (AC-10): program manager publishes own draft template (200 OK)[90m 42[2mms[22m[31m[39m
+[31m     → expected 404 to be 200 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-11a (AC-11): participant calls GET /api/templates and sees only PUBLISHED templates[90m 41[2mms[22m[31m[39m
+[31m     → expected 404 to be 200 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-11b (AC-11): program manager calls GET /api/templates and sees all own templates[90m 40[2mms[22m[31m[39m
+[31m     → expected 404 to be 200 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-31 (AC-31): publishing an already published template returns 409 ALREADY_PUBLISHED[90m 40[2mms[22m[31m[39m
+[31m     → expected 404 to be 409 // Object.is equality[39m
+[31m   [31m×[31m F-02 Activity Template Management[2m > [22mTEST-09b: participant calling POST /api/templates/:id/publish receives 403 FORBIDDEN[90m 44[2mms[22m[31m[39m
+[31m     → expected 404 to be 403 // Object.is equality[39m
+[90mstdout[2m | tests/auth.test.ts[2m > [22m[2mF-01 Authentication and session[2m > [22m[2mTEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in
+[22m[39mSeeding Habit Tracker database...
+
+[90mstdout[2m | tests/auth.test.ts[2m > [22m[2mF-01 Authentication and session[2m > [22m[2mTEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in
+[22m[39mHabit Tracker seeding completed successfully.
+
+ [31m❯[39m tests/auth.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 607[2mms[22m[39m
+[31m   [31m×[31m F-01 Authentication and session[2m > [22mTEST-04 (AC-04): every protected endpoint rejects a missing or unknown session with 401 and no data[90m 41[2mms[22m[31m[39m
+[31m     → GET /api/templates cookie=undefined: expected 404 to be 401 // Object.is equality[39m
+ [32m✓[39m tests/db-constraints.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 121[2mms[22m[39m
+[90mstdout[2m | tests/seed.test.ts[2m > [22m[2mP1 Password Security & Seed Integrity against Real PostgreSQL[2m > [22m[2mseeded passwords are stored as salted bcrypt hashes in the database and never as plain text
+[22m[39mSeeding Habit Tracker database...
+
+[90mstdout[2m | tests/seed.test.ts[2m > [22m[2mP1 Password Security & Seed Integrity against Real PostgreSQL[2m > [22m[2mseeded passwords are stored as salted bcrypt hashes in the database and never as plain text
+[22m[39mHabit Tracker seeding completed successfully.
+
+[90mstdout[2m | tests/seed.test.ts[2m > [22m[2mP1 Password Security & Seed Integrity against Real PostgreSQL[2m > [22m[2mseedDatabase throws an error when seed passwords are missing from the environment
+[22m[39mSeeding Habit Tracker database...
+
+ [32m✓[39m tests/seed.test.ts [2m([22m[2m2 tests[22m[2m)[22m[90m 184[2mms[22m[39m
+ [32m✓[39m tests/health.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 31[2mms[22m[39m
+ [32m✓[39m tests/require-role.test.ts [2m([22m[2m3 tests[22m[2m)[22m[90m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[31m10 failed[39m[22m[2m | [22m[1m[32m21 passed[39m[22m[90m (31)[39m
+[2m   Start at [22m 20:49:43
+[2m   Duration [22m 3.07s[2m (transform 73ms, setup 0ms, collect 789ms, tests 1.43s, environment 1ms, prepare 316ms)[22m
+
+
+[90mstderr[2m | tests/health.test.ts[2m > [22m[2mP1 Health Endpoint and Global Error Handler[2m > [22m[2munhandled runtime error returns 500 with sanitized code and generic message (NFR-05)
+[22m[39mInternal Server Error: Error: Simulated unhandled database failure
+    at [90mC:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39msrc\app.ts:42:11
+    at Layer.handle [as handle_request] [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\layer.js:95:5[90m)[39m
+    at next [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\route.js:149:13[90m)[39m
+    at Route.dispatch [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\route.js:119:3[90m)[39m
+    at Layer.handle [as handle_request] [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\layer.js:95:5[90m)[39m
+    at [90mC:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\index.js:284:15
+    at router.process_params [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\index.js:346:12[90m)[39m
+    at next [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\index.js:280:10[90m)[39m
+    at jsonParser [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mbody-parser[24m\lib\types\json.js:117:7[90m)[39m
+    at Layer.handle [as handle_request] [90m(C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\server\[39mnode_modules\[4mexpress[24m\lib\router\layer.js:95:5[90m)[39m
+
+[31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 10 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/auth.test.ts[2m > [22mF-01 Authentication and session[2m > [22mTEST-04 (AC-04): every protected endpoint rejects a missing or unknown session with 401 and no data
+[31m[1mAssertionError[22m: GET /api/templates cookie=undefined: expected 404 to be 401 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 401[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/auth.test.ts:[2m114:80[22m[39m
+    [90m112| [39m        [35mconst[39m req [33m=[39m [34mrequest[39m(app)[method](path)[33m;[39m
+    [90m113| [39m        [35mconst[39m res [33m=[39m cookie [33m?[39m [35mawait[39m req[33m.[39m[35mset[39m([32m"Cookie"[39m[33m,[39m cookie) [33m:[39m [35mawait[39m r…
+    [90m114| [39m        [34mexpect[39m(res[33m.[39mstatus[33m,[39m [32m`[39m[36m${[39mmethod[33m.[39m[34mtoUpperCase[39m()[36m}[39m[32m [39m[36m${[39mpath[36m}[39m[32m cookie=[39m[36m${[39mc…
+    [90m   | [39m                                                                               [31m^[39m
+    [90m115| [39m        [34mexpect[39m(res[33m.[39mbody)[33m.[39m[34mtoEqual[39m({ error[33m:[39m { code[33m:[39m [32m"UNAUTHENTICATED"[39m[33m,[39m m…
+    [90m116| [39m      }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-07 (AC-07): program manager creates a draft template with valid fields (201 Created)
+[31m[1mAssertionError[22m: expected 404 to be 201 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 201[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m66:24[22m[39m
+    [90m 64| [39m      })[33m;[39m
+    [90m 65| [39m
+    [90m 66| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m201[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m 67| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39mtemplate)[33m.[39m[34mtoMatchObject[39m({
+    [90m 68| [39m      id[33m:[39m expect[33m.[39m[34many[39m([33mNumber[39m)[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-08 (AC-08): minValue >= maxValue is rejected with 422 VALIDATION_ERROR (INVALID_RANGE)
+[31m[1mAssertionError[22m: expected 404 to be 422 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 422[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m96:31[22m[39m
+    [90m 94| [39m      })[33m;[39m
+    [90m 95| [39m
+    [90m 96| [39m    [34mexpect[39m(equalRange[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m422[39m)[33m;[39m
+    [90m   | [39m                              [31m^[39m
+    [90m 97| [39m    [34mexpect[39m(equalRange[33m.[39mbody[33m.[39merror[33m.[39mcode)[33m.[39m[34mtoBe[39m([32m"VALIDATION_ERROR"[39m)[33m;[39m
+    [90m 98| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-08b (AC-08): missing required fields returns 422 VALIDATION_ERROR with field details
+[31m[1mAssertionError[22m: expected 404 to be 422 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 422[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m121:24[22m[39m
+    [90m119| [39m      [33m.[39m[34msend[39m({})[33m;[39m
+    [90m120| [39m
+    [90m121| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m422[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m122| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39merror[33m.[39mcode)[33m.[39m[34mtoBe[39m([32m"VALIDATION_ERROR"[39m)[33m;[39m
+    [90m123| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39merror[33m.[39mdetails)[33m.[39m[34mtoBeInstanceOf[39m([33mArray[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-09 (AC-09): participant attempting to create a template receives 403 FORBIDDEN
+[31m[1mAssertionError[22m: expected 404 to be 403 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 403[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m142:24[22m[39m
+    [90m140| [39m      })[33m;[39m
+    [90m141| [39m
+    [90m142| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m403[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m143| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39merror[33m.[39mcode)[33m.[39m[34mtoBe[39m([32m"FORBIDDEN"[39m)[33m;[39m
+    [90m144| [39m    [34mexpect[39m([35mawait[39m prisma[33m.[39mactivityTemplate[33m.[39m[34mcount[39m())[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-10 (AC-10): program manager publishes own draft template (200 OK)
+[31m[1mAssertionError[22m: expected 404 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m163:24[22m[39m
+    [90m161| [39m      [33m.[39m[35mset[39m([32m"Cookie"[39m[33m,[39m managerCookie)[33m;[39m
+    [90m162| [39m
+    [90m163| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m164| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39mtemplate)[33m.[39m[34mtoMatchObject[39m({
+    [90m165| [39m      id[33m:[39m template[33m.[39mid[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-11a (AC-11): participant calls GET /api/templates and sees only PUBLISHED templates
+[31m[1mAssertionError[22m: expected 404 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m185:24[22m[39m
+    [90m183| [39m      [33m.[39m[35mset[39m([32m"Cookie"[39m[33m,[39m participantCookie)[33m;[39m
+    [90m184| [39m
+    [90m185| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m186| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39mtemplates)[33m.[39m[34mtoBeInstanceOf[39m([33mArray[39m)[33m;[39m
+    [90m187| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39mtemplates)[33m.[39m[34mtoHaveLength[39m([34m1[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-11b (AC-11): program manager calls GET /api/templates and sees all own templates
+[31m[1mAssertionError[22m: expected 404 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m205:24[22m[39m
+    [90m203| [39m      [33m.[39m[35mset[39m([32m"Cookie"[39m[33m,[39m managerCookie)[33m;[39m
+    [90m204| [39m
+    [90m205| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m206| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39mtemplates)[33m.[39m[34mtoBeInstanceOf[39m([33mArray[39m)[33m;[39m
+    [90m207| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39mtemplates)[33m.[39m[34mtoHaveLength[39m([34m2[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-31 (AC-31): publishing an already published template returns 409 ALREADY_PUBLISHED
+[31m[1mAssertionError[22m: expected 404 to be 409 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 409[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m253:24[22m[39m
+    [90m251| [39m      [33m.[39m[35mset[39m([32m"Cookie"[39m[33m,[39m managerCookie)[33m;[39m
+    [90m252| [39m
+    [90m253| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m409[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m254| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39merror[33m.[39mcode)[33m.[39m[34mtoBe[39m([32m"ALREADY_PUBLISHED"[39m)[33m;[39m
+    [90m255| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/templates.test.ts[2m > [22mF-02 Activity Template Management[2m > [22mTEST-09b: participant calling POST /api/templates/:id/publish receives 403 FORBIDDEN
+[31m[1mAssertionError[22m: expected 404 to be 403 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 403[39m
+[31m+ 404[39m
+
+[36m [2m❯[22m tests/templates.test.ts:[2m276:24[22m[39m
+    [90m274| [39m      [33m.[39m[35mset[39m([32m"Cookie"[39m[33m,[39m participantCookie)[33m;[39m
+    [90m275| [39m
+    [90m276| [39m    [34mexpect[39m(res[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m403[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m277| [39m    [34mexpect[39m(res[33m.[39mbody[33m.[39merror[33m.[39mcode)[33m.[39m[34mtoBe[39m([32m"FORBIDDEN"[39m)[33m;[39m
+    [90m278| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯[22m[39m
+

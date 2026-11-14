@@ -1,0 +1,41 @@
+
+ RUN  v2.1.9 C:/Users/uSER/OneDrive/Desktop/CPE334 softend/cpe334-p8-habit-tracker/client
+
+ ✓ tests/api.test.ts > apiRequest > returns the parsed JSON body on success
+ ✓ tests/api.test.ts > apiRequest > sends the session cookie and a JSON body
+ ✓ tests/api.test.ts > apiRequest > turns a 4xx error body into an ApiError with status, code and message
+ ✓ tests/api.test.ts > apiRequest > uses a generic error when the body is not the expected shape
+ ✓ tests/api.test.ts > apiRequest > reports a network failure as an ApiError
+ ✓ tests/api.test.ts > apiRequest > returns undefined for 204 No Content
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > Loading shows an accessible status with its label
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > EmptyState shows the message it is given
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage shows the server message in an alert
+ ✓ tests/components.test.tsx > shared UI states (NFR-07) > ErrorMessage renders nothing when there is no message
+ ✓ tests/layout.test.tsx > navigation by role > shows only Sign in when nobody is signed in
+ ✓ tests/layout.test.tsx > navigation by role > shows Templates and Goals to a participant
+ ✓ tests/layout.test.tsx > navigation by role > shows Templates but not Goals to a program manager
+ ✓ tests/layout.test.tsx > navigation by role > renders the links for the current role and marks the active one
+ ✓ tests/app.test.tsx > TEST-UI-02 App session handling > shows the Sign in page when /api/auth/me returns 401
+ ✓ tests/app.test.tsx > TEST-UI-02 App session handling > shows the user's name and role from /api/auth/me, and returns to Sign in after signing out
+ ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-05: participant sets a goal from a published template
+ ✓ tests/signin.test.tsx > TEST-UI-01 SignInPage > posts the credentials and reports the signed-in user
+ ✓ tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-UI-07: participant logs an activity entry and sees it added to the history
+ ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-05: a rejected goal shows the server message and keeps the typed value
+ ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-05: program managers do not see Set goal
+ ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-06: Goals page shows the empty state when there are no goals
+ ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-06: Goals page lists the participant's goals
+ ✓ tests/goals.test.tsx > F-03 Goal setting UI > TEST-UI-06: Goals page shows an error when loading fails
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-03: Program Manager view > renders create form, loads templates, and submits a new draft template
+ ✓ tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-UI-07: displays server error when logging fails and keeps input values
+ ✓ tests/signin.test.tsx > TEST-UI-01 SignInPage > shows the server message on 401, keeps the email and clears the password
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-03: Program Manager view > displays error message when minValue >= maxValue
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-04: Publish action & Participant view > manager can publish a draft template and see its status change to PUBLISHED
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-04: Publish action & Participant view > participant view shows only published templates and no create form or publish button
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-04: Publish action & Participant view > participant view displays empty state when no published templates exist
+ ✓ tests/signin.test.tsx > TEST-UI-01 SignInPage > disables the button while the request is in progress
+
+ Test Files  8 passed (8)
+      Tests  32 passed (32)
+   Start at  21:58:45
+   Duration  1.80s (transform 362ms, setup 954ms, collect 1.80s, tests 1.36s, environment 5.54s, prepare 1.12s)
+

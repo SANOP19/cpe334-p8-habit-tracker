@@ -1,0 +1,78 @@
+
+> habit-tracker@1.0.0 test:server
+> npm test --prefix server
+
+
+> habit-tracker-server@1.0.0 test
+> vitest run
+
+
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+
+ ✓ tests/logging.test.ts (12 tests) 1490ms
+   ✓ F-04 Daily activity logging > TEST-17 (AC-17): participant records daily activity for own goal and reads it back 327ms
+ ✓ tests/templates.test.ts (11 tests) 823ms
+ ✓ tests/goals.test.ts (10 tests) 955ms
+stdout | tests/auth.test.ts > F-01 Authentication and session > TEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in
+Seeding Habit Tracker database...
+
+stdout | tests/auth.test.ts > F-01 Authentication and session > TEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in
+Habit Tracker seeding completed successfully.
+
+ ✓ tests/auth.test.ts (10 tests) 961ms
+stderr | tests/progress.test.ts > F-05 progress API and privacy > TEST-29 (AC-29): every kind of error has the same safe body
+Internal Server Error: Error: Simulated unhandled database failure
+    at C:\Users\nopni\Project_SE\server\src\app.ts:46:11
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\nopni\Project_SE\server\node_modules\body-parser\lib\types\json.js:117:7)
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+
+ ✓ tests/progress.test.ts (8 tests) 561ms
+ ✓ tests/db-constraints.test.ts (3 tests) 197ms
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seeded passwords are stored as salted bcrypt hashes in the database and never as plain text
+Seeding Habit Tracker database...
+
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seeded passwords are stored as salted bcrypt hashes in the database and never as plain text
+Habit Tracker seeding completed successfully.
+
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > seedDatabase throws an error when seed passwords are missing from the environment
+Seeding Habit Tracker database...
+
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > TEST-S2 (F-05): seed creates a second participant and stays idempotent
+Seeding Habit Tracker database...
+
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > TEST-S2 (F-05): seed creates a second participant and stays idempotent
+Habit Tracker seeding completed successfully.
+Seeding Habit Tracker database...
+
+stdout | tests/seed.test.ts > P1 Password Security & Seed Integrity against Real PostgreSQL > TEST-S2 (F-05): seed creates a second participant and stays idempotent
+Habit Tracker seeding completed successfully.
+
+ ✓ tests/seed.test.ts (3 tests) 520ms
+stderr | tests/health.test.ts > P1 Health Endpoint and Global Error Handler > unhandled runtime error returns 500 with sanitized code and generic message (NFR-05)
+Internal Server Error: Error: Simulated unhandled database failure
+    at C:\Users\nopni\Project_SE\server\src\app.ts:46:11
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\nopni\Project_SE\server\node_modules\body-parser\lib\types\json.js:117:7)
+    at Layer.handle [as handle_request] (C:\Users\nopni\Project_SE\server\node_modules\express\lib\router\layer.js:95:5)
+
+ ✓ tests/health.test.ts (3 tests) 54ms
+ ✓ tests/require-role.test.ts (3 tests) 4ms
+
+ Test Files  9 passed (9)
+      Tests  63 passed (63)
+   Start at  23:11:33
+   Duration  12.79s (transform 207ms, setup 0ms, collect 4.39s, tests 5.56s, environment 1ms, prepare 1.26s)
+
