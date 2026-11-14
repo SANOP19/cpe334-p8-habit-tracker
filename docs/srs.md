@@ -4,9 +4,10 @@
 | Version | Date | Author | Reviewer | Change |
 |---|---|---|---|---|
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Sections 1–3, 5 and 6: context, actors, scope, assumptions, decisions and questions (P3a, Issue #5) |
+| 0.2 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Section 4: Functional Requirements, Business Rules, and Non-Functional Requirements (P3b, Issue #6) |
 
-**Team:** Nitithorn Ketkaew (67070505203) · Nara Kosiyaporn (67070505218)
-**Source:** decisions agreed in `docs/project-brief.md` (P0, PR #2). Requirement IDs (section 4) are written in P3b.
+**Team:** Nitithorn Ketkaew (67070505203) · Nara Kosiyaporn (67070505218)  
+**Source:** decisions agreed in `docs/project-brief.md` (P0, PR #2).
 
 ---
 
@@ -71,7 +72,60 @@ Authentication and session; template creation and publication; goal setting; dai
 
 ## 4. Requirements
 
-*Functional requirements (FR), business rules (BR) and non-functional requirements (NFR) are written in part P3b (Issue #6).*
+### 4.1 Functional Requirements (FR)
+
+| ID | Observable System Behaviour | Actor | Sprint | Primary Verification |
+|---|---|---|:---:|---|
+| **FR-01** | A seeded user provides valid email and password credentials, and the system issues an authenticated server-side session stored in an HttpOnly cookie. | User | 1 | Integration test `TEST-01` |
+| **FR-02** | An authenticated user requests logout; the system destroys the session record in the database and clears the session cookie. | User | 1 | API test `TEST-05` |
+| **FR-03** | An authenticated user queries current identity; the system returns their unique ID, display name, and authorized role (`PARTICIPANT` or `PROGRAM_MANAGER`). | User | 1 | API test `TEST-03` |
+| **FR-04** | A program manager creates a new activity template specifying name, unit, minValue, and maxValue (`minValue < maxValue`), initialized in `DRAFT` status. | Program Manager | 1 | API test `TEST-07` |
+| **FR-05** | A program manager publishes an existing draft template they own; status changes from `DRAFT` to `PUBLISHED` making it selectable by participants. | Program Manager | 1 | API test `TEST-10` |
+| **FR-06** | A participant retrieves the catalog of all published templates; a program manager retrieves all templates they created across draft and published statuses. | Participant / Program Manager | 1 | API test `TEST-11` |
+| **FR-07** | A participant selects a published template and establishes a habit goal with a personal `dailyTarget` bounded by the template's `[minValue, maxValue]`. | Participant | 1 | Integration test `TEST-12` |
+| **FR-08** | A participant records an activity entry (entry date, numeric value, optional note) for their own goal within allowable date and value constraints. | Participant | 1 | Integration test `TEST-17` |
+| **FR-09** | A participant views their daily entry records and computed progress metrics (`percent` achieved against `dailyTarget`) for their own habit goals. | Participant | 1 | API test `TEST-24` |
+| **FR-10** | A participant revises target values, pauses, or archives an active goal while preserving prior historical entry integrity. | Participant | 2 | Sprint 2 contract verification |
+| **FR-11** | A participant accesses longitudinal historical views of logged activities and past goal revision milestones. | Participant | 2 | Sprint 2 contract verification |
+| **FR-12** | The system computes consecutive-day streak metrics indicating continuous adherence to daily targets. | Participant / System | 2 | Sprint 2 contract verification |
+| **FR-13** | A participant views aggregated weekly and monthly habit performance and completion rate analytics. | Participant | 2 | Sprint 2 contract verification |
+| **FR-14** | A participant defines daily reminder schedules rendered as visual timetable cues (mocked schedules; external dispatch out of scope). | Participant | 3 | Sprint 3 contract verification |
+
+---
+
+### 4.2 Business Rules (BR)
+
+| ID | Rule Specification | Violation Response | Layer Enforced | Sprint |
+|---|---|:---:|---|:---:|
+| **BR-01** | **Entry Value Within Range:** An activity entry value must be within the referenced template's defined `[minValue, maxValue]` range, inclusive. | `422 Unprocessable Entity` | Domain / API validation | 1 |
+| **BR-02** | **No Future Date Logging:** An entry date cannot be in the future relative to server time in `Asia/Bangkok` timezone. | `422 Unprocessable Entity` | Domain / API validation | 1 |
+| **BR-03** | **7-Day Rolling Back-Dating Window:** An entry date cannot be earlier than 6 days before today (exactly 7 calendar days eligible). | `422 Unprocessable Entity` | Domain / API validation | 1 |
+| **BR-04** | **Single Entry Per Goal Per Calendar Day:** One entry per goal per day (enforced by a database unique constraint `@@unique([goalId, entryDate])`). | `409 Conflict` | Database unique constraint | 1 |
+| **BR-05** | **Participant Privacy Isolation:** A participant can access only their own goals and entries. Access to another participant's record is rejected. | `404 Not Found` (no existence leak) | API service / Query scoping | 1 |
+| **BR-06** | **Role Authorization for Templates:** Only a program manager can create or publish templates. A participant attempting either is rejected. | `403 Forbidden` | Authorization middleware | 1 |
+| **BR-07** | **Program Manager Data Segregation:** A program manager cannot access participants' goals, entries, or progress. | `403 Forbidden` | Authorization middleware | 1 |
+| **BR-08** | **Positive Goal Target in Range:** A goal needs a published template and a positive dailyTarget within its range (`dailyTarget > 0` and within `[minValue, maxValue]`). | `422 Unprocessable Entity` | Domain / API validation | 1 |
+| **BR-09** | **One Active Goal Per Template:** At most one active goal (`status = ACTIVE`) per participant per template. | `409 Conflict` | Database partial unique index | 1 |
+| **BR-10** | **Historical Invariance Upon Revision:** Revising a goal does not change the meaning or calculated percentages of past recorded progress. | defined in Sprint 2 contract | Domain service design | 2 |
+| **BR-11** | **Consecutive-Day Streak Rule:** Streak counts consecutive calendar days where logged activity met or exceeded `dailyTarget` (draft — finalised in the Sprint 2 contract). | defined in Sprint 2 contract | Domain service calculation | 2 |
+| **BR-12** | **Reminders Are Placeholders:** Reminders are display placeholders within the application and never send external messages. | — | Presentation layer only | 3 |
+
+---
+
+### 4.3 Non-Functional Requirements (NFR)
+
+| ID | Requirement Target | Primary Verification | Sprint |
+|---|---|---|:---:|
+| **NFR-01** | Every protected endpoint rejects unauthenticated requests with 401 and returns no private data | API tests (`TEST-04`) | 1 |
+| **NFR-02** | Passwords are stored only as hashes | Integration test reads the database; no password in logs (`TEST-06`) | 1 |
+| **NFR-03** | A session stops working after logout and after expiry (next request with old cookie returns 401; session past expiresAt returns 401) | API tests (`TEST-05`) | 1 |
+| **NFR-04** | Data survives an application restart | Integration test (`TEST-28`) | 1 |
+| **NFR-05** | Error responses share one JSON shape `{"error": {"code": string, "message": string}}` and never expose stack traces or SQL | API tests (`TEST-29`) | 1 |
+| **NFR-06** | A fresh clone runs and passes tests by following the README | Clean-clone check by the member who did not write the README | 1 |
+| **NFR-07** | Main screens show loading, empty, and error states | UI/E2E tests and screenshots | 1 |
+| **NFR-08** | No real secret in Git or client code | Review of diffs and `.env.example` | 1 |
+| **NFR-09** | Timezone consistency: calendar days and rolling back-dating window evaluated in `Asia/Bangkok` | Unit tests with mocked clock | 1 |
+| **NFR-10** | Concurrency robustness: simultaneous submissions for the same goal and day yield one record and 409 | Integration test (`TEST-22`) | 1 |
 
 ---
 
