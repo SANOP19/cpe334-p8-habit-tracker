@@ -1,0 +1,36 @@
+
+Running 1 test using 1 worker
+
+  x  1 [chromium] › e2e\journey.spec.ts:5:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out (5.1s)
+
+
+  1) [chromium] › e2e\journey.spec.ts:5:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Sprint 1 Release Candidate Complete')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Sprint 1 Release Candidate Complete')
+
+
+       6 |     // Red test phase assertion: verifying test execution pipeline fails before journey implementation
+       7 |     await page.goto("/");
+    >  8 |     await expect(page.getByText("Sprint 1 Release Candidate Complete")).toBeVisible({ timeout: 5000 });
+         |                                                                         ^
+       9 |   });
+      10 | });
+      11 |
+        at C:\Users\uSER\OneDrive\Desktop\CPE334 softend\cpe334-p8-habit-tracker\e2e\journey.spec.ts:8:73
+
+    Error Context: test-results\journey-TEST-27-AC-27-Part-edaf4-cate-rejection-and-sign-out-chromium\error-context.md
+
+  1 failed
+    [chromium] › e2e\journey.spec.ts:5:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out 
+
+(node:20704) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

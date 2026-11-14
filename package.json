@@ -1,0 +1,16 @@
+{
+  "name": "habit-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:server": "npm test --prefix server",
+    "test:client": "npm test --prefix client",
+    "test:e2e": "playwright test",
+    "test": "npm run test:server && npm run test:client",
+    "build": "npm run build --prefix server && npm run build --prefix client"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
