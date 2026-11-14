@@ -2,7 +2,12 @@
 
 | Tool | Task assisted | Reviewed and verified by |
 |---|---|---|
-| Claude Code | Planning, drafting documents | Nitithorn Ketkaew |
-| Antigravity | P4a: Authored Sections 1–4 of System SDS (Architecture, Data Model, Auth/Session lifecycle, Configuration & Delivery) | Nara Kosiyaporn |
+| Claude Code | Planning, drafting the project brief (P0) | Nitithorn (author), Nara (review) |
+| Claude Code | P2 client foundation: drafting tests and implementation | Nitithorn (author), Nara (review) |
+| Antigravity | P1: Server foundation scaffolding, TDD tests & harness | Nara (author), Nitithorn (review) |
+| Claude Code | P3a: SRS context, actors, scope, assumptions, decisions | Nitithorn (author), Nara (review) |
+| Antigravity | P3b: SRS Section 4 (FR-01..14, BR-01..12, NFR-01..08) | Nara (author), Nitithorn (review) |
+| Claude Code | P4b: System SDS Section 5 (UI, API conventions, role matrix) | Nitithorn (author), Nara (review) |
+| Antigravity | P4a: System SDS Sections 1–4 (Architecture, data model, auth, configuration) | Nara (author), Nitithorn (review) |
 
 Update this table when AI tools are used for new tasks. All AI output is inspected, tested and understood by both team members before it is accepted.
