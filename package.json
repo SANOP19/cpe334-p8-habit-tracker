@@ -19,7 +19,6 @@
     "test:restart": "node scripts/verify-nfr04-restart.cjs"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0",
     "dotenv": "^16.4.7"
   },
   "devDependencies": {

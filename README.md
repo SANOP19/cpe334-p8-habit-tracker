@@ -76,16 +76,21 @@ To setup and run the application from a clean repository clone:
 
 ### 5.1 Install Dependencies
 ```bash
+# 1. Install root dependencies
 npm install
-npm --prefix server install
-npm --prefix client install
 
-# Install Playwright Chromium browser binary for E2E tests
+# 2. Install server dependencies (runs "prisma generate" in server/node_modules)
+cd server && npm install && cd ..
+
+# 3. Install client dependencies
+cd client && npm install && cd ..
+
+# 4. Install Playwright Chromium browser binary for E2E tests
 npx playwright install chromium
 ```
 
 > [!NOTE]
-> `npm --prefix server install` automatically runs `prisma generate` via its `postinstall` script to build the `@prisma/client` bindings.
+> Installing dependencies via `cd server && npm install && cd ..` triggers the `postinstall` script inside `server/`, generating the Prisma Client directly into `server/node_modules/@prisma/client`.
 
 ### 5.2 Initialize Database (Migrations & Seed)
 Ensure your PostgreSQL daemon is running, then run migrations on both dev and test databases, followed by seeding:
@@ -151,6 +156,9 @@ npm run test:e2e
 # NFR-04 Application Restart & Data Persistence verification:
 npm run test:restart
 ```
+
+> [!NOTE]
+> `npm run test:restart` verifies NFR-04 by spawning an isolated server instance, logging an activity entry, killing the process with `SIGTERM`, launching a brand new server process, and reading back the entry to verify persistence. It automatically builds `server/dist` if not already present.
 
 ### 7.3 Production Builds
 Verify that both TypeScript compilation and Vite bundling pass cleanly:

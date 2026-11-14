@@ -2,22 +2,25 @@
  * verify-nfr04-restart.cjs
  *
  * Verifies NFR-04: Data survives an application restart.
- * 1. Spawns an isolated server process on PORT=3009.
- * 2. Signs in via POST /api/auth/login and creates an activity entry via HTTP POST.
- * 3. Gracefully kills the server process and verifies it has terminated (connection refused).
- * 4. Spawns a new server process on PORT=3009.
- * 5. Reads the activity entry back via HTTP GET /api/goals/:id/entries.
- * 6. Asserts exact data match (value, note, date) and cleans up.
+ * 1. Checks and builds server/dist if missing.
+ * 2. Uses dedicated account nfr04-restart@example.test (demo data untouched).
+ * 3. Uses today's date in Asia/Bangkok dynamically (always valid in back-dating window).
+ * 4. Spawns an isolated server process on PORT=3009.
+ * 5. Signs in via POST /api/auth/login and creates an activity entry via HTTP POST.
+ * 6. Gracefully kills the server process and verifies it has terminated (connection refused).
+ * 7. Spawns a new server process on PORT=3009.
+ * 8. Reads the activity entry back via HTTP GET /api/goals/:id/entries.
+ * 9. Asserts exact data match (value, note, date) and cleans up dedicated test account.
  */
 
 const { spawn, execSync } = require('child_process');
 const http = require('http');
 const path = require('path');
+const fs = require('fs');
 const dotenv = require('dotenv');
+
 const repoRoot = path.resolve(__dirname, '..');
 dotenv.config({ path: path.join(repoRoot, 'server', '.env') });
-
-const { PrismaClient } = require(path.join(repoRoot, 'server', 'node_modules', '@prisma', 'client'));
 
 const PORT = 3009;
 const PASSWORD = process.env.SEED_PARTICIPANT_PASSWORD;
@@ -26,7 +29,19 @@ if (!PASSWORD) {
   process.exit(1);
 }
 
+// Ensure server/dist/index.js is built
+const distIndex = path.join(repoRoot, 'server', 'dist', 'index.js');
+if (!fs.existsSync(distIndex)) {
+  console.log('[Setup] Compiling server TypeScript (server/dist/index.js not found)...');
+  const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  execSync(`${npmCmd} run build:server`, { cwd: repoRoot, stdio: 'inherit' });
+}
+
+const { PrismaClient } = require(path.join(repoRoot, 'server', 'node_modules', '@prisma', 'client'));
 const prisma = new PrismaClient();
+
+const NFR04_EMAIL = 'nfr04-restart@example.test';
+const NFR04_NAME = 'NFR04 Student';
 
 function httpRequest(options, postData) {
   return new Promise((resolve, reject) => {
@@ -89,8 +104,38 @@ async function run() {
 
   let server1 = null;
   let server2 = null;
+  let nfr04UserId = null;
 
   try {
+    // -------------------------------------------------------------------------
+    // Phase 0: Provision dedicated test account (preserves seeded participant demo data)
+    // -------------------------------------------------------------------------
+    console.log('[Phase 0] Setting up dedicated test account ' + NFR04_EMAIL + '...');
+    const seedUser = await prisma.user.findUnique({ where: { email: 'participant@example.test' } });
+    if (!seedUser) {
+      throw new Error('Base seed user participant@example.test not found. Run "npm run seed" first.');
+    }
+
+    const user = await prisma.user.upsert({
+      where: { email: NFR04_EMAIL },
+      update: {
+        passwordHash: seedUser.passwordHash,
+        displayName: NFR04_NAME
+      },
+      create: {
+        email: NFR04_EMAIL,
+        passwordHash: seedUser.passwordHash,
+        displayName: NFR04_NAME,
+        role: seedUser.role
+      }
+    });
+    nfr04UserId = user.id;
+
+    // Clean up any prior goals/entries for this dedicated account only
+    await prisma.activityEntry.deleteMany({ where: { goal: { participantId: nfr04UserId } } });
+    await prisma.goal.deleteMany({ where: { participantId: nfr04UserId } });
+    await prisma.session.deleteMany({ where: { userId: nfr04UserId } });
+
     // -------------------------------------------------------------------------
     // Phase 1: Start initial server instance on port 3009
     // -------------------------------------------------------------------------
@@ -111,9 +156,9 @@ async function run() {
     console.log('[Phase 1] Initial server is UP and responding to /api/health.');
 
     // -------------------------------------------------------------------------
-    // Phase 2: Sign in and establish session
+    // Phase 2: Sign in as dedicated test account
     // -------------------------------------------------------------------------
-    console.log('[Phase 2] Signing in as participant@example.test...');
+    console.log(`[Phase 2] Signing in as ${NFR04_EMAIL}...`);
     const loginRes = await httpRequest({
       hostname: 'localhost',
       port: PORT,
@@ -121,7 +166,7 @@ async function run() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     }, {
-      email: 'participant@example.test',
+      email: NFR04_EMAIL,
       password: PASSWORD
     });
 
@@ -137,62 +182,50 @@ async function run() {
     console.log('[Phase 2] Signed in successfully. Session cookie obtained.');
 
     // -------------------------------------------------------------------------
-    // Phase 3: Get or create active goal
+    // Phase 3: Create active goal on Daily Reading
     // -------------------------------------------------------------------------
-    console.log('[Phase 3] Fetching goals for participant...');
-    let goalsRes = await httpRequest({
+    console.log('[Phase 3] Setting up goal for dedicated test account...');
+    const tmplRes = await httpRequest({
       hostname: 'localhost',
       port: PORT,
-      path: '/api/goals',
+      path: '/api/templates',
       method: 'GET',
       headers: { 'Cookie': sessionCookie }
     });
 
-    let goalId;
-    if (goalsRes.body.goals && goalsRes.body.goals.length > 0) {
-      goalId = goalsRes.body.goals[0].id;
-    } else {
-      const tmplRes = await httpRequest({
-        hostname: 'localhost',
-        port: PORT,
-        path: '/api/templates',
-        method: 'GET',
-        headers: { 'Cookie': sessionCookie }
-      });
-      const template = tmplRes.body.templates.find(t => t.name === 'Daily Reading');
-      const createGoalRes = await httpRequest({
-        hostname: 'localhost',
-        port: PORT,
-        path: '/api/goals',
-        method: 'POST',
-        headers: {
-          'Cookie': sessionCookie,
-          'Content-Type': 'application/json'
-        }
-      }, {
-        templateId: template.id,
-        dailyTarget: 20
-      });
-      goalId = createGoalRes.body.goal.id;
+    const template = tmplRes.body.templates.find(t => t.name === 'Daily Reading');
+    if (!template) {
+      throw new Error('Daily Reading template not found. Ensure templates are seeded.');
     }
-    console.log(`[Phase 3] Using goal id ${goalId}.`);
 
-    // Clean up any existing restart-test entries to guarantee idempotency
-    const testDate = '2026-11-10';
+    const createGoalRes = await httpRequest({
+      hostname: 'localhost',
+      port: PORT,
+      path: '/api/goals',
+      method: 'POST',
+      headers: {
+        'Cookie': sessionCookie,
+        'Content-Type': 'application/json'
+      }
+    }, {
+      templateId: template.id,
+      dailyTarget: 20
+    });
+
+    if (createGoalRes.statusCode !== 201) {
+      throw new Error(`Failed to create goal: status ${createGoalRes.statusCode}: ${JSON.stringify(createGoalRes.body)}`);
+    }
+    const goalId = createGoalRes.body.goal.id;
+    console.log(`[Phase 3] Created goal id ${goalId} for ${NFR04_EMAIL}.`);
+
+    // -------------------------------------------------------------------------
+    // Phase 4: Create activity entry using today's Bangkok date dynamically
+    // -------------------------------------------------------------------------
+    const testDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok' }).format(new Date());
     const testValue = 48;
     const testNote = `NFR-04 Restart Proof [${Date.now()}]`;
 
-    await prisma.activityEntry.deleteMany({
-      where: {
-        goalId,
-        entryDate: testDate
-      }
-    });
-
-    // -------------------------------------------------------------------------
-    // Phase 4: Create activity entry before shutdown
-    // -------------------------------------------------------------------------
-    console.log(`[Phase 4] Recording activity entry (date: ${testDate}, value: ${testValue}, note: "${testNote}")...`);
+    console.log(`[Phase 4] Recording activity entry (date: ${testDate} Asia/Bangkok, value: ${testValue}, note: "${testNote}")...`);
     const postRes = await httpRequest({
       hostname: 'localhost',
       port: PORT,
@@ -291,6 +324,12 @@ async function run() {
   } finally {
     if (server1) killProcess(server1);
     if (server2) killProcess(server2);
+    if (nfr04UserId) {
+      await prisma.activityEntry.deleteMany({ where: { goal: { participantId: nfr04UserId } } }).catch(() => {});
+      await prisma.goal.deleteMany({ where: { participantId: nfr04UserId } }).catch(() => {});
+      await prisma.session.deleteMany({ where: { userId: nfr04UserId } }).catch(() => {});
+      await prisma.user.delete({ where: { id: nfr04UserId } }).catch(() => {});
+    }
     await prisma.$disconnect();
   }
 }
