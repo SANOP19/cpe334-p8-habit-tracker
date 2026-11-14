@@ -6,6 +6,7 @@
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Section 5: UI structure, API conventions, role/permission matrix (P4b, Issue #8) |
 | 0.2 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Sections 1–4: Architecture, data model, auth/session lifecycle, configuration & delivery (P4a, Issue #7) |
 | 0.3 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | §5.4: role-matrix gaps now covered by AC-30..AC-32 (PR1, Issue #16) |
+| 0.4 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | §3.1, §4.1: bcrypt cost fixed at 10, `BCRYPT_ROUNDS` removed (F-01, PR2) |
 
 **Source:** `docs/project-brief.md` (P0, PR #2). Feature contracts (`docs/sprints/sprint-1/`) give the detailed endpoints, fields, and acceptance criteria; this document defines the overarching architectural patterns, data structures, and operational conventions they must adhere to.
 
@@ -225,7 +226,7 @@ A reproducible seed script is implemented in `server/prisma/seed.ts` and execute
 
 User passwords for seeded accounts are encrypted using `bcryptjs`:
 - Passwords submitted during sign-in are compared using `bcrypt.compare()`.
-- Passwords created during seeding are hashed using `bcrypt.hash()` with a work factor of 10 rounds (planned configurable `BCRYPT_ROUNDS` for F-01).
+- Passwords created during seeding are hashed using `bcrypt.hash()` with a fixed work factor of 10. In Sprint 1 no passwords are created at runtime (accounts are seeded), so no `BCRYPT_ROUNDS` setting is needed (F-01 contract §1.3).
 - Plaintext passwords are never persisted to disk, never written to log files, and never included in database serialization responses.
 
 ### 3.2 Split-secret session token architecture
@@ -306,7 +307,6 @@ All configuration parameters and operational secrets are decoupled from code and
 | `DATABASE_URL` | **Required** | `postgresql://user:pass@localhost:5432/habittracker?schema=public` | PostgreSQL connection string for development and production. |
 | `DATABASE_URL_TEST` | **Required for tests** | `postgresql://user:pass@localhost:5432/habittracker_test?schema=public` | Dedicated PostgreSQL test database URL used strictly by automated tests. |
 | `SESSION_TTL_HOURS` | Optional | `24` | Lifespan of user sessions in hours. |
-| `BCRYPT_ROUNDS` | Optional | `10` *(planned for F-01)* | Salt work factor for bcrypt password hashing. |
 | `TZ` | **Required** | `Asia/Bangkok` | Authoritative timezone for server-side calendar day computations (D-04). |
 | `SEED_PARTICIPANT_PASSWORD` | **Required** | *(injected secret)* | Initial password for the seeded demo participant account. |
 | `SEED_MANAGER_PASSWORD` | **Required** | *(injected secret)* | Initial password for the seeded demo program manager account. |
