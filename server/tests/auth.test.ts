@@ -14,6 +14,9 @@ const PASSWORD = "Correct-Horse-1";
 const PROTECTED_ENDPOINTS: Array<{ method: "get" | "post"; path: string }> = [
   { method: "get", path: "/api/auth/me" },
   { method: "post", path: "/api/auth/logout" },
+  { method: "get", path: "/api/templates" },
+  { method: "post", path: "/api/templates" },
+  { method: "post", path: "/api/templates/1/publish" },
 ];
 
 const sha256 = (value: string) => createHash("sha256").update(value).digest("hex");
