@@ -5,6 +5,7 @@
 |---|---|---|---|---|
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Section 5: UI structure, API conventions, role/permission matrix (P4b, Issue #8) |
 | 0.2 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Sections 1–4: Architecture, data model, auth/session lifecycle, configuration & delivery (P4a, Issue #7) |
+| 0.3 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | §5.4: role-matrix gaps now covered by AC-30..AC-32 (PR1, Issue #16) |
 
 **Source:** `docs/project-brief.md` (P0, PR #2). Feature contracts (`docs/sprints/sprint-1/`) give the detailed endpoints, fields, and acceptance criteria; this document defines the overarching architectural patterns, data structures, and operational conventions they must adhere to.
 
@@ -495,4 +496,4 @@ Enforced by server middleware and service checks. A hidden button or link in the
 | User / session | Own identity only | Own identity only |
 
 **Verification.** The brief's Sprint 1 acceptance criteria already cover: unauthenticated access (AC-04), participant creating a template (AC-09), participant seeing only published templates (AC-11), manager creating a goal (AC-16), entry on another participant's goal (AC-23), cross-participant reads (AC-25) and manager reads of participant data (AC-26).
-Not yet covered, and to be added as acceptance criteria in the feature contracts: publishing another manager's template → 404 and publishing twice → 409 (F-02 contract, P5b); manager calling `GET /api/goals` → 403 (F-05 contract, P5e).
+Cases found without a test during the P4b review were added as acceptance criteria in version 0.3: publishing another manager's template → 404 (AC-30), publishing twice → 409 (AC-31), manager calling `GET /api/goals` → 403 (AC-32). See `docs/traceability.md`.

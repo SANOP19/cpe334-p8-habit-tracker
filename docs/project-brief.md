@@ -107,6 +107,8 @@ Docker, CI/CD and cloud deployment are not part of Deliverable 1; the design onl
 | NFR-06 | A fresh clone runs and passes tests by following the README | Clean-clone check by the member who did not write the README | 1 |
 | NFR-07 | Main screens show loading, empty and error states | UI/E2E tests and screenshots | 1 |
 | NFR-08 | No real secret in Git or client code | Review of diffs and `.env.example` | 1 |
+| NFR-09 | Calendar days and the back-dating window are evaluated in Asia/Bangkok | Unit tests with a mocked clock | 1 |
+| NFR-10 | Simultaneous submissions for the same goal and day store one record and return 409 | Integration test (TEST-22) | 1 |
 
 ---
 
@@ -117,7 +119,7 @@ Docker, CI/CD and cloud deployment are not part of Deliverable 1; the design onl
 | F-01 | Authentication and session | FR-01..03, NFR-01..03 | 1 |
 | F-02 | Activity template management | FR-04..06, BR-06 | 1 |
 | F-03 | Goal setting | FR-07, BR-08, BR-09 | 1 |
-| F-04 | Daily activity logging | FR-08, BR-01..04 | 1 |
+| F-04 | Daily activity logging | FR-08, BR-01..04, NFR-09, NFR-10 | 1 |
 | F-05 | Progress and privacy isolation | FR-09, BR-05, BR-07 | 1 |
 | F-06 | Goal revision, pause, archive | FR-10, BR-10 | 2 |
 | F-07 | History and streak | FR-11, FR-12, BR-11 | 2 |
@@ -216,13 +218,20 @@ Error body for every failure: `{ "error": { "code": "...", "message": "..." } }`
 | | AC-27 | UI journey: sign in → set goal → record → see progress → duplicate rejected → sign out | TEST-27 | E2E |
 | Cross | AC-28 | Data is still there after an application restart | TEST-28 | Integration |
 | | AC-29 | Errors use one shape and contain no stack trace | TEST-29 | API |
+| F-02 | AC-30 | Manager publishing another manager's template → 404 | TEST-30 | API |
+| | AC-31 | Publishing an already published template → 409 `ALREADY_PUBLISHED` | TEST-31 | API |
+| F-05 | AC-32 | Manager calling `GET /api/goals` → 403 | TEST-32 | API |
+| F-01 | AC-33 | A session whose `expiresAt` has passed → 401 on `/me` | TEST-33 | API + DB |
 
+AC-30..AC-32 were added after the P4b review found these role-matrix cases had no test (System SDS §5.4). AC-33 was added while building the traceability matrix: NFR-03 covers expiry, but AC-05 only covered logout.
 NFR-06, NFR-07 and NFR-08 are verified by recorded checks (clean clone, screenshots, diff review).
 TDD evidence (failing test committed before implementation) is required at least for TEST-20, TEST-21, TEST-25 and TEST-26.
 
 ---
 
 ## 10. Product Definition of Done
+
+The full Product Definition of Done is in `docs/sprints/sprint-1/dod.md`. In short:
 
 1. Behaviour matches the feature contract.
 2. Every planned test was executed; meaningful tests pass; nothing disabled or weakened; failures and skips are reported.
@@ -235,7 +244,38 @@ TDD evidence (failing test committed before implementation) is required at least
 
 ## 11. Work allocation
 
-Rules: every part has one **author** and one **reviewer**; the reviewer pulls the branch and runs it before approving; authors never approve their own PR; before merging, the reviewer explains the change back to the author. Roles swap between sprints. Each part starts with its own Issue.
+Rules: every PR has one **author** and one **reviewer**; the reviewer pulls the branch and runs it before approving; authors never approve their own PR; before merging, the reviewer explains the change back to the author. Roles swap between sprints. Each PR starts with its own Issue.
+
+### 11.1 Current allocation (revised)
+
+The team agreed to reduce the number of PRs. Each feature PR contains its contract, failing tests and implementation as **separate commits in that order** (`docs(contract)` → `test(red)` → `feat`), which keeps the contract-before-code sequence visible. `AI_USE.md` is compiled once before the PDF; until then AI use is described in each PR description.
+
+| PR | Issue | What | Author | Reviewer | Needs merged first |
+|---|---|---|---|---|---|
+| PR1 | #16 | Remaining baseline documents: features, traceability, sprint plan, DoD, this brief | Nitithorn | Nara | #13, #14 |
+| PR2 | #17 | F-01 Authentication and session | Nitithorn | Nara | #12 |
+| PR3 | #18 | F-02 Activity template management | Nara | Nitithorn | PR2 |
+| PR4 | #19 | F-03 Goal setting | Nitithorn | Nara | PR3 |
+| PR5 | #20 | F-04 Daily activity logging (main TDD evidence, done together) | Nara | Nitithorn | PR4 |
+| PR6 | #21 | F-05 Progress and privacy isolation (adds the second seeded participant) | Nitithorn | Nara | PR5 |
+| PR7 | #22 | Release preparation: E2E journey, README, full test run | Nara | Nitithorn (clean-clone check) | PR6 |
+| PR8 | #23 | Release `staging/sprint-1` → `main`, tag `v0.1.0-sprint1` | Nitithorn | Nara | PR7 |
+
+Evidence collection and the PDF are done outside the repository: Nitithorn assembles Parts A–C, Nara assembles Parts D–F and the front matter, and each checks the other's.
+
+### 11.2 Completed parts (original allocation)
+
+| Part | What | Author | Reviewer | PR |
+|---|---|---|---|---|
+| P0 | This brief | Nitithorn | Nara | #2 |
+| P1 | Server foundation | Nara | Nitithorn | #12 |
+| P2 | Client foundation | Nitithorn | Nara | #9 |
+| P3a | SRS: context, actors, scope, assumptions, decisions | Nitithorn | Nara | #10 |
+| P3b | SRS: FR / BR / NFR | Nara | Nitithorn | #13 |
+| P4a | SDS: architecture, data, auth/session, configuration | Nara | Nitithorn | #14 |
+| P4b | SDS: UI, API conventions, role matrix | Nitithorn | Nara | #11 |
+
+### 11.3 Original plan (superseded, kept for history)
 
 | Part | What | Author | Reviewer | Needs merged first |
 |---|---|---|---|---|
@@ -271,4 +311,4 @@ Rules: every part has one **author** and one **reviewer**; the reviewer pulls th
 | P9b | PDF Parts D–F, front matter, contents, navigation table | Nara | Nitithorn | P8a–P8c |
 | P9c | Final audit and cross-questioning | both | — | P9a, P9b |
 
-Parts that can run in parallel right after P0 is merged: **P1, P3b, P4a (Nara)** and **P2, P3a, P4b (Nitithorn)**.
+The original plan split the remaining work into about 30 parts. It was replaced by 11.1 to reduce review round-trips; no requirement or acceptance criterion was removed.
