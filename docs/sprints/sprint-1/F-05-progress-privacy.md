@@ -3,6 +3,7 @@
 | Version | Date | Author | Reviewer | Change |
 |---|---|---|---|---|
 | 1.0 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Contract written before implementation (PR6, Issue #21) |
+| 1.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | TEST-25/TEST-26 add a positive control (owner reads own progress → 200) so they cannot pass just because the route is missing; TDD note updated (before any test was written) |
 
 **Requirements:** FR-09 · BR-05 (participant isolation) · BR-07 (manager privacy) · NFR-05 (safe, uniform errors) · decision D-08 (progress formula), D-10 (404 vs 403)
 **Acceptance criteria:** AC-24, AC-25, AC-26, AC-29 (AC-32 was delivered in F-03, PR #28; AC-27 E2E is in PR7)
@@ -77,14 +78,14 @@ No schema change. Seed (`server/prisma/seed.ts`) adds a second participant `part
 | TEST-24a | AC-24 | Unit | `calculateProgress(20, entries)` | Values 25, 10, 20, 19.99, and target 3 with value 1 | 125/true, 50/false, 100/true, 99.9/false, 33.3/false; counts correct |
 | TEST-24b | AC-24 | API + DB | Goal target 20 with entries 25 (14 Nov), 10 (13 Nov), 20 (12 Nov) | `GET /api/goals/:id/progress` | 200; days newest first with the expected percent/achieved; `entriesCount` 3, `achievedCount` 2 |
 | TEST-24c | AC-24 | API + DB | Goal with no entries | `GET …/progress` | 200; `days` empty; counts 0 |
-| TEST-25 | AC-25 | API + DB | A and B each have a goal with an entry | A requests B's goal, entries, progress; A requests `/api/goals/abc/progress` | All 404 `NOT_FOUND`; response text contains none of B's values or notes |
-| TEST-26 | AC-26 | API + DB | Manager signed in; A has a goal with an entry | Manager requests A's goal, entries, progress | All 403 `FORBIDDEN`, body is only the error |
+| TEST-25 | AC-25 | API + DB | A and B each have a goal with an entry | Positive control: A requests A's own progress. Then A requests B's goal, entries, progress, and `/api/goals/abc/progress` | Own progress 200; all others 404 `NOT_FOUND`; response text contains none of B's values or notes |
+| TEST-26 | AC-26 | API + DB | Manager signed in; A has a goal with an entry | Positive control: A requests own progress. Then the manager requests A's goal, entries, progress | A gets 200; manager gets 403 `FORBIDDEN` three times, body is only the error |
 | TEST-29 | AC-29 | API | Error of each kind triggered | Inspect each body | Exactly `error.code` + `error.message` (+ `details` on 422); no `stack`, `at `, `prisma`, `P20`, `SELECT`, `\\src\\` or `/src/` |
 | TEST-S2 | (seed) | Integration | Seed passwords set | Run `seedDatabase()` | `participant2@example.test` exists with role `PARTICIPANT`; running the seed twice still gives 3 users |
 | TEST-04 | AC-04 | API | — | `GET /api/goals/1/progress` added to the protected list | 401 without a session |
 | TEST-UI-08 | AC-24 (UI) | Component | `fetch` mocked: goal, entries, progress | Render Goals | "Achieved 1 of 2 logged days", "125%" with "Achieved" badge, "50%" without |
 
-**TDD note.** TEST-24 and TEST-25 fail before implementation (no calculation, no progress endpoint). **TEST-26 and TEST-29 are expected to pass already**, because the participant-only guard (F-03) and the error handler (P1) exist; they are regression checks that the new endpoint keeps those guarantees, not red→green evidence. The brief's TDD list is updated from TEST-26 to TEST-24 accordingly.
+**TDD note.** TEST-24, TEST-25 and TEST-26 fail before implementation: there is no calculation and no progress endpoint, so the positive controls cannot get 200. A check of "404/403" alone would pass early (unknown routes already return 404, and the F-03 guard already returns 403), which is why the positive controls are part of these tests. **TEST-29 is expected to pass already** — it is a regression check of the P1 error handler across all error kinds, not red→green evidence.
 
 ## 7. Feature Definition of Done
 - All tests in §6 pass; earlier suites still pass; builds pass.
