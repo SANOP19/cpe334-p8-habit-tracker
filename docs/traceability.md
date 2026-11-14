@@ -15,7 +15,7 @@
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
-This version is written before Sprint 1 feature implementation; the **Actual test / result** column is filled in as each feature PR merges.
+Version 0.1 was written before Sprint 1 implementation; each feature PR then filled in the **Actual test / result** column. Version 0.9 is the state at the Sprint 1 release (`v0.1.0-sprint1`).
 
 ---
 

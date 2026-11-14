@@ -272,7 +272,7 @@ sequenceDiagram
     Browser->>Server: POST /api/auth/logout (Cookie: session=plaintextToken)
     Server->>Server: Compute tokenHash = SHA-256(plaintextToken)
     Server->>DB: DELETE FROM sessions WHERE tokenHash = ?
-    Server-->>Browser: 204 No Content + Set-Cookie: session=; Max-Age=0
+    Server-->>Browser: 204 No Content + Set-Cookie: session cleared (Max-Age=0)
     Browser-->>User: Redirects to Sign In screen
 ```
 
