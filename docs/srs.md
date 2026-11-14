@@ -126,7 +126,6 @@ Authentication and session; template creation and publication; goal setting; dai
 | **NFR-08** | No real secret in Git or client code | Review of diffs and `.env.example` | 1 |
 | **NFR-09** | Timezone consistency: calendar days and rolling back-dating window evaluated in `Asia/Bangkok` | Unit tests with mocked clock | 1 |
 | **NFR-10** | Concurrency robustness: simultaneous submissions for the same goal and day yield one record and 409 | Integration test (`TEST-22`) | 1 |
-| **NFR-11** | Cross-platform reproducibility: runs and builds identically on Linux, macOS, and Windows | Clean clone validation across developer environments | 1 |
 
 ---
 
