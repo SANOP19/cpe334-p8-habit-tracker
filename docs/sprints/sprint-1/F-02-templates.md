@@ -29,7 +29,7 @@
 | Rule | Behaviour |
 |---|---|
 | Required fields | `name` (non-empty string), `unit` (non-empty string), `minValue` (finite number), `maxValue` (finite number) are required $\rightarrow$ otherwise 422 `VALIDATION_ERROR` with `details` per field. |
-| Range constraint (BR-06, D-06) | `minValue` must be strictly less than `maxValue` (`minValue < maxValue`). If `minValue >= maxValue`, the request is rejected with 422 `VALIDATION_ERROR` (code: `INVALID_RANGE`). The database CHECK constraint provides defence-in-depth. |
+| Range constraint (BR-06, D-06) | `minValue` must be strictly less than `maxValue` (`minValue < maxValue`). If `minValue >= maxValue`, the request is rejected with 422 `INVALID_RANGE`. The database CHECK constraint provides defence-in-depth. |
 | Program Manager only | Non-manager (Participant) calling `POST /api/templates` or `POST /api/templates/:id/publish` receives 403 `FORBIDDEN`. |
 | Creator isolation (AC-30) | A manager attempting to publish a template created by a different manager receives 404 `NOT_FOUND` (preventing template enumeration or unauthorized publication). |
 | Idempotency / Double publish (AC-31) | Publishing an already published template returns 409 `ALREADY_PUBLISHED`. |
@@ -63,7 +63,8 @@ Responses:
 | 201 | `{ "template": { "id": 1, "name": "Daily Steps", "unit": "steps", "minValue": 0, "maxValue": 50000, "status": "DRAFT", "createdById": 1, "createdAt": "..." } }` | Created |
 | 401 | `{ "error": { "code": "UNAUTHENTICATED", "message": "Please sign in." } }` | Not signed in |
 | 403 | `{ "error": { "code": "FORBIDDEN", "message": "You do not have permission to do this." } }` | Non-manager |
-| 422 | `{ "error": { "code": "VALIDATION_ERROR", "message": "...", "details": [...] } }` | Missing field or `minValue >= maxValue` (`INVALID_RANGE`) |
+| 422 | `{ "error": { "code": "INVALID_RANGE", "message": "minValue must be strictly less than maxValue.", "details": [...] } }` | `minValue >= maxValue` |
+| 422 | `{ "error": { "code": "VALIDATION_ERROR", "message": "...", "details": [...] } }` | Missing field or non-numeric value |
 
 ### `POST /api/templates/:id/publish`
 Headers: `Cookie: session=<token>`  
@@ -134,7 +135,7 @@ When user navigates to the "Templates" tab (`page === "templates"`):
 | AC | Given / When / Then |
 |---|---|
 | **AC-07** | Given a signed-in program manager, when they submit a template with name, unit, and minValue < maxValue, then the response is 201 Created with status `DRAFT`, `createdById` set to the manager, and the template persists in the database. |
-| **AC-08** | Given a program manager, when they submit a template with minValue >= maxValue, then the response is 422 `VALIDATION_ERROR` (`INVALID_RANGE`), and no row is created. |
+| **AC-08** | Given a program manager, when they submit a template with minValue >= maxValue, then the response is 422 `INVALID_RANGE`, and no row is created. |
 | **AC-09** | Given a signed-in participant, when they attempt to create a template via `POST /api/templates`, then the server returns 403 `FORBIDDEN`. |
 | **AC-10** | Given a manager's draft template, when the manager publishes it, then the response is 200 with status `PUBLISHED`, and it becomes available to participants. |
 | **AC-11** | Given a signed-in participant, when they call `GET /api/templates`, then only templates with status `PUBLISHED` are returned. Given a signed-in manager, when they call `GET /api/templates`, then their own templates (both draft and published) are returned. |
@@ -148,8 +149,9 @@ When user navigates to the "Templates" tab (`page === "templates"`):
 | Test | AC | Level | Precondition / input | Action | Expected result |
 |---|---|---|---|---|---|
 | TEST-07 | AC-07 | API + DB | Signed-in manager | `POST /api/templates` with valid name, unit, min < max | 201 Created; body has template with status `DRAFT`; DB row exists |
-| TEST-08 | AC-08 | API + DB | Signed-in manager | `POST /api/templates` with minValue >= maxValue | 422 `VALIDATION_ERROR`; DB count = 0 |
+| TEST-08 | AC-08 | API + DB | Signed-in manager | `POST /api/templates` with minValue >= maxValue | 422 `INVALID_RANGE`; DB count = 0 |
 | TEST-08b | AC-08 | API | Signed-in manager | `POST /api/templates` with missing required fields | 422 `VALIDATION_ERROR` with details |
+| TEST-08c | AC-08 | API | Signed-in manager | `POST /api/templates` with boolean or string min/max | 422 `VALIDATION_ERROR` with details |
 | TEST-09 | AC-09 | API | Signed-in participant | `POST /api/templates` with valid body | 403 `FORBIDDEN`; no DB row created |
 | TEST-10 | AC-10 | API + DB | Signed-in manager with draft template | `POST /api/templates/:id/publish` | 200 OK; status updated to `PUBLISHED` in DB |
 | TEST-11a | AC-11 | API + DB | Participant signed in; DB has 1 draft and 1 published template | `GET /api/templates` | 200 OK; returns array with only the published template |

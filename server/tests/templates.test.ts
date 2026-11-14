@@ -82,7 +82,7 @@ describe("F-02 Activity Template Management", () => {
     expect(dbTemplate?.createdById).toBe(managerId);
   });
 
-  it("TEST-08 (AC-08): minValue >= maxValue is rejected with 422 VALIDATION_ERROR (INVALID_RANGE)", async () => {
+  it("TEST-08 (AC-08): minValue >= maxValue is rejected with 422 INVALID_RANGE", async () => {
     const equalRange = await request(app)
       .post("/api/templates")
       .set("Cookie", managerCookie)
@@ -94,7 +94,7 @@ describe("F-02 Activity Template Management", () => {
       });
 
     expect(equalRange.status).toBe(422);
-    expect(equalRange.body.error.code).toBe("VALIDATION_ERROR");
+    expect(equalRange.body.error.code).toBe("INVALID_RANGE");
 
     const invertedRange = await request(app)
       .post("/api/templates")
@@ -107,7 +107,7 @@ describe("F-02 Activity Template Management", () => {
       });
 
     expect(invertedRange.status).toBe(422);
-    expect(invertedRange.body.error.code).toBe("VALIDATION_ERROR");
+    expect(invertedRange.body.error.code).toBe("INVALID_RANGE");
 
     expect(await prisma.activityTemplate.count()).toBe(0);
   });
@@ -126,6 +126,24 @@ describe("F-02 Activity Template Management", () => {
     expect(fields).toContain("unit");
     expect(fields).toContain("minValue");
     expect(fields).toContain("maxValue");
+  });
+
+  it("TEST-08c (AC-08): non-number values for minValue or maxValue return 422 VALIDATION_ERROR", async () => {
+    const res = await request(app)
+      .post("/api/templates")
+      .set("Cookie", managerCookie)
+      .send({
+        name: "Non Number Range",
+        unit: "count",
+        minValue: true,
+        maxValue: "50",
+      });
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
+    expect(res.body.error.details).toContainEqual({ field: "minValue", message: "Must be a finite number" });
+    expect(res.body.error.details).toContainEqual({ field: "maxValue", message: "Must be a finite number" });
+    expect(await prisma.activityTemplate.count()).toBe(0);
   });
 
   it("TEST-09 (AC-09): participant attempting to create a template receives 403 FORBIDDEN", async () => {

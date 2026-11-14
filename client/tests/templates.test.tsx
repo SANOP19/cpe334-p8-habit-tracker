@@ -111,7 +111,7 @@ describe("F-02 Activity Template UI", () => {
         .mockResolvedValueOnce(
           jsonResponse(422, {
             error: {
-              code: "VALIDATION_ERROR",
+              code: "INVALID_RANGE",
               message: "minValue must be strictly less than maxValue.",
             },
           }),

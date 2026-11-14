@@ -37,21 +37,26 @@ templatesRouter.post("/", requireAuth, requireRole("PROGRAM_MANAGER"), async (re
     if (typeof unit !== "string" || unit.trim() === "") {
       details.push({ field: "unit", message: "Required" });
     }
-    const min = Number(minValue);
-    const max = Number(maxValue);
-    if (minValue === undefined || minValue === null || typeof minValue === "string" && minValue.trim() === "" || Number.isNaN(min)) {
-      details.push({ field: "minValue", message: "Must be a valid number" });
+
+    const isFiniteNumber = (val: unknown): val is number =>
+      typeof val === "number" && Number.isFinite(val);
+
+    if (!isFiniteNumber(minValue)) {
+      details.push({ field: "minValue", message: "Must be a finite number" });
     }
-    if (maxValue === undefined || maxValue === null || typeof maxValue === "string" && maxValue.trim() === "" || Number.isNaN(max)) {
-      details.push({ field: "maxValue", message: "Must be a valid number" });
+    if (!isFiniteNumber(maxValue)) {
+      details.push({ field: "maxValue", message: "Must be a finite number" });
     }
 
     if (details.length > 0) {
-      throw new AppError(422, "VALIDATION_ERROR", "All template fields are required.", details);
+      throw new AppError(422, "VALIDATION_ERROR", "All template fields are required and must be valid numbers.", details);
     }
 
+    const min = minValue as number;
+    const max = maxValue as number;
+
     if (min >= max) {
-      throw new AppError(422, "VALIDATION_ERROR", "minValue must be strictly less than maxValue.", [
+      throw new AppError(422, "INVALID_RANGE", "minValue must be strictly less than maxValue.", [
         { field: "minValue", message: "Must be strictly less than maxValue" },
         { field: "maxValue", message: "Must be strictly greater than minValue" },
       ]);
