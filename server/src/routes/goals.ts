@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma.js";
+import { clock } from "../lib/clock.js";
 import { requireAuth, requireRole } from "../middlewares/auth.js";
 import { AppError } from "../middlewares/error-handler.js";
 
-// F-03 Goal setting — docs/sprints/sprint-1/F-03-goals.md
+// F-03 Goal setting & F-04 Daily activity logging — docs/sprints/sprint-1/F-04-logging.md
 export const goalsRouter = Router();
 
 // Steps 1-2 of the order of checks (SDS §5.3): signed in, and a participant (managers get 403 — AC-16, AC-32).
@@ -19,11 +20,36 @@ const goalSelect = {
   template: { select: { id: true, name: true, unit: true, minValue: true, maxValue: true } },
 } as const;
 
+const entrySelect = {
+  id: true,
+  goalId: true,
+  entryDate: true,
+  value: true,
+  note: true,
+  createdAt: true,
+} as const;
+
 const isFiniteNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
 const isPositiveInteger = (value: unknown): value is number => Number.isInteger(value) && (value as number) > 0;
 
+const isValidCalendarDate = (dateStr: unknown): dateStr is string => {
+  if (typeof dateStr !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dateObj = new Date(Date.UTC(y, m - 1, d));
+  return dateObj.getUTCFullYear() === y && dateObj.getUTCMonth() === m - 1 && dateObj.getUTCDate() === d;
+};
+
+function getOldestAllowedDate(todayStr: string, daysBack = 6): string {
+  const [y, m, d] = todayStr.split("-").map(Number);
+  const dateObj = new Date(Date.UTC(y, m - 1, d));
+  dateObj.setUTCDate(dateObj.getUTCDate() - daysBack);
+  return dateObj.toISOString().slice(0, 10);
+}
+
 const duplicateGoal = () =>
   new AppError(409, "DUPLICATE_ACTIVE_GOAL", "You already have an active goal for this activity.");
+const duplicateEntry = () =>
+  new AppError(409, "DUPLICATE_ENTRY", "An activity entry for this date already exists.");
 const goalNotFound = () => new AppError(404, "NOT_FOUND", "Goal not found.");
 
 // POST /api/goals — AC-12..AC-15
@@ -103,6 +129,114 @@ goalsRouter.get("/:id", async (req, res, next) => {
     });
     if (!goal) throw goalNotFound();
     res.status(200).json({ goal });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/goals/:id/entries — F-04 (AC-17..AC-23)
+goalsRouter.post("/:id/entries", async (req, res, next) => {
+  try {
+    const goalId = Number(req.params.id);
+    if (!isPositiveInteger(goalId)) throw goalNotFound();
+
+    // Step 3: Goal must exist and belong to the signed-in participant (404 otherwise — BR-05, D-10)
+    const goal = await prisma.goal.findFirst({
+      where: { id: goalId, participantId: req.user!.id },
+      include: { template: true },
+    });
+    if (!goal) throw goalNotFound();
+
+    // Step 4: Body shape validation
+    const { entryDate, value, note } = (req.body ?? {}) as {
+      entryDate?: unknown;
+      value?: unknown;
+      note?: unknown;
+    };
+
+    const details: Array<{ field: string; message: string }> = [];
+    if (!isValidCalendarDate(entryDate)) {
+      details.push({ field: "entryDate", message: "Must be a valid date in YYYY-MM-DD format" });
+    }
+    if (!isFiniteNumber(value)) {
+      details.push({ field: "value", message: "Must be a valid number" });
+    }
+    if (details.length > 0) {
+      throw new AppError(422, "VALIDATION_ERROR", "Invalid entry data.", details);
+    }
+
+    const dateStr = entryDate as string;
+    const numericValue = value as number;
+
+    // Step 5: Date window rules (BR-02, BR-03, NFR-09)
+    const today = clock.todayBangkok();
+    const oldestAllowed = getOldestAllowedDate(today, 6);
+
+    if (dateStr > today) {
+      throw new AppError(422, "DATE_IN_FUTURE", "Cannot record an activity for a future date.");
+    }
+    if (dateStr < oldestAllowed) {
+      throw new AppError(422, "DATE_TOO_OLD", "Activity can only be recorded for today and up to 6 days in the past.");
+    }
+
+    // Step 6: Value range rules (BR-01)
+    if (numericValue < goal.template.minValue || numericValue > goal.template.maxValue) {
+      throw new AppError(
+        422,
+        "VALUE_OUT_OF_RANGE",
+        `Value must be between ${goal.template.minValue} and ${goal.template.maxValue} ${goal.template.unit}.`,
+      );
+    }
+
+    // Step 7: Duplicate check (BR-04, NFR-10)
+    const existing = await prisma.activityEntry.findUnique({
+      where: { goalId_entryDate: { goalId, entryDate: dateStr } },
+      select: { id: true },
+    });
+    if (existing) {
+      throw duplicateEntry();
+    }
+
+    try {
+      const entry = await prisma.activityEntry.create({
+        data: {
+          goalId,
+          entryDate: dateStr,
+          value: numericValue,
+          note: typeof note === "string" && note.trim().length > 0 ? note.trim() : null,
+        },
+        select: entrySelect,
+      });
+      res.status(201).json({ entry });
+    } catch (err) {
+      if ((err as { code?: string }).code === "P2002") {
+        throw duplicateEntry();
+      }
+      throw err;
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/goals/:id/entries — F-04 (AC-17, AC-23)
+goalsRouter.get("/:id/entries", async (req, res, next) => {
+  try {
+    const goalId = Number(req.params.id);
+    if (!isPositiveInteger(goalId)) throw goalNotFound();
+
+    const goal = await prisma.goal.findFirst({
+      where: { id: goalId, participantId: req.user!.id },
+      select: { id: true },
+    });
+    if (!goal) throw goalNotFound();
+
+    const entries = await prisma.activityEntry.findMany({
+      where: { goalId },
+      orderBy: [{ entryDate: "desc" }, { createdAt: "desc" }],
+      select: entrySelect,
+    });
+    res.status(200).json({ entries });
   } catch (err) {
     next(err);
   }

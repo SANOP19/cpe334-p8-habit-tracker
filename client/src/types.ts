@@ -29,3 +29,12 @@ export interface Goal {
   createdAt: string;
   template: Pick<ActivityTemplate, "id" | "name" | "unit" | "minValue" | "maxValue">;
 }
+
+export interface ActivityEntry {
+  id: number;
+  goalId: number;
+  entryDate: string;
+  value: number;
+  note: string | null;
+  createdAt: string;
+}
