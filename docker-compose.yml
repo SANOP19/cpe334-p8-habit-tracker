@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: habitpulse-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-habittracker}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-habittracker}
+      POSTGRES_DB: ${POSTGRES_DB:-habittracker}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-habittracker} -d $${POSTGRES_DB:-habittracker}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: habitpulse-migrate
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      TZ: Asia/Bangkok
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habittracker}:${POSTGRES_PASSWORD:-habittracker}@db:5432/${POSTGRES_DB:-habittracker}?schema=public
+      SEED_MANAGER_PASSWORD: ${SEED_MANAGER_PASSWORD:?Set SEED_MANAGER_PASSWORD in .env}
+      SEED_PARTICIPANT_PASSWORD: ${SEED_PARTICIPANT_PASSWORD:?Set SEED_PARTICIPANT_PASSWORD in .env}
+    command: ["sh", "-c", "npx prisma migrate deploy && npm run seed"]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: habitpulse-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      NODE_ENV: production
+      TZ: Asia/Bangkok
+      PORT: 3000
+      SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-24}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-habittracker}:${POSTGRES_PASSWORD:-habittracker}@db:5432/${POSTGRES_DB:-habittracker}?schema=public
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
