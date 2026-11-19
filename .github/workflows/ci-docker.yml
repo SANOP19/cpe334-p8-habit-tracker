@@ -1,0 +1,121 @@
+# ##############################################################################
+# CI — "CI & Docker Build" (HabitPulse, Lab 5 #39)
+# ##############################################################################
+# Runs every automated check and is used in two ways:
+#   1) on every pull request into `main` or a `staging/**` branch (and by hand),
+#   2) as a reusable workflow called by deploy.yml (`workflow_call`), so a
+#      release is deployed only after these checks pass.
+# Steps: deploy-script checks (no GCP access) -> backend (migrate, seed, Vitest
+#        on real PostgreSQL) -> frontend (Vitest, production build) -> E2E
+#        (Playwright) -> production Docker build (not pushed).
+# It deploys nothing and needs no secret: every value below is a throwaway
+# value for the temporary CI database only.
+#
+# DO NOT RENAME the job id `test-and-docker`: it is the required status check
+# in the "protect main and staging" ruleset.
+# ##############################################################################
+
+name: CI & Docker Build
+
+on:
+  workflow_call:
+  pull_request:
+    branches: [main, "staging/**"]
+  workflow_dispatch:
+
+# Least privilege: the checks only read the repository.
+permissions:
+  contents: read
+
+# A newer run on the same ref cancels the older one.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # Temporary PostgreSQL for the tests (throwaway CI credentials, not secrets).
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: habittracker
+          POSTGRES_PASSWORD: habittracker
+          POSTGRES_DB: habittracker
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    # Shared by the backend and E2E steps. The seed passwords only exist inside
+    # this temporary database; real ones live in Secret Manager.
+    env:
+      DATABASE_URL: postgresql://habittracker:habittracker@localhost:5432/habittracker?schema=public
+      DATABASE_URL_TEST: postgresql://habittracker:habittracker@localhost:5432/habittracker_test?schema=public
+      SEED_MANAGER_PASSWORD: ci-only-manager-password
+      SEED_PARTICIPANT_PASSWORD: ci-only-participant-password
+
+    steps:
+      # Actions are pinned to full commit SHAs (version in the comment);
+      # Dependabot (.github/dependabot.yml) proposes updates.
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      # Python is only needed for the smoke-test unit tests.
+      - name: Setup Python 3.14
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+
+      # deploy.sh / release.sh / smoke_test.py are checked offline: syntax,
+      # a dry run (prints commands, calls no gcloud), and stubbed tests.
+      - name: Check deployment scripts without accessing GCP
+        run: |
+          bash -n deploy/deploy.sh deploy/release.sh
+          DRY_RUN=1 bash deploy/deploy.sh
+          bash deploy/tests/test_release_stub.sh
+          python3 -m unittest discover -s deploy/tests -p 'test_smoke.py' -v
+
+      - name: Create the test database
+        env:
+          PGPASSWORD: habittracker
+        run: psql -h localhost -U habittracker -d habittracker -c 'CREATE DATABASE habittracker_test'
+
+      - name: Backend - install, migrate, seed, test (Vitest + Supertest)
+        working-directory: ./server
+        run: |
+          npm ci
+          npx prisma migrate deploy
+          npm run migrate:test
+          npm run seed
+          npm test
+
+      - name: Frontend - install, test, production build
+        working-directory: ./client
+        run: |
+          npm ci
+          npm test
+          npm run build
+
+      # playwright.config.ts starts the server and client dev servers itself.
+      - name: E2E - Playwright participant journey
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npx playwright test
+
+      - name: Verify the production Docker build (not pushed)
+        run: docker build -t habitpulse:ci .
