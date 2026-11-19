@@ -5,6 +5,8 @@ import { errorHandler } from "./middlewares/error-handler.js";
 import { authRouter } from "./routes/auth.js";
 import { templatesRouter } from "./routes/templates.js";
 import { goalsRouter } from "./routes/goals.js";
+import { prisma } from "./lib/prisma.js";
+import { serveClient, shouldServeClient } from "./lib/client-static.js";
 
 export const app = express();
 
@@ -31,6 +33,17 @@ app.get("/api/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+// Readiness probe (Lab 5 #37): proves the API can reach the database.
+// Used by the post-deploy smoke test; public and read-only.
+app.get("/api/ready", async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).json({ status: "ready", db: "connected" });
+  } catch {
+    res.status(503).json({ status: "not_ready" });
+  }
+});
+
 // F-01 Authentication and session
 app.use("/api/auth", authRouter);
 
@@ -45,6 +58,11 @@ if (process.env.NODE_ENV === "test") {
   app.get("/api/test/unexpected-error", (_req, _res, _next) => {
     throw new Error("Simulated unhandled database failure");
   });
+}
+
+// Production only (Lab 5 #37): serve the built client from the same container.
+if (shouldServeClient()) {
+  serveClient(app);
 }
 
 // 404 handler for unknown routes
