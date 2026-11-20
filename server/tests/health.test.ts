@@ -6,7 +6,7 @@ describe("P1 Health Endpoint and Global Error Handler", () => {
   it("GET /api/health returns 200 with { status: 'ok' }", async () => {
     const res = await request(app).get("/api/health");
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ status: "ok" });
+    expect(res.body).toEqual({ status: "broken" }); // PR-5 (C-02): deliberately wrong to prove the merge gate. Never merge.
   });
 
   it("unhandled runtime error returns 500 with sanitized code and generic message (NFR-05)", async () => {
