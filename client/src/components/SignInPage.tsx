@@ -31,7 +31,8 @@ export function SignInPage({ onSignedIn }: { onSignedIn: (user: User) => void })
 
   return (
     <div className="mx-auto" style={{ maxWidth: 400 }}>
-      <h1 className="h4 mb-3">Sign in</h1>
+      <h1 className="h4 mb-1">Sign in</h1>
+      <p className="text-body-secondary mb-3">Set a daily goal, log your progress and see how you are doing.</p>
       <ErrorMessage message={error} />
       <form onSubmit={handleSubmit} noValidate={false}>
         <div className="mb-3">
