@@ -4,8 +4,9 @@ import { fileURLToPath } from "node:url";
 
 // Lab 5 #37: in production one container serves the API and the built React app
 // on the same origin, so the session cookie and relative /api calls keep working.
-// Default location: <repo>/client/dist, two levels above this file's folder
-// (src/lib or dist/lib). CLIENT_DIST_DIR overrides it (used by the tests).
+// Default location: <repo>/client/dist, i.e. three levels up from this file's
+// folder (server/src/lib or server/dist/lib) and then into client/dist.
+// CLIENT_DIST_DIR overrides it (used by the tests).
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_CLIENT_DIST = path.resolve(here, "../../../client/dist");
 
