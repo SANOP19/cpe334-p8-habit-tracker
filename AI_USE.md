@@ -43,8 +43,8 @@ Compiled for the Sprint 1 release (PR8). Sources: each PR's description and revi
 | #41 · PR #50 | Merge-gate proof (one failing test, closed unmerged) | Claude Code | Nitithorn | — |
 | #41 | Ruleset and environment `demo` settings, checked through the GitHub API | Claude Code | Nitithorn | Nara |
 | #42 · PR #49 | Sync of `staging/lab-5` with `main` | Claude Code | Nitithorn | Nara |
-| #42 · PR-7 | Visible release change, Validate-step fix in `deploy.yml` | Claude Code | Nitithorn | Nara |
-| #44 · PR-8 | `docs/labs/lab-05/deployment.md`, this section | Claude Code | Nitithorn | Nara |
+| #42 · PR #51 | Visible release change, Validate-step fix in `deploy.yml` | Claude Code | Nitithorn | Nara |
+| #44 · PR #52 | `docs/labs/lab-05/deployment.md`, this section | Claude Code | Nitithorn | Nara |
 | #36, #40 | Portal connection, seed secrets, first deploy from Cloud Shell, C-04 | Antigravity explained each step and read logs; Nara ran every command and clicked every portal button | Nara | Nitithorn |
 | #36, #40 | Checking the cloud evidence (resource names against `deploy.sh`, image digest against the commit, live URL probes) and drafting the check comments | Claude Code | Nitithorn | — |
 
