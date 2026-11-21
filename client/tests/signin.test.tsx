@@ -17,6 +17,12 @@ describe("TEST-UI-01 SignInPage", () => {
   });
   afterEach(() => vi.unstubAllGlobals());
 
+  it("shows the tagline under the heading (Lab 5 visible release change)", () => {
+    render(<SignInPage onSignedIn={vi.fn()} />);
+    expect(screen.getByRole("heading", { name: "Sign in" })).toBeInTheDocument();
+    expect(screen.getByText("Set a daily goal, log your progress and see how you are doing.")).toBeInTheDocument();
+  });
+
   it("posts the credentials and reports the signed-in user", async () => {
     fetchMock.mockResolvedValue(jsonResponse(200, { user: alex }));
     const onSignedIn = vi.fn();
