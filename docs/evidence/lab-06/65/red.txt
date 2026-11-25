@@ -1,0 +1,41 @@
+# RED run for #65 (KI-7) — 2026-11-25T14:16Z
+# commit: 3941e6491657e64ee1c667aa39c928a23fd7d873 (test(red) commit, before the fix)
+# command: npm --prefix client test -- -t "TEST-L6-65"
+
+> habit-tracker-client@0.1.0 test
+> vitest run -t TEST-L6-65
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+ ↓ tests/api.test.ts (6 tests | 6 skipped)
+ ↓ tests/layout.test.tsx (4 tests | 4 skipped)
+ ↓ tests/components.test.tsx (4 tests | 4 skipped)
+ ↓ tests/progress.test.tsx (2 tests | 2 skipped)
+ ↓ tests/templates.test.tsx (5 tests | 5 skipped)
+ ↓ tests/signin.test.tsx (4 tests | 4 skipped)
+ ↓ tests/goals.test.tsx (6 tests | 6 skipped)
+ ↓ tests/app.test.tsx (2 tests | 2 skipped)
+ ❯ tests/logging.test.tsx (5 tests | 1 failed | 4 skipped) 44ms
+   × F-04 Daily activity logging UI > TEST-L6-65 (#65, F-04 §4): entry dates are badges and Save entry shows Loading while saving 43ms
+     → expect(element).toHaveClass("badge")
+Expected the element to have class:
+  badge
+Received:
+  fw-semibold me-2
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-L6-65 (#65, F-04 §4): entry dates are badges and Save entry shows Loading while saving
+Error: expect(element).toHaveClass("badge")
+Expected the element to have class:
+  badge
+Received:
+  fw-semibold me-2
+ ❯ tests/logging.test.tsx:195:44
+    193| 
+    194|     // History list: the date is shown as a badge.
+    195|     expect(screen.getByText("2026-11-14")).toHaveClass("badge");
+       |                                            ^
+    196| 
+    197|     // While the request is pending: button disabled and the shared Lo…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 8 skipped (9)
+      Tests  1 failed | 37 skipped (38)
+   Start at  21:16:05
+   Duration  2.07s (transform 337ms, setup 1.81s, collect 2.39s, tests 44ms, environment 9.47s, prepare 1.56s)

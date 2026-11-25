@@ -1,0 +1,35 @@
+# RED run for #64 (KI-6) — 2026-11-25T14:15Z
+# commit: bc85c461bad598c9c8d80c5242f6d5396c0a4a57 (test(red) commit, before the fix)
+# command: npm --prefix client test -- -t "TEST-L6-64"
+
+> habit-tracker-client@0.1.0 test
+> vitest run -t TEST-L6-64
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+ ↓ tests/api.test.ts (6 tests | 6 skipped)
+ ↓ tests/layout.test.tsx (4 tests | 4 skipped)
+ ↓ tests/components.test.tsx (4 tests | 4 skipped)
+ ↓ tests/progress.test.tsx (2 tests | 2 skipped)
+ ↓ tests/signin.test.tsx (4 tests | 4 skipped)
+ ↓ tests/templates.test.tsx (5 tests | 5 skipped)
+ ↓ tests/goals.test.tsx (6 tests | 6 skipped)
+ ↓ tests/app.test.tsx (2 tests | 2 skipped)
+ ❯ tests/logging.test.tsx (4 tests | 1 failed | 3 skipped) 153ms
+   × F-04 Daily activity logging UI > TEST-L6-64 (#64, F-04 §4): after saving an older date the history stays ordered newest date first 153ms
+     → expected '2026-11-2310 pages' to contain '2026-11-24'
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-L6-64 (#64, F-04 §4): after saving an older date the history stays ordered newest date first
+AssertionError: expected '2026-11-2310 pages' to contain '2026-11-24'
+Expected: "2026-11-24"
+Received: "2026-11-2310 pages"
+ ❯ tests/logging.test.tsx:171:23
+    169|       const rows = screen.getAllByRole("listitem").map((li) => li.text…
+    170|       expect(rows).toHaveLength(2);
+    171|       expect(rows[0]).toContain("2026-11-24");
+       |                       ^
+    172|       expect(rows[1]).toContain("2026-11-23");
+    173|     } finally {
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 8 skipped (9)
+      Tests  1 failed | 36 skipped (37)
+   Start at  21:15:31
+   Duration  2.31s (transform 308ms, setup 1.84s, collect 2.42s, tests 153ms, environment 10.32s, prepare 1.66s)
