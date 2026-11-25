@@ -1,0 +1,40 @@
+# RED run for #62 (KI-4) — 2026-11-25T13:53Z
+# commit: 00584d42c57aa0aaebee393c1889d1f9a899072c (test(red) commit, before the fix)
+# command: npm --prefix server test -- -t "TEST-L6-62"
+
+> habit-tracker-server@1.0.0 test
+> vitest run -t TEST-L6-62
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+ ❯ tests/logging.test.ts (13 tests | 1 failed | 12 skipped) 631ms
+   × F-04 Daily activity logging > TEST-L6-62 (#62, F-04 §1): a note longer than 500 characters is 422 VALIDATION_ERROR on note 628ms
+     → expected 201 to be 422 // Object.is equality
+ ↓ tests/templates.test.ts (11 tests | 11 skipped)
+ ↓ tests/goals.test.ts (10 tests | 10 skipped)
+ ↓ tests/auth.test.ts (10 tests | 10 skipped)
+ ↓ tests/progress.test.ts (8 tests | 8 skipped)
+ ↓ tests/db-constraints.test.ts (3 tests | 3 skipped)
+ ↓ tests/ids.test.ts (4 tests | 4 skipped)
+ ↓ tests/client-static.test.ts (6 tests | 6 skipped)
+ ↓ tests/seed.test.ts (3 tests | 3 skipped)
+ ↓ tests/health.test.ts (4 tests | 4 skipped)
+ ↓ tests/ready.test.ts (3 tests | 3 skipped)
+ ↓ tests/require-role.test.ts (3 tests | 3 skipped)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/logging.test.ts > F-04 Daily activity logging > TEST-L6-62 (#62, F-04 §1): a note longer than 500 characters is 422 VALIDATION_ERROR on note
+AssertionError: expected 201 to be 422 // Object.is equality
+- Expected
++ Received
+- 422
++ 201
+ ❯ tests/logging.test.ts:326:25
+    324|     clock.setMock("2026-11-14T12:00:00+07:00");
+    325|     const long = await postEntry(aCookie, aGoal.id, { entryDate: "2026…
+    326|     expect(long.status).toBe(422);
+       |                         ^
+    327|     expect(long.body.error.code).toBe("VALIDATION_ERROR");
+    328|     expect(long.body.error.details).toContainEqual({ field: "note", me…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 11 skipped (12)
+      Tests  1 failed | 77 skipped (78)
+   Start at  20:53:34
+   Duration  21.39s (transform 514ms, setup 0ms, collect 11.58s, tests 631ms, environment 8ms, prepare 4.42s)

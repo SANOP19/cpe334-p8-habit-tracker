@@ -1,0 +1,24 @@
+# GREEN run for #63 (KI-5) — 2026-11-25T13:55Z
+# commit: d6b53bfca0c0e4d00113dfb9378e4a817563ddb5 (fix commit)
+# command: npm --prefix server test -- -t "TEST-L6-63"
+
+> habit-tracker-server@1.0.0 test
+> vitest run -t TEST-L6-63
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+ ✓ tests/logging.test.ts (14 tests | 13 skipped) 807ms
+   ✓ F-04 Daily activity logging > TEST-L6-63 (#63, F-04 §2): a note that is not text is 422 VALIDATION_ERROR on note; null still means no note 804ms
+ ↓ tests/templates.test.ts (11 tests | 11 skipped)
+ ↓ tests/goals.test.ts (10 tests | 10 skipped)
+ ↓ tests/auth.test.ts (10 tests | 10 skipped)
+ ↓ tests/progress.test.ts (8 tests | 8 skipped)
+ ↓ tests/db-constraints.test.ts (3 tests | 3 skipped)
+ ↓ tests/ids.test.ts (4 tests | 4 skipped)
+ ↓ tests/client-static.test.ts (6 tests | 6 skipped)
+ ↓ tests/seed.test.ts (3 tests | 3 skipped)
+ ↓ tests/health.test.ts (4 tests | 4 skipped)
+ ↓ tests/ready.test.ts (3 tests | 3 skipped)
+ ↓ tests/require-role.test.ts (3 tests | 3 skipped)
+ Test Files  1 passed | 11 skipped (12)
+      Tests  1 passed | 78 skipped (79)
+   Start at  20:55:42
+   Duration  19.12s (transform 876ms, setup 0ms, collect 8.89s, tests 807ms, environment 3ms, prepare 4.69s)

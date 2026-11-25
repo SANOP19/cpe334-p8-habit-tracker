@@ -1,0 +1,60 @@
+# Regression for PR-2 (#60 KI-2, #62 KI-4, #63 KI-5) — 2026-11-25T13:56Z
+# commit: d6b53bfca0c0e4d00113dfb9378e4a817563ddb5 (last fix commit); local PostgreSQL 18, Node v24.14.0
+
+## npm --prefix server test
+ ✓ tests/logging.test.ts (14 tests) 5405ms
+   ✓ F-04 Daily activity logging > TEST-17 (AC-17): participant records daily activity for own goal and reads it back 1087ms
+   ✓ F-04 Daily activity logging > TEST-18b (AC-18): values below min or above max are rejected with 422 VALUE_OUT_OF_RANGE 369ms
+   ✓ F-04 Daily activity logging > TEST-19b (NFR-09): midnight crossing proves Asia/Bangkok is used instead of UTC 367ms
+   ✓ F-04 Daily activity logging > TEST-20 (AC-20): 6 days ago is accepted; 7 days ago is rejected with 422 DATE_TOO_OLD 390ms
+   ✓ F-04 Daily activity logging > TEST-22 (AC-22 / NFR-10): two simultaneous submissions store exactly one row and return 409 for the second 759ms
+   ✓ F-04 Daily activity logging > TEST-23 (AC-23): participant cannot record or read entries for another participant's goal 375ms
+   ✓ F-04 Daily activity logging > TEST-28 (AC-28): activity entries persist across database reconnect / restart 507ms
+   ✓ F-04 Daily activity logging > TEST-L6-62 (#62, F-04 §1): a note longer than 500 characters is 422 VALIDATION_ERROR on note 317ms
+   ✓ F-04 Daily activity logging > TEST-L6-63 (#63, F-04 §2): a note that is not text is 422 VALIDATION_ERROR on note; null still means no note 347ms
+ ✓ tests/templates.test.ts (11 tests) 2848ms
+   ✓ F-02 Activity Template Management > TEST-07 (AC-07): program manager creates a draft template with valid fields (201 Created) 741ms
+   ✓ F-02 Activity Template Management > TEST-11a (AC-11): participant calls GET /api/templates and sees only PUBLISHED templates 337ms
+   ✓ F-02 Activity Template Management > TEST-30 (AC-30): manager publishing another manager's template returns 404 NOT_FOUND 333ms
+ ✓ tests/goals.test.ts (10 tests) 3250ms
+   ✓ F-03 Goal setting > TEST-12 (AC-12): participant creates an ACTIVE goal owned by the caller, even if the body names another user 812ms
+   ✓ F-03 Goal setting > TEST-13c (AC-13): non-number target or invalid templateId is a 422 VALIDATION_ERROR 381ms
+   ✓ F-03 Goal setting > TEST-15a (AC-15): a second active goal on the same template is 409; other templates and other participants are fine 326ms
+   ✓ F-03 Goal setting > TEST-15b (AC-15): two simultaneous requests for the same template store exactly one goal 560ms
+ ✓ tests/auth.test.ts (10 tests) 2945ms
+   ✓ F-01 Authentication and session > TEST-01 (AC-01): valid sign-in returns the user, sets an HttpOnly session cookie and stores only the token hash 557ms
+   ✓ F-01 Authentication and session > TEST-02a/b (AC-02): wrong password and unknown email get the same 401 and create no session 329ms
+   ✓ F-01 Authentication and session > TEST-04 (AC-04): every protected endpoint rejects a missing or unknown session with 401 and no data 416ms
+   ✓ F-01 Authentication and session > TEST-06 (AC-06): seeded passwords are stored as bcrypt hashes and the seed password signs in 984ms
+ ✓ tests/progress.test.ts (8 tests) 2153ms
+   ✓ F-05 progress API and privacy > TEST-24b (AC-24): progress endpoint returns per-day percentages and counts for the owner 984ms
+   ✓ F-05 progress API and privacy > TEST-24c (AC-24): a goal with no entries has empty progress 327ms
+   ✓ F-05 progress API and privacy > TEST-29 (AC-29): every kind of error has the same safe body 439ms
+ ✓ tests/db-constraints.test.ts (3 tests) 991ms
+   ✓ P1 Database Schema Constraints against Real PostgreSQL > inserting a second activity_entries row with the same goalId + entryDate fails (BR-04 unique constraint) 543ms
+ ✓ tests/ids.test.ts (4 tests) 1564ms
+   ✓ Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647 981ms
+   ✓ Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59c: publishing a template id above 2147483647 is 404 NOT_FOUND 340ms
+ ✓ tests/client-static.test.ts (6 tests) 1548ms
+ ✓ tests/seed.test.ts (3 tests) 2174ms
+   ✓ P1 Password Security & Seed Integrity against Real PostgreSQL > seeded passwords are stored as salted bcrypt hashes in the database and never as plain text 1206ms
+   ✓ P1 Password Security & Seed Integrity against Real PostgreSQL > TEST-S2 (F-05): seed creates a second participant and stays idempotent 765ms
+ ✓ tests/health.test.ts (4 tests) 310ms
+ ✓ tests/ready.test.ts (3 tests) 360ms
+ ✓ tests/require-role.test.ts (3 tests) 32ms
+ Test Files  12 passed (12)
+      Tests  79 passed (79)
+   Duration  50.13s (transform 946ms, setup 0ms, collect 13.29s, tests 23.58s, environment 10ms, prepare 7.07s)
+
+## npm --prefix client test
+ Test Files  9 passed (9)
+      Tests  35 passed (35)
+   Duration  13.39s (transform 2.80s, setup 9.27s, collect 18.68s, tests 6.11s, environment 54.72s, prepare 9.15s)
+
+## npx playwright test
+  ok 1 [chromium] › e2e\journey.spec.ts:64:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out (2.5s)
+  1 passed (19.3s)
+
+## npx tsc --noEmit (server, client)
+server: no errors
+client: no errors
