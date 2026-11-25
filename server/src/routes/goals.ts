@@ -32,6 +32,7 @@ const entrySelect = {
 } as const;
 
 const isFiniteNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const MAX_NOTE_LENGTH = 500;
 const isPositiveInteger = (value: unknown): value is number => Number.isInteger(value) && (value as number) > 0;
 
 const isValidCalendarDate = (dateStr: unknown): dateStr is string => {
@@ -165,6 +166,10 @@ goalsRouter.post("/:id/entries", async (req, res, next) => {
     }
     if (!isFiniteNumber(value)) {
       details.push({ field: "value", message: "Must be a valid number" });
+    }
+    // F-04 §1: an optional note of up to 500 characters, counted after trimming (Lab 6 KI-4, #62)
+    if (typeof note === "string" && note.trim().length > MAX_NOTE_LENGTH) {
+      details.push({ field: "note", message: `Must be at most ${MAX_NOTE_LENGTH} characters` });
     }
     if (details.length > 0) {
       throw new AppError(422, "VALIDATION_ERROR", "Invalid entry data.", details);
