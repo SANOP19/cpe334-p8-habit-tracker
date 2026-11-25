@@ -37,4 +37,25 @@ describe("P1 Health Endpoint and Global Error Handler", () => {
       },
     });
   });
+
+  it("TEST-L6-60 (#60, NFR-05): a JSON body over the 100 KB limit is 413 PAYLOAD_TOO_LARGE, not 500", async () => {
+    // Body parsing runs before routing, so POST /api/health (no such route) needs no database.
+    const res = await request(app)
+      .post("/api/health")
+      .send({ padding: "x".repeat(200 * 1024) });
+
+    expect(res.status).toBe(413);
+    expect(res.body).toEqual({
+      error: {
+        code: "PAYLOAD_TOO_LARGE",
+        message: "The request is too large.",
+      },
+    });
+
+    // Control: a body under the limit is parsed and reaches routing (unknown route -> 404, not 413).
+    const small = await request(app)
+      .post("/api/health")
+      .send({ padding: "x".repeat(50 * 1024) });
+    expect(small.status).toBe(404);
+  });
 });

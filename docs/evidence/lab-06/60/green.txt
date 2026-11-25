@@ -1,0 +1,23 @@
+# GREEN run for #60 (KI-2) — 2026-11-25T13:52Z
+# commit: 4a39619d3d80b5bfb6b2c043dede9120a0d25da0 (fix commit)
+# command: npm --prefix server test -- -t "TEST-L6-60"
+
+> habit-tracker-server@1.0.0 test
+> vitest run -t TEST-L6-60
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+ ↓ tests/logging.test.ts (12 tests | 12 skipped)
+ ↓ tests/templates.test.ts (11 tests | 11 skipped)
+ ↓ tests/goals.test.ts (10 tests | 10 skipped)
+ ↓ tests/auth.test.ts (10 tests | 10 skipped)
+ ↓ tests/progress.test.ts (8 tests | 8 skipped)
+ ↓ tests/db-constraints.test.ts (3 tests | 3 skipped)
+ ↓ tests/ids.test.ts (4 tests | 4 skipped)
+ ↓ tests/client-static.test.ts (6 tests | 6 skipped)
+ ↓ tests/seed.test.ts (3 tests | 3 skipped)
+ ✓ tests/health.test.ts (4 tests | 3 skipped) 241ms
+ ↓ tests/ready.test.ts (3 tests | 3 skipped)
+ ↓ tests/require-role.test.ts (3 tests | 3 skipped)
+ Test Files  1 passed | 11 skipped (12)
+      Tests  1 passed | 76 skipped (77)
+   Start at  20:53:00
+   Duration  21.54s (transform 827ms, setup 0ms, collect 11.08s, tests 241ms, environment 4ms, prepare 4.96s)

@@ -13,6 +13,7 @@
 | 0.8 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | PR7 results: E2E TEST-27 verified (FR-09 Verified), NFR-06 checklist ready for reviewer clean clone (PR7, Issue #22) |
 | 0.9 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Pre-release: NFR-01, NFR-06, NFR-07, NFR-08 verified; Q-04 gap closed (PR8, Issue #23) |
 | 1.0 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections section added; KI-1 ids outside the INT4 range (Issue #59) |
+| 1.1 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections KI-2 oversized body, KI-4 note length, KI-5 note type (Issues #60, #62, #63) |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -114,3 +115,6 @@ Contract deviations found by the Product Team's own audit (24 Nov 2026) before i
 | Issue | Deviation | Contract | Test | Delivered in | Result |
 |---|---|---|---|---|---|
 | #59 KI-1 | Ids above 2147483647 returned 500 (INT4 overflow in Prisma) | D-10 (F-04 §2 check 3), AC-14, NFR-05 | `server/tests/ids.test.ts` TEST-L6-59a/b/c, control TEST-L6-59d | branch `fix/59-int4-ids` (PR-1) | RED 3 failed / 1 passed, GREEN 4 passed; server 76, client 35, E2E 1 (`docs/evidence/lab-06/59/`) |
+| #60 KI-2 | JSON body over the 100 KB limit returned 500 | NFR-05 (client errors are not 500) | `server/tests/health.test.ts` TEST-L6-60 (with a 50 KB control) | branch `fix/60-body-and-note-validation` (PR-2) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/60/`) |
+| #62 KI-4 | Notes longer than 500 characters were stored | F-04 §1 (note up to 500 characters) | `server/tests/logging.test.ts` TEST-L6-62 (with a 500-character control) | branch `fix/60-body-and-note-validation` (PR-2) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/62/`) |
+| #63 KI-5 | Non-string notes were stored as null with 201 | F-04 §2 check 4 (invalid field → 422 with details) | `server/tests/logging.test.ts` TEST-L6-63 (with a `null` control) | branch `fix/60-body-and-note-validation` (PR-2) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/63/`); PR-2 regression: server 79, client 35, E2E 1 (`docs/evidence/lab-06/regression-pr-2.txt`) |

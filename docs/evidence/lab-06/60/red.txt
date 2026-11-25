@@ -1,0 +1,47 @@
+# RED run for #60 (KI-2) — 2026-11-25T13:51Z
+# commit: b34d6348b77e0aa7e21306f0da19c53b4f17a700 (test(red) commit, before the fix)
+# command: npm --prefix server test -- -t "TEST-L6-60"
+
+> habit-tracker-server@1.0.0 test
+> vitest run -t TEST-L6-60
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+ ↓ tests/logging.test.ts (12 tests | 12 skipped)
+ ↓ tests/templates.test.ts (11 tests | 11 skipped)
+ ↓ tests/goals.test.ts (10 tests | 10 skipped)
+ ↓ tests/auth.test.ts (10 tests | 10 skipped)
+ ↓ tests/progress.test.ts (8 tests | 8 skipped)
+ ↓ tests/db-constraints.test.ts (3 tests | 3 skipped)
+ ↓ tests/ids.test.ts (4 tests | 4 skipped)
+ ↓ tests/client-static.test.ts (6 tests | 6 skipped)
+ ↓ tests/seed.test.ts (3 tests | 3 skipped)
+stderr | tests/health.test.ts > P1 Health Endpoint and Global Error Handler > TEST-L6-60 (#60, NFR-05): a JSON body over the 100 KB limit is 413 PAYLOAD_TOO_LARGE, not 500
+Internal Server Error: PayloadTooLargeError: request entity too large
+  expected: 204814,
+  length: 204814,
+  limit: 102400,
+  type: 'entity.too.large'
+}
+ ❯ tests/health.test.ts (4 tests | 1 failed | 3 skipped) 118ms
+   × P1 Health Endpoint and Global Error Handler > TEST-L6-60 (#60, NFR-05): a JSON body over the 100 KB limit is 413 PAYLOAD_TOO_LARGE, not 500 116ms
+     → expected 500 to be 413 // Object.is equality
+ ↓ tests/ready.test.ts (3 tests | 3 skipped)
+ ↓ tests/require-role.test.ts (3 tests | 3 skipped)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/health.test.ts > P1 Health Endpoint and Global Error Handler > TEST-L6-60 (#60, NFR-05): a JSON body over the 100 KB limit is 413 PAYLOAD_TOO_LARGE, not 500
+AssertionError: expected 500 to be 413 // Object.is equality
+- Expected
++ Received
+- 413
++ 500
+ ❯ tests/health.test.ts:47:24
+     45|       .send({ padding: "x".repeat(200 * 1024) });
+     46| 
+     47|     expect(res.status).toBe(413);
+       |                        ^
+     48|     expect(res.body).toEqual({
+     49|       error: {
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 11 skipped (12)
+      Tests  1 failed | 76 skipped (77)
+   Start at  20:51:42
+   Duration  35.28s (transform 1.08s, setup 0ms, collect 23.31s, tests 118ms, environment 4ms, prepare 5.96s)
