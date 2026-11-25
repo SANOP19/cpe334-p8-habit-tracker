@@ -110,4 +110,34 @@ describe("F-04 Daily activity logging UI", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Value must be between 1 and 200 pages.");
     expect(screen.getByLabelText(/amount/i)).toHaveValue(999);
   });
+
+  it("TEST-L6-61 (#61, F-04 §4, NFR-09): the date field uses today in Asia/Bangkok, not the device timezone", async () => {
+    // 17:30 UTC on 23 Nov is already 00:30 on 24 Nov in Bangkok. The device here is set to UTC.
+    // Vitest runs on Node, where changing TZ changes the local timezone; the client tsconfig has no
+    // Node types, so reach the environment through globalThis.
+    const env = (globalThis as unknown as { process: { env: Record<string, string | undefined> } }).process.env;
+    const previousTz = env.TZ;
+    env.TZ = "UTC";
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-23T17:30:00Z"));
+    try {
+      fetchMock.mockImplementation(async (url: string) => {
+        if (url === "/api/goals") return jsonResponse(200, { goals: [sampleGoal] });
+        if (url === "/api/goals/7/entries") return jsonResponse(200, { entries: [] });
+        throw new Error(`unexpected fetch: ${url}`);
+      });
+
+      render(<GoalsPage />);
+      expect(await screen.findByText("Reading")).toBeInTheDocument();
+
+      const date = screen.getByLabelText("Date");
+      expect(date).toHaveValue("2026-11-24");
+      expect(date).toHaveAttribute("max", "2026-11-24");
+      expect(date).toHaveAttribute("min", "2026-11-18");
+    } finally {
+      vi.useRealTimers();
+      if (previousTz === undefined) delete env.TZ;
+      else env.TZ = previousTz;
+    }
+  });
 });
