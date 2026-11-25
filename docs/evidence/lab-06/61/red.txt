@@ -1,0 +1,41 @@
+# RED run for #61 (KI-3) — 2026-11-25T14:14Z
+# commit: 13ffbdd8ab2ecbe8f00e6e31e92573110bc74ebc (test(red) commit, before the fix)
+# command: npm --prefix client test -- -t "TEST-L6-61"
+
+> habit-tracker-client@0.1.0 test
+> vitest run -t TEST-L6-61
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+ ↓ tests/api.test.ts (6 tests | 6 skipped)
+ ↓ tests/layout.test.tsx (4 tests | 4 skipped)
+ ↓ tests/components.test.tsx (4 tests | 4 skipped)
+ ↓ tests/progress.test.tsx (2 tests | 2 skipped)
+ ↓ tests/signin.test.tsx (4 tests | 4 skipped)
+ ↓ tests/templates.test.tsx (5 tests | 5 skipped)
+ ↓ tests/goals.test.tsx (6 tests | 6 skipped)
+ ↓ tests/app.test.tsx (2 tests | 2 skipped)
+ ❯ tests/logging.test.tsx (3 tests | 1 failed | 2 skipped) 164ms
+   × F-04 Daily activity logging UI > TEST-L6-61 (#61, F-04 §4, NFR-09): the date field uses today in Asia/Bangkok, not the device timezone 162ms
+     → expect(element).toHaveValue(2026-11-24)
+Expected the element to have value:
+  2026-11-24
+Received:
+  2026-11-23
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-L6-61 (#61, F-04 §4, NFR-09): the date field uses today in Asia/Bangkok, not the device timezone
+Error: expect(element).toHaveValue(2026-11-24)
+Expected the element to have value:
+  2026-11-24
+Received:
+  2026-11-23
+ ❯ tests/logging.test.tsx:134:20
+    132| 
+    133|       const date = screen.getByLabelText("Date");
+    134|       expect(date).toHaveValue("2026-11-24");
+       |                    ^
+    135|       expect(date).toHaveAttribute("max", "2026-11-24");
+    136|       expect(date).toHaveAttribute("min", "2026-11-18");
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 8 skipped (9)
+      Tests  1 failed | 35 skipped (36)
+   Start at  21:14:44
+   Duration  5.77s (transform 807ms, setup 4.19s, collect 6.64s, tests 164ms, environment 22.76s, prepare 5.72s)

@@ -1,0 +1,731 @@
+# Intermediate run for #65 (KI-7) after part 1 (badge) — 2026-11-25T14:16Z
+# commit: 62ba4d538f1316fa6ed3fb4ab28f36e6a98412a9 (fix part 1; the Loading part is not fixed yet)
+# command: npm --prefix client test -- -t "TEST-L6-65"
+
+> habit-tracker-client@0.1.0 test
+> vitest run -t TEST-L6-65
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+ ↓ tests/api.test.ts (6 tests | 6 skipped)
+ ↓ tests/layout.test.tsx (4 tests | 4 skipped)
+ ↓ tests/components.test.tsx (4 tests | 4 skipped)
+ ↓ tests/progress.test.tsx (2 tests | 2 skipped)
+ ↓ tests/templates.test.tsx (5 tests | 5 skipped)
+ ↓ tests/signin.test.tsx (4 tests | 4 skipped)
+ ↓ tests/goals.test.tsx (6 tests | 6 skipped)
+ ↓ tests/app.test.tsx (2 tests | 2 skipped)
+ ❯ tests/logging.test.tsx (5 tests | 1 failed | 4 skipped) 1203ms
+   × F-04 Daily activity logging UI > TEST-L6-65 (#65, F-04 §4): entry dates are badges and Save entry shows Loading while saving 1202ms
+     → Unable to find role="status"
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div>
+      <h1
+        class="h4 mb-4"
+      >
+        My Goals
+      </h1>
+      <div
+        class="row g-3"
+      >
+        <div
+          class="col-md-6"
+        >
+          <div
+            class="card h-100"
+          >
+            <div
+              class="card-body"
+            >
+              <div
+                class="d-flex justify-content-between align-items-start mb-2"
+              >
+                <h5
+                  class="card-title mb-0"
+                >
+                  Reading
+                </h5>
+                <span
+                  class="badge text-bg-primary"
+                >
+                  ACTIVE
+                </span>
+              </div>
+              <p
+                class="card-text mb-3"
+              >
+                Daily target: 
+                20
+                pages
+              </p>
+              <div
+                class="border-top pt-3 mt-3"
+              >
+                <h6
+                  class="h6 mb-2"
+                >
+                  Log activity
+                </h6>
+                <form
+                  class="mb-3"
+                >
+                  <div
+                    class="row g-2"
+                  >
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="date-7"
+                      >
+                        Date
+                      </label>
+                      <input
+                        aria-label="Date"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="date-7"
+                        max="2026-11-25"
+                        min="2026-11-19"
+                        required=""
+                        type="date"
+                        value="2026-11-25"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="amount-7"
+                      >
+                        Amount (
+                        pages
+                        )
+                      </label>
+                      <input
+                        aria-label="Amount (pages)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="amount-7"
+                        placeholder="1 - 200"
+                        required=""
+                        step="any"
+                        type="number"
+                        value="30"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="note-7"
+                      >
+                        Note (optional)
+                      </label>
+                      <input
+                        aria-label="Note (optional)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="note-7"
+                        maxlength="500"
+                        placeholder="Optional note"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="mt-2 text-end"
+                  >
+                    <button
+                      class="btn btn-sm btn-primary"
+                      disabled=""
+                      type="submit"
+                    >
+                      Saving...
+                    </button>
+                  </div>
+                </form>
+                <h6
+                  class="h6 mb-2"
+                >
+                  Logged entries
+                </h6>
+                <p
+                  class="small text-muted mb-2"
+                >
+                  Progress is not available right now.
+                </p>
+                <ul
+                  class="list-group list-group-flush small"
+                >
+                  <li
+                    class="list-group-item px-0 py-1 d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <span
+                        class="badge text-bg-light border me-2"
+                      >
+                        2026-11-14
+                      </span>
+                      <span>
+                        25.5 pages
+                      </span>
+                      <span
+                        class="text-muted ms-2"
+                      >
+                        Good progress today
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div>
+      <h1
+        class="h4 mb-4"
+      >
+        My Goals
+      </h1>
+      <div
+        class="row g-3"
+      >
+        <div
+          class="col-md-6"
+        >
+          <div
+            class="card h-100"
+          >
+            <div
+              class="card-body"
+            >
+              <div
+                class="d-flex justify-content-between align-items-start mb-2"
+              >
+                <h5
+                  class="card-title mb-0"
+                >
+                  Reading
+                </h5>
+                <span
+                  class="badge text-bg-primary"
+                >
+                  ACTIVE
+                </span>
+              </div>
+              <p
+                class="card-text mb-3"
+              >
+                Daily target: 
+                20
+                pages
+              </p>
+              <div
+                class="border-top pt-3 mt-3"
+              >
+                <h6
+                  class="h6 mb-2"
+                >
+                  Log activity
+                </h6>
+                <form
+                  class="mb-3"
+                >
+                  <div
+                    class="row g-2"
+                  >
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="date-7"
+                      >
+                        Date
+                      </label>
+                      <input
+                        aria-label="Date"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="date-7"
+                        max="2026-11-25"
+                        min="2026-11-19"
+                        required=""
+                        type="date"
+                        value="2026-11-25"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="amount-7"
+                      >
+                        Amount (
+                        pages
+                        )
+                      </label>
+                      <input
+                        aria-label="Amount (pages)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="amount-7"
+                        placeholder="1 - 200"
+                        required=""
+                        step="any"
+                        type="number"
+                        value="30"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="note-7"
+                      >
+                        Note (optional)
+                      </label>
+                      <input
+                        aria-label="Note (optional)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="note-7"
+                        maxlength="500"
+                        placeholder="Optional note"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="mt-2 text-end"
+                  >
+                    <button
+                      class="btn btn-sm btn-primary"
+                      disabled=""
+                      type="submit"
+                    >
+                      Saving...
+                    </button>
+                  </div>
+                </form>
+                <h6
+                  class="h6 mb-2"
+                >
+                  Logged entries
+                </h6>
+                <p
+                  class="small text-muted mb-2"
+                >
+                  Progress is not available right now.
+                </p>
+                <ul
+                  class="list-group list-group-flush small"
+                >
+                  <li
+                    class="list-group-item px-0 py-1 d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <span
+                        class="badge text-bg-light border me-2"
+                      >
+                        2026-11-14
+                      </span>
+                      <span>
+                        25.5 pages
+                      </span>
+                      <span
+                        class="text-muted ms-2"
+                      >
+                        Good progress today
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/logging.test.tsx > F-04 Daily activity logging UI > TEST-L6-65 (#65, F-04 §4): entry dates are badges and Save entry shows Loading while saving
+TestingLibraryElementError: Unable to find role="status"
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div>
+      <h1
+        class="h4 mb-4"
+      >
+        My Goals
+      </h1>
+      <div
+        class="row g-3"
+      >
+        <div
+          class="col-md-6"
+        >
+          <div
+            class="card h-100"
+          >
+            <div
+              class="card-body"
+            >
+              <div
+                class="d-flex justify-content-between align-items-start mb-2"
+              >
+                <h5
+                  class="card-title mb-0"
+                >
+                  Reading
+                </h5>
+                <span
+                  class="badge text-bg-primary"
+                >
+                  ACTIVE
+                </span>
+              </div>
+              <p
+                class="card-text mb-3"
+              >
+                Daily target: 
+                20
+                pages
+              </p>
+              <div
+                class="border-top pt-3 mt-3"
+              >
+                <h6
+                  class="h6 mb-2"
+                >
+                  Log activity
+                </h6>
+                <form
+                  class="mb-3"
+                >
+                  <div
+                    class="row g-2"
+                  >
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="date-7"
+                      >
+                        Date
+                      </label>
+                      <input
+                        aria-label="Date"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="date-7"
+                        max="2026-11-25"
+                        min="2026-11-19"
+                        required=""
+                        type="date"
+                        value="2026-11-25"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="amount-7"
+                      >
+                        Amount (
+                        pages
+                        )
+                      </label>
+                      <input
+                        aria-label="Amount (pages)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="amount-7"
+                        placeholder="1 - 200"
+                        required=""
+                        step="any"
+                        type="number"
+                        value="30"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="note-7"
+                      >
+                        Note (optional)
+                      </label>
+                      <input
+                        aria-label="Note (optional)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="note-7"
+                        maxlength="500"
+                        placeholder="Optional note"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="mt-2 text-end"
+                  >
+                    <button
+                      class="btn btn-sm btn-primary"
+                      disabled=""
+                      type="submit"
+                    >
+                      Saving...
+                    </button>
+                  </div>
+                </form>
+                <h6
+                  class="h6 mb-2"
+                >
+                  Logged entries
+                </h6>
+                <p
+                  class="small text-muted mb-2"
+                >
+                  Progress is not available right now.
+                </p>
+                <ul
+                  class="list-group list-group-flush small"
+                >
+                  <li
+                    class="list-group-item px-0 py-1 d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <span
+                        class="badge text-bg-light border me-2"
+                      >
+                        2026-11-14
+                      </span>
+                      <span>
+                        25.5 pages
+                      </span>
+                      <span
+                        class="text-muted ms-2"
+                      >
+                        Good progress today
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div>
+      <h1
+        class="h4 mb-4"
+      >
+        My Goals
+      </h1>
+      <div
+        class="row g-3"
+      >
+        <div
+          class="col-md-6"
+        >
+          <div
+            class="card h-100"
+          >
+            <div
+              class="card-body"
+            >
+              <div
+                class="d-flex justify-content-between align-items-start mb-2"
+              >
+                <h5
+                  class="card-title mb-0"
+                >
+                  Reading
+                </h5>
+                <span
+                  class="badge text-bg-primary"
+                >
+                  ACTIVE
+                </span>
+              </div>
+              <p
+                class="card-text mb-3"
+              >
+                Daily target: 
+                20
+                pages
+              </p>
+              <div
+                class="border-top pt-3 mt-3"
+              >
+                <h6
+                  class="h6 mb-2"
+                >
+                  Log activity
+                </h6>
+                <form
+                  class="mb-3"
+                >
+                  <div
+                    class="row g-2"
+                  >
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="date-7"
+                      >
+                        Date
+                      </label>
+                      <input
+                        aria-label="Date"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="date-7"
+                        max="2026-11-25"
+                        min="2026-11-19"
+                        required=""
+                        type="date"
+                        value="2026-11-25"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="amount-7"
+                      >
+                        Amount (
+                        pages
+                        )
+                      </label>
+                      <input
+                        aria-label="Amount (pages)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="amount-7"
+                        placeholder="1 - 200"
+                        required=""
+                        step="any"
+                        type="number"
+                        value="30"
+                      />
+                    </div>
+                    <div
+                      class="col-sm-4"
+                    >
+                      <label
+                        class="form-label small mb-1"
+                        for="note-7"
+                      >
+                        Note (optional)
+                      </label>
+                      <input
+                        aria-label="Note (optional)"
+                        class="form-control form-control-sm"
+                        disabled=""
+                        id="note-7"
+                        maxlength="500"
+                        placeholder="Optional note"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="mt-2 text-end"
+                  >
+                    <button
+                      class="btn btn-sm btn-primary"
+                      disabled=""
+                      type="submit"
+                    >
+                      Saving...
+                    </button>
+                  </div>
+                </form>
+                <h6
+                  class="h6 mb-2"
+                >
+                  Logged entries
+                </h6>
+                <p
+                  class="small text-muted mb-2"
+                >
+                  Progress is not available right now.
+                </p>
+                <ul
+                  class="list-group list-group-flush small"
+                >
+                  <li
+                    class="list-group-item px-0 py-1 d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <span
+                        class="badge text-bg-light border me-2"
+                      >
+                        2026-11-14
+                      </span>
+                      <span>
+                        25.5 pages
+                      </span>
+                      <span
+                        class="text-muted ms-2"
+                      >
+                        Good progress today
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/logging.test.tsx:200:25
+    198|     await userEvent.type(screen.getByLabelText(/amount/i), "30");
+    199|     await userEvent.click(screen.getByRole("button", { name: /save ent…
+    200|     expect(await screen.findByRole("status")).toHaveTextContent("Savin…
+       |                         ^
+    201|     expect(screen.getByRole("button", { name: /save entry/i })).toBeDi…
+    202| 
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 8 skipped (9)
+      Tests  1 failed | 37 skipped (38)
+   Start at  21:16:24
+   Duration  3.19s (transform 226ms, setup 1.83s, collect 2.23s, tests 1.20s, environment 9.42s, prepare 1.56s)

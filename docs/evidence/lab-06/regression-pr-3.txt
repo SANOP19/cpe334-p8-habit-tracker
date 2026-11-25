@@ -1,0 +1,36 @@
+# Regression for PR-3 (#61 KI-3, #64 KI-6, #65 KI-7) — 2026-11-25T14:16Z
+# commit: 033d989ff4f5c51d005bebec581f9018be9a04fe (last fix commit); local PostgreSQL 18, Node v24.14.0
+
+## npm --prefix server test
+ Test Files  12 passed (12)
+      Tests  79 passed (79)
+   Duration  21.87s (transform 165ms, setup 0ms, collect 2.91s, tests 16.35s, environment 1ms, prepare 993ms)
+
+## npm --prefix client test
+ ✓ tests/api.test.ts (6 tests) 6ms
+ ✓ tests/layout.test.tsx (4 tests) 61ms
+ ✓ tests/components.test.tsx (4 tests) 45ms
+ ✓ tests/progress.test.tsx (2 tests) 115ms
+ ✓ tests/app.test.tsx (2 tests) 148ms
+ ✓ tests/goals.test.tsx (6 tests) 394ms
+ ✓ tests/logging.test.tsx (5 tests) 750ms
+   ✓ F-04 Daily activity logging UI > TEST-UI-07: participant logs an activity entry and sees it added to the history 408ms
+ ✓ tests/templates.test.tsx (5 tests) 943ms
+   ✓ F-02 Activity Template UI > TEST-UI-03: Program Manager view > renders create form, loads templates, and submits a new draft template 443ms
+   ✓ F-02 Activity Template UI > TEST-UI-03: Program Manager view > displays error message when minValue >= maxValue 413ms
+ ✓ tests/signin.test.tsx (4 tests) 1259ms
+   ✓ TEST-UI-01 SignInPage > posts the credentials and reports the signed-in user 392ms
+   ✓ TEST-UI-01 SignInPage > shows the server message on 401, keeps the email and clears the password 364ms
+   ✓ TEST-UI-01 SignInPage > disables the button while the request is in progress 448ms
+ Test Files  9 passed (9)
+      Tests  38 passed (38)
+   Duration  3.29s (transform 232ms, setup 1.82s, collect 2.27s, tests 3.72s, environment 9.44s, prepare 1.62s)
+
+## npx playwright test
+  ok 1 [chromium] › e2e\journey.spec.ts:64:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out (1.6s)
+  1 passed (6.1s)
+
+## npx tsc --noEmit (server, client) and client build
+server: no errors
+client: no errors
+✓ built in 536ms
