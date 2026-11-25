@@ -193,7 +193,7 @@ function GoalCard({ goal }: GoalCardProps) {
               {entries.map((entry) => (
                 <li key={entry.id} className="list-group-item px-0 py-1 d-flex justify-content-between align-items-center">
                   <div>
-                    <span className="fw-semibold me-2">{entry.entryDate}</span>
+                    <span className="badge text-bg-light border me-2">{entry.entryDate}</span>
                     <span>{`${entry.value} ${goal.template.unit}`}</span>
                     {entry.note && <span className="text-muted ms-2">{entry.note}</span>}
                   </div>
