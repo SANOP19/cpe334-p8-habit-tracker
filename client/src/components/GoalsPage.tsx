@@ -172,8 +172,10 @@ function GoalCard({ goal }: GoalCardProps) {
             </div>
             <div className="mt-2 text-end">
               <button type="submit" className="btn btn-sm btn-primary" disabled={saving}>
-                {saving ? "Saving..." : "Save entry"}
+                Save entry
               </button>
+              {/* F-04 §4: disabled while submitting and shows the shared Loading state (Lab 6 KI-7, #65) */}
+              {saving && <Loading label="Saving entry" />}
             </div>
           </form>
 
