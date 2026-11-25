@@ -4,6 +4,7 @@ import { clock } from "../lib/clock.js";
 import { requireAuth, requireRole } from "../middlewares/auth.js";
 import { AppError } from "../middlewares/error-handler.js";
 import { calculateProgress } from "../lib/progress.js";
+import { isDbId } from "../lib/db-id.js";
 
 // F-03 Goal setting & F-04 Daily activity logging — docs/sprints/sprint-1/F-04-logging.md
 export const goalsRouter = Router();
@@ -67,7 +68,10 @@ goalsRouter.post("/", async (req, res, next) => {
     }
 
     // Step 4: template must exist and be published (same answer for both, so drafts are not revealed).
-    const template = await prisma.activityTemplate.findUnique({ where: { id: templateId as number } });
+    // A templateId above the INT4 range cannot exist: same answer as an unknown template (KI-1, #59).
+    const template = isDbId(templateId)
+      ? await prisma.activityTemplate.findUnique({ where: { id: templateId } })
+      : null;
     if (!template || template.status !== "PUBLISHED") {
       throw new AppError(422, "TEMPLATE_NOT_PUBLISHED", "This activity is not available for goals.");
     }
@@ -122,7 +126,7 @@ goalsRouter.get("/", async (req, res, next) => {
 goalsRouter.get("/:id", async (req, res, next) => {
   try {
     const id = Number(req.params.id);
-    if (!isPositiveInteger(id)) throw goalNotFound();
+    if (!isDbId(id)) throw goalNotFound();
 
     const goal = await prisma.goal.findFirst({
       where: { id, participantId: req.user!.id },
@@ -139,7 +143,7 @@ goalsRouter.get("/:id", async (req, res, next) => {
 goalsRouter.post("/:id/entries", async (req, res, next) => {
   try {
     const goalId = Number(req.params.id);
-    if (!isPositiveInteger(goalId)) throw goalNotFound();
+    if (!isDbId(goalId)) throw goalNotFound();
 
     // Step 3: Goal must exist and belong to the signed-in participant (404 otherwise — BR-05, D-10)
     const goal = await prisma.goal.findFirst({
@@ -224,7 +228,7 @@ goalsRouter.post("/:id/entries", async (req, res, next) => {
 goalsRouter.get("/:id/entries", async (req, res, next) => {
   try {
     const goalId = Number(req.params.id);
-    if (!isPositiveInteger(goalId)) throw goalNotFound();
+    if (!isDbId(goalId)) throw goalNotFound();
 
     const goal = await prisma.goal.findFirst({
       where: { id: goalId, participantId: req.user!.id },
@@ -247,7 +251,7 @@ goalsRouter.get("/:id/entries", async (req, res, next) => {
 goalsRouter.get("/:id/progress", async (req, res, next) => {
   try {
     const goalId = Number(req.params.id);
-    if (!isPositiveInteger(goalId)) throw goalNotFound();
+    if (!isDbId(goalId)) throw goalNotFound();
 
     const goal = await prisma.goal.findFirst({
       where: { id: goalId, participantId: req.user!.id },
