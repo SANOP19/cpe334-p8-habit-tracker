@@ -3,6 +3,7 @@
 | Version | Date | Author | Reviewer | Change |
 |---|---|---|---|---|
 | 1.0 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Contract written before implementation (PR3, Issue #18) |
+| 1.1 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | §4 empty-state text corrected from "below" to "above": the reviewed layout puts the create form above the list and the code already says "above" (Lab 6 pre-UAT KI-8, Issue #66) |
 
 **Requirements:** FR-04, FR-05, FR-06 · BR-06 · decisions D-05, D-06, D-10, D-11  
 **Acceptance criteria:** AC-07, AC-08, AC-09, AC-10, AC-11, AC-30, AC-31  
@@ -113,7 +114,7 @@ When user navigates to the "Templates" tab (`page === "templates"`):
   - While submitting: submit button disabled, `<Loading label="Creating template" />`.
   - On error: `<ErrorMessage message={error} />`.
   - While initial load: `<Loading label="Loading templates" />`.
-  - When no templates created: `<EmptyState message="No templates yet. Create your first template below." />`.
+  - When no templates created: `<EmptyState message="No templates yet. Create your first template above." />`.
 - **Template List:** Cards or table showing `name`, `unit`, `range` (`minValue - maxValue`), `status badge` (`DRAFT` or `PUBLISHED`).
 - **Publish Action:** For templates with `status === "DRAFT"`, display a "Publish" button. When clicked:
   - Calls `POST /api/templates/:id/publish`.
