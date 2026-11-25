@@ -16,6 +16,7 @@
 | 1.1 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections KI-2 oversized body, KI-4 note length, KI-5 note type (Issues #60, #62, #63) |
 | 1.2 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections KI-3 Bangkok log date, KI-6 history order, KI-7 saving state and date badge (Issues #61, #64, #65) |
 | 1.3 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | KI-8 F-02 contract wording (Issue #66) as an approved change; section 7 rows point to their merged PRs and are ordered by Issue |
+| 1.4 | 2026-11-26 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT correction KI-9 long notes overflow the goal card (Issue #75), found in the Product Team dry run |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -113,7 +114,7 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 
 ## 7. Lab 6 pre-UAT corrections
 
-Contract deviations found by the Product Team's own audit (24 Nov 2026) before independent UAT. Each code deviation was corrected with a failing test first; KI-8 is a correction of contract text only. They restore Sprint 1 behaviour; no requirement or AC changes.
+Contract deviations found by the Product Team's own audit (24 Nov 2026) and dry run (26 Nov 2026) before independent UAT. Each code deviation was corrected with a failing test first; KI-8 is a correction of contract text only. They restore Sprint 1 behaviour; no requirement or AC changes.
 
 | Issue | Deviation | Contract | Test | Delivered in | Result |
 |---|---|---|---|---|---|
@@ -125,3 +126,4 @@ Contract deviations found by the Product Team's own audit (24 Nov 2026) before i
 | #64 KI-6 | An older-date entry appeared on top of the history until reload | F-04 §4 UI (newest date first) | `client/tests/logging.test.tsx` TEST-L6-64 | PR #71 (PR-3) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/64/`) |
 | #65 KI-7 | Save entry showed "Saving..." instead of Loading; date was not a badge | F-04 §4 UI | `client/tests/logging.test.tsx` TEST-L6-65 | PR #71 (PR-3) | RED 1 failed (badge), after part 1 still failed (Loading), GREEN 1 passed (`docs/evidence/lab-06/65/`); PR-3 regression: server 79, client 38, E2E 1 (`docs/evidence/lab-06/regression-pr-3.txt`) |
 | #66 KI-8 | F-02 contract text said the empty state points "below"; the form is above | F-02 §4 (contract text only) | none — documentation only; the code (`TemplatesPage.tsx`) already said "above" | PR-4 | Contract v1.1 and §6 approved change; no behaviour change |
+| #75 KI-9 | A 500-character note without spaces made the history row, the card and the page thousands of pixels wide | F-04 §1 (note up to 500 characters), §4 (history row), NFR-07 | `e2e/layout.spec.ts` TEST-L6-75 (Playwright, real layout) | branch `fix/75-note-wrap` (PR-5) | RED 1 failed (row 4078 px for a 516 px row), GREEN 1 passed; server 79, client 38, E2E 2 (`docs/evidence/lab-06/75/`) |
