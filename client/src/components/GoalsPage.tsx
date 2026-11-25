@@ -4,26 +4,9 @@ import type { Goal, ActivityEntry, GoalProgress } from "../types";
 import { EmptyState } from "./EmptyState";
 import { ErrorMessage } from "./ErrorMessage";
 import { Loading } from "./Loading";
+import { bangkokDate } from "../dates";
 
 // F-03 Goal setting & F-04 Daily activity logging — docs/sprints/sprint-1/F-04-logging.md
-function getTodayString(): string {
-  const d = new Date();
-  return [
-    d.getFullYear(),
-    String(d.getMonth() + 1).padStart(2, "0"),
-    String(d.getDate()).padStart(2, "0"),
-  ].join("-");
-}
-
-function getPastDateString(daysAgo: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - daysAgo);
-  return [
-    d.getFullYear(),
-    String(d.getMonth() + 1).padStart(2, "0"),
-    String(d.getDate()).padStart(2, "0"),
-  ].join("-");
-}
 
 interface GoalCardProps {
   goal: Goal;
@@ -32,7 +15,7 @@ interface GoalCardProps {
 function GoalCard({ goal }: GoalCardProps) {
   const [entries, setEntries] = useState<ActivityEntry[]>([]);
   const [loadingEntries, setLoadingEntries] = useState(true);
-  const [entryDate, setEntryDate] = useState(getTodayString());
+  const [entryDate, setEntryDate] = useState(() => bangkokDate());
   const [value, setValue] = useState("");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -110,8 +93,8 @@ function GoalCard({ goal }: GoalCardProps) {
   }
 
   const progressByDate = new Map((progress?.days ?? []).map((d) => [d.entryDate, d]));
-  const todayStr = getTodayString();
-  const minDateStr = getPastDateString(6);
+  const todayStr = bangkokDate();
+  const minDateStr = bangkokDate(6);
 
   return (
     <div className="card h-100">
