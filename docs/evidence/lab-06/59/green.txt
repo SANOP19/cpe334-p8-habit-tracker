@@ -1,0 +1,24 @@
+# GREEN run for #59 (KI-1) — 2026-11-25T13:13Z
+# commit: 7f000a9d747a701e0acae2c0b4a91c9c89fa1141 (fix commit)
+# command: npm --prefix server test -- -t "TEST-L6-59"
+
+> habit-tracker-server@1.0.0 test
+> vitest run -t TEST-L6-59
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+ ↓ tests/logging.test.ts (12 tests | 12 skipped)
+ ↓ tests/templates.test.ts (11 tests | 11 skipped)
+ ↓ tests/goals.test.ts (10 tests | 10 skipped)
+ ↓ tests/auth.test.ts (10 tests | 10 skipped)
+ ↓ tests/progress.test.ts (8 tests | 8 skipped)
+ ↓ tests/db-constraints.test.ts (3 tests | 3 skipped)
+ ✓ tests/ids.test.ts (4 tests) 1480ms
+   ✓ Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647 941ms
+ ↓ tests/client-static.test.ts (6 tests | 6 skipped)
+ ↓ tests/seed.test.ts (3 tests | 3 skipped)
+ ↓ tests/ready.test.ts (3 tests | 3 skipped)
+ ↓ tests/health.test.ts (3 tests | 3 skipped)
+ ↓ tests/require-role.test.ts (3 tests | 3 skipped)
+ Test Files  1 passed | 11 skipped (12)
+      Tests  4 passed | 72 skipped (76)
+   Start at  20:13:09
+   Duration  15.68s (transform 443ms, setup 0ms, collect 6.86s, tests 1.48s, environment 5ms, prepare 3.27s)

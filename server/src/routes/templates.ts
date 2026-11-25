@@ -2,6 +2,7 @@ import { Router } from "express";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, requireRole } from "../middlewares/auth.js";
 import { AppError } from "../middlewares/error-handler.js";
+import { isDbId } from "../lib/db-id.js";
 
 // F-02 Activity Template Management — docs/sprints/sprint-1/F-02-templates.md
 export const templatesRouter = Router();
@@ -83,7 +84,7 @@ templatesRouter.post("/", requireAuth, requireRole("PROGRAM_MANAGER"), async (re
 templatesRouter.post("/:id/publish", requireAuth, requireRole("PROGRAM_MANAGER"), async (req, res, next) => {
   try {
     const id = Number(req.params.id);
-    if (!Number.isInteger(id) || id <= 0) {
+    if (!isDbId(id)) {
       throw new AppError(404, "NOT_FOUND", "Template not found.");
     }
 

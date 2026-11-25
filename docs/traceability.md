@@ -12,6 +12,7 @@
 | 0.7 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | F-05 results; seed gap closed (PR6, Issue #21) |
 | 0.8 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | PR7 results: E2E TEST-27 verified (FR-09 Verified), NFR-06 checklist ready for reviewer clean clone (PR7, Issue #22) |
 | 0.9 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Pre-release: NFR-01, NFR-06, NFR-07, NFR-08 verified; Q-04 gap closed (PR8, Issue #23) |
+| 1.0 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections section added; KI-1 ids outside the INT4 range (Issue #59) |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -103,3 +104,13 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 | AC-33 added | PR1 | NFR-03 includes session expiry, but AC-05 covered only logout |
 | AC-32 verified in PR4 (F-03) instead of PR6 (F-05) | PR4 | The goal endpoints and their role guard are built in F-03, so the manager-403 check belongs with them |
 | Work allocation reduced from ~30 parts to 8 PRs | PR1 (brief §11) | Fewer review round-trips; no requirement or AC removed |
+
+---
+
+## 7. Lab 6 pre-UAT corrections
+
+Contract deviations found by the Product Team's own audit (24 Nov 2026) before independent UAT, each corrected with a failing test first. They restore Sprint 1 behaviour; no requirement or AC changes.
+
+| Issue | Deviation | Contract | Test | Delivered in | Result |
+|---|---|---|---|---|---|
+| #59 KI-1 | Ids above 2147483647 returned 500 (INT4 overflow in Prisma) | D-10 (F-04 §2 check 3), AC-14, NFR-05 | `server/tests/ids.test.ts` TEST-L6-59a/b/c, control TEST-L6-59d | branch `fix/59-int4-ids` (PR-1) | RED 3 failed / 1 passed, GREEN 4 passed; server 76, client 35, E2E 1 (`docs/evidence/lab-06/59/`) |
