@@ -83,7 +83,12 @@ function GoalCard({ goal }: GoalCardProps) {
       setSaveSuccess(true);
       setValue("");
       setNote("");
-      setEntries((prev) => [res.entry, ...prev.filter((item) => item.entryDate !== res.entry.entryDate)]);
+      // F-04 §4: the history stays ordered newest date first, as the server returns it (Lab 6 KI-6, #64)
+      setEntries((prev) =>
+        [res.entry, ...prev.filter((item) => item.entryDate !== res.entry.entryDate)].sort((a, b) =>
+          b.entryDate.localeCompare(a.entryDate),
+        ),
+      );
       setProgressVersion((v) => v + 1);
     } catch (err) {
       setSaveError(err instanceof ApiError ? err.message : "Failed to record activity.");
