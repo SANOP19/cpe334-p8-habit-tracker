@@ -174,4 +174,34 @@ describe("F-04 Daily activity logging UI", () => {
       vi.useRealTimers();
     }
   });
+
+  it("TEST-L6-65 (#65, F-04 §4): entry dates are badges and Save entry shows Loading while saving", async () => {
+    let finishSave: (r: Response) => void = () => {};
+    fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+      if (url === "/api/goals") return Promise.resolve(jsonResponse(200, { goals: [sampleGoal] }));
+      if (url === "/api/goals/7/entries" && init?.method === "POST") {
+        return new Promise<Response>((resolve) => {
+          finishSave = resolve;
+        });
+      }
+      if (url === "/api/goals/7/entries") return Promise.resolve(jsonResponse(200, { entries: [sampleEntry] }));
+      return Promise.reject(new Error(`unexpected fetch: ${url}`));
+    });
+
+    render(<GoalsPage />);
+    expect(await screen.findByText("25.5 pages")).toBeInTheDocument();
+
+    // History list: the date is shown as a badge.
+    expect(screen.getByText("2026-11-14")).toHaveClass("badge");
+
+    // While the request is pending: button disabled and the shared Loading component labelled "Saving entry".
+    await userEvent.type(screen.getByLabelText(/amount/i), "30");
+    await userEvent.click(screen.getByRole("button", { name: /save entry/i }));
+    expect(await screen.findByRole("status")).toHaveTextContent("Saving entry");
+    expect(screen.getByRole("button", { name: /save entry/i })).toBeDisabled();
+
+    finishSave(jsonResponse(422, { error: { code: "VALUE_OUT_OF_RANGE", message: "Value must be between 1 and 200 pages." } }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Value must be between 1 and 200 pages.");
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  });
 });
