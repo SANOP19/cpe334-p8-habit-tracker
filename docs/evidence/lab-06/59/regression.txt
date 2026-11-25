@@ -1,0 +1,42 @@
+# Regression for #59 (KI-1) — 2026-11-25T13:13Z
+# commit: 7f000a9d747a701e0acae2c0b4a91c9c89fa1141 (fix commit); local PostgreSQL 18, Node v24.14.0
+
+## npm --prefix server test
+ ✓ tests/logging.test.ts (12 tests) 3934ms
+   ✓ F-04 Daily activity logging > TEST-17 (AC-17): participant records daily activity for own goal and reads it back 707ms
+   ✓ F-04 Daily activity logging > TEST-18c (AC-18): non-numeric values and malformed dates return 422 VALIDATION_ERROR 359ms
+   ✓ F-04 Daily activity logging > TEST-21 (AC-21): second entry for same goal and day returns 409 DUPLICATE_ENTRY 308ms
+   ✓ F-04 Daily activity logging > TEST-22 (AC-22 / NFR-10): two simultaneous submissions store exactly one row and return 409 for the second 543ms
+   ✓ F-04 Daily activity logging > TEST-28 (AC-28): activity entries persist across database reconnect / restart 574ms
+ ✓ tests/templates.test.ts (11 tests) 686ms
+ ✓ tests/goals.test.ts (10 tests) 683ms
+ ✓ tests/auth.test.ts (10 tests) 853ms
+ ✓ tests/progress.test.ts (8 tests) 463ms
+ ✓ tests/db-constraints.test.ts (3 tests) 961ms
+   ✓ P1 Database Schema Constraints against Real PostgreSQL > inserting a second activity_entries row with the same goalId + entryDate fails (BR-04 unique constraint) 591ms
+ ✓ tests/ids.test.ts (4 tests) 1411ms
+   ✓ Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647 660ms
+   ✓ Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59d (control): the largest valid id 2147483647 already gets the unknown-id answers 335ms
+ ✓ tests/client-static.test.ts (6 tests) 768ms
+ ✓ tests/seed.test.ts (3 tests) 1387ms
+   ✓ P1 Password Security & Seed Integrity against Real PostgreSQL > seeded passwords are stored as salted bcrypt hashes in the database and never as plain text 748ms
+   ✓ P1 Password Security & Seed Integrity against Real PostgreSQL > TEST-S2 (F-05): seed creates a second participant and stays idempotent 595ms
+ ✓ tests/ready.test.ts (3 tests) 498ms
+ ✓ tests/health.test.ts (3 tests) 171ms
+ ✓ tests/require-role.test.ts (3 tests) 3ms
+ Test Files  12 passed (12)
+      Tests  76 passed (76)
+   Duration  23.13s (transform 511ms, setup 0ms, collect 6.23s, tests 11.82s, environment 6ms, prepare 2.19s)
+
+## npm --prefix client test
+ Test Files  9 passed (9)
+      Tests  35 passed (35)
+   Duration  10.62s (transform 2.39s, setup 9.37s, collect 13.71s, tests 5.51s, environment 39.42s, prepare 7.55s)
+
+## npx playwright test
+  ok 1 [chromium] › e2e\journey.spec.ts:64:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out (2.9s)
+  1 passed (18.9s)
+
+## npx tsc --noEmit (server, client)
+server: no errors
+client: no errors
