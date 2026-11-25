@@ -319,4 +319,22 @@ describe("F-04 Daily activity logging", () => {
       note: "Persisted record",
     });
   });
+
+  it("TEST-L6-62 (#62, F-04 §1): a note longer than 500 characters is 422 VALIDATION_ERROR on note", async () => {
+    clock.setMock("2026-11-14T12:00:00+07:00");
+    const long = await postEntry(aCookie, aGoal.id, { entryDate: "2026-11-14", value: 20, note: "n".repeat(501) });
+    expect(long.status).toBe(422);
+    expect(long.body.error.code).toBe("VALIDATION_ERROR");
+    expect(long.body.error.details).toContainEqual({ field: "note", message: "Must be at most 500 characters" });
+    expect(await prisma.activityEntry.count()).toBe(0);
+
+    // Exactly 500 characters after trimming is accepted; surrounding spaces are not counted or stored.
+    const atLimit = await postEntry(aCookie, aGoal.id, {
+      entryDate: "2026-11-14",
+      value: 20,
+      note: `  ${"n".repeat(500)}  `,
+    });
+    expect(atLimit.status).toBe(201);
+    expect(atLimit.body.entry.note).toHaveLength(500);
+  });
 });
