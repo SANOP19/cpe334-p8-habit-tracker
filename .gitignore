@@ -9,6 +9,7 @@ coverage/
 test-results/
 playwright-report/
 uploads/
+__pycache__/
 # course materials and private planning notes (not part of the product)
 specs/
 PROJECT_PLAN.md
