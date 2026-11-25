@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { GoalsPage } from "../src/components/GoalsPage";
 
@@ -138,6 +138,40 @@ describe("F-04 Daily activity logging UI", () => {
       vi.useRealTimers();
       if (previousTz === undefined) delete env.TZ;
       else env.TZ = previousTz;
+    }
+  });
+
+  it("TEST-L6-64 (#64, F-04 §4): after saving an older date the history stays ordered newest date first", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-24T05:00:00Z")); // 12:00 on 24 Nov in Bangkok (and in UTC)
+    try {
+      const today = { ...sampleEntry, id: 201, entryDate: "2026-11-24", value: 25, note: null };
+      fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+        if (url === "/api/goals") return jsonResponse(200, { goals: [sampleGoal] });
+        if (url === "/api/goals/7/entries" && init?.method === "POST") {
+          const body = JSON.parse(init.body as string);
+          return jsonResponse(201, {
+            entry: { id: 202, goalId: 7, entryDate: body.entryDate, value: body.value, note: null, createdAt: "2026-11-24T05:00:00.000Z" },
+          });
+        }
+        if (url === "/api/goals/7/entries") return jsonResponse(200, { entries: [today] });
+        throw new Error(`unexpected fetch: ${url}`);
+      });
+
+      render(<GoalsPage />);
+      expect(await screen.findByText("25 pages")).toBeInTheDocument();
+
+      fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-11-23" } });
+      await userEvent.type(screen.getByLabelText(/amount/i), "10");
+      await userEvent.click(screen.getByRole("button", { name: /save entry/i }));
+      expect(await screen.findByText("Entry saved.")).toBeInTheDocument();
+
+      const rows = screen.getAllByRole("listitem").map((li) => li.textContent ?? "");
+      expect(rows).toHaveLength(2);
+      expect(rows[0]).toContain("2026-11-24");
+      expect(rows[1]).toContain("2026-11-23");
+    } finally {
+      vi.useRealTimers();
     }
   });
 });
