@@ -18,6 +18,16 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
+  // A body over the express.json limit (100 KB) is a client error, not a server error (Lab 6 KI-2, #60)
+  if (err && err.type === "entity.too.large") {
+    return res.status(413).json({
+      error: {
+        code: "PAYLOAD_TOO_LARGE",
+        message: "The request is too large.",
+      },
+    });
+  }
+
   // Handle JSON parse errors from express.json()
   if (err instanceof SyntaxError && "status" in err && err.status === 400 && "body" in err) {
     return res.status(422).json({

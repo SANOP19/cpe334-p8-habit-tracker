@@ -1,0 +1,20 @@
+# GREEN run for #65 (KI-7) — 2026-11-25T14:16Z
+# commit: 033d989ff4f5c51d005bebec581f9018be9a04fe (fix commit)
+# command: npm --prefix client test -- -t "TEST-L6-65"
+
+> habit-tracker-client@0.1.0 test
+> vitest run -t TEST-L6-65
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/client
+ ↓ tests/api.test.ts (6 tests | 6 skipped)
+ ↓ tests/layout.test.tsx (4 tests | 4 skipped)
+ ↓ tests/components.test.tsx (4 tests | 4 skipped)
+ ↓ tests/progress.test.tsx (2 tests | 2 skipped)
+ ↓ tests/templates.test.tsx (5 tests | 5 skipped)
+ ↓ tests/signin.test.tsx (4 tests | 4 skipped)
+ ↓ tests/goals.test.tsx (6 tests | 6 skipped)
+ ↓ tests/app.test.tsx (2 tests | 2 skipped)
+ ✓ tests/logging.test.tsx (5 tests | 4 skipped) 205ms
+ Test Files  1 passed | 8 skipped (9)
+      Tests  1 passed | 37 skipped (38)
+   Start at  21:16:44
+   Duration  2.23s (transform 293ms, setup 1.80s, collect 2.35s, tests 205ms, environment 9.44s, prepare 1.52s)

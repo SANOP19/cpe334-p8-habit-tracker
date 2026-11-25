@@ -1,0 +1,40 @@
+# RED run for #63 (KI-5) — 2026-11-25T13:54Z
+# commit: bec4018b1b23ac5fc31c4ba6067fbb5d3b9debce (test(red) commit, before the fix)
+# command: npm --prefix server test -- -t "TEST-L6-63"
+
+> habit-tracker-server@1.0.0 test
+> vitest run -t TEST-L6-63
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+ ❯ tests/logging.test.ts (14 tests | 1 failed | 13 skipped) 905ms
+   × F-04 Daily activity logging > TEST-L6-63 (#63, F-04 §2): a note that is not text is 422 VALIDATION_ERROR on note; null still means no note 903ms
+     → 123: expected 201 to be 422 // Object.is equality
+ ↓ tests/templates.test.ts (11 tests | 11 skipped)
+ ↓ tests/goals.test.ts (10 tests | 10 skipped)
+ ↓ tests/auth.test.ts (10 tests | 10 skipped)
+ ↓ tests/progress.test.ts (8 tests | 8 skipped)
+ ↓ tests/db-constraints.test.ts (3 tests | 3 skipped)
+ ↓ tests/ids.test.ts (4 tests | 4 skipped)
+ ↓ tests/client-static.test.ts (6 tests | 6 skipped)
+ ↓ tests/seed.test.ts (3 tests | 3 skipped)
+ ↓ tests/health.test.ts (4 tests | 4 skipped)
+ ↓ tests/ready.test.ts (3 tests | 3 skipped)
+ ↓ tests/require-role.test.ts (3 tests | 3 skipped)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/logging.test.ts > F-04 Daily activity logging > TEST-L6-63 (#63, F-04 §2): a note that is not text is 422 VALIDATION_ERROR on note; null still means no note
+AssertionError: 123: expected 201 to be 422 // Object.is equality
+- Expected
++ Received
+- 422
++ 201
+ ❯ tests/logging.test.ts:345:48
+    343|     for (const note of [123, true, { text: "x" }, ["x"]]) {
+    344|       const res = await postEntry(aCookie, aGoal.id, { entryDate: "202…
+    345|       expect(res.status, JSON.stringify(note)).toBe(422);
+       |                                                ^
+    346|       expect(res.body.error.code).toBe("VALIDATION_ERROR");
+    347|       expect(res.body.error.details).toContainEqual({ field: "note", m…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+ Test Files  1 failed | 11 skipped (12)
+      Tests  1 failed | 78 skipped (79)
+   Start at  20:55:01
+   Duration  20.55s (transform 738ms, setup 0ms, collect 10.12s, tests 905ms, environment 4ms, prepare 4.29s)

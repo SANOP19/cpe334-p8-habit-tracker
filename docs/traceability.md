@@ -12,6 +12,10 @@
 | 0.7 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | F-05 results; seed gap closed (PR6, Issue #21) |
 | 0.8 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | PR7 results: E2E TEST-27 verified (FR-09 Verified), NFR-06 checklist ready for reviewer clean clone (PR7, Issue #22) |
 | 0.9 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Pre-release: NFR-01, NFR-06, NFR-07, NFR-08 verified; Q-04 gap closed (PR8, Issue #23) |
+| 1.0 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections section added; KI-1 ids outside the INT4 range (Issue #59) |
+| 1.1 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections KI-2 oversized body, KI-4 note length, KI-5 note type (Issues #60, #62, #63) |
+| 1.2 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT corrections KI-3 Bangkok log date, KI-6 history order, KI-7 saving state and date badge (Issues #61, #64, #65) |
+| 1.3 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | KI-8 F-02 contract wording (Issue #66) as an approved change; section 7 rows point to their merged PRs and are ordered by Issue |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -103,3 +107,21 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 | AC-33 added | PR1 | NFR-03 includes session expiry, but AC-05 covered only logout |
 | AC-32 verified in PR4 (F-03) instead of PR6 (F-05) | PR4 | The goal endpoints and their role guard are built in F-03, so the manager-403 check belongs with them |
 | Work allocation reduced from ~30 parts to 8 PRs | PR1 (brief §11) | Fewer review round-trips; no requirement or AC removed |
+| F-02 §4 empty-state text "…template below." corrected to "…template above." | Lab 6 PR-4 (Issue #66) | The contract text contradicted the reviewed layout (create form above the list); the code was already right, so only the text changes |
+
+---
+
+## 7. Lab 6 pre-UAT corrections
+
+Contract deviations found by the Product Team's own audit (24 Nov 2026) before independent UAT. Each code deviation was corrected with a failing test first; KI-8 is a correction of contract text only. They restore Sprint 1 behaviour; no requirement or AC changes.
+
+| Issue | Deviation | Contract | Test | Delivered in | Result |
+|---|---|---|---|---|---|
+| #59 KI-1 | Ids above 2147483647 returned 500 (INT4 overflow in Prisma) | D-10 (F-04 §2 check 3), AC-14, NFR-05 | `server/tests/ids.test.ts` TEST-L6-59a/b/c, control TEST-L6-59d | PR #69 (PR-1) | RED 3 failed / 1 passed, GREEN 4 passed; server 76, client 35, E2E 1 (`docs/evidence/lab-06/59/`) |
+| #60 KI-2 | JSON body over the 100 KB limit returned 500 | NFR-05 (client errors are not 500) | `server/tests/health.test.ts` TEST-L6-60 (with a 50 KB control) | PR #70 (PR-2) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/60/`) |
+| #61 KI-3 | Log date default/min/max came from the device timezone | F-04 §4 UI, NFR-09 (Asia/Bangkok) | `client/tests/logging.test.tsx` TEST-L6-61 (device set to UTC, 17:30 UTC) | PR #71 (PR-3) | RED 1 failed (received 2026-11-23, expected 2026-11-24), GREEN 1 passed (`docs/evidence/lab-06/61/`) |
+| #62 KI-4 | Notes longer than 500 characters were stored | F-04 §1 (note up to 500 characters) | `server/tests/logging.test.ts` TEST-L6-62 (with a 500-character control) | PR #70 (PR-2) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/62/`) |
+| #63 KI-5 | Non-string notes were stored as null with 201 | F-04 §2 check 4 (invalid field → 422 with details) | `server/tests/logging.test.ts` TEST-L6-63 (with a `null` control) | PR #70 (PR-2) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/63/`); PR-2 regression: server 79, client 35, E2E 1 (`docs/evidence/lab-06/regression-pr-2.txt`) |
+| #64 KI-6 | An older-date entry appeared on top of the history until reload | F-04 §4 UI (newest date first) | `client/tests/logging.test.tsx` TEST-L6-64 | PR #71 (PR-3) | RED 1 failed, GREEN 1 passed (`docs/evidence/lab-06/64/`) |
+| #65 KI-7 | Save entry showed "Saving..." instead of Loading; date was not a badge | F-04 §4 UI | `client/tests/logging.test.tsx` TEST-L6-65 | PR #71 (PR-3) | RED 1 failed (badge), after part 1 still failed (Loading), GREEN 1 passed (`docs/evidence/lab-06/65/`); PR-3 regression: server 79, client 38, E2E 1 (`docs/evidence/lab-06/regression-pr-3.txt`) |
+| #66 KI-8 | F-02 contract text said the empty state points "below"; the form is above | F-02 §4 (contract text only) | none — documentation only; the code (`TemplatesPage.tsx`) already said "above" | PR-4 | Contract v1.1 and §6 approved change; no behaviour change |

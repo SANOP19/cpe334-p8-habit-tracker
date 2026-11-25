@@ -1,0 +1,143 @@
+# RED run for #59 (KI-1) — 2026-11-25T13:11Z
+# commit: de2da80b00940f37ee6cc492e380b2ce142f6154 (test(red) commit, before the fix)
+# command: npm --prefix server test -- -t "TEST-L6-59"
+
+> habit-tracker-server@1.0.0 test
+> vitest run -t TEST-L6-59
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+ ↓ tests/logging.test.ts (12 tests | 12 skipped)
+ ↓ tests/templates.test.ts (11 tests | 11 skipped)
+ ↓ tests/goals.test.ts (10 tests | 10 skipped)
+ ↓ tests/auth.test.ts (10 tests | 10 skipped)
+ ↓ tests/progress.test.ts (8 tests | 8 skipped)
+ ↓ tests/db-constraints.test.ts (3 tests | 3 skipped)
+stderr | tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647
+Internal Server Error: PrismaClientUnknownRequestError: 
+Invalid `prisma.goal.findFirst()` invocation in
+C:\Users\nopni\Project_SE\server\src\routes\goals.ts:127:36
+  124 const id = Number(req.params.id);
+  125 if (!isPositiveInteger(id)) throw goalNotFound();
+  126 
+→ 127 const goal = await prisma.goal.findFirst(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(0), cause: Some(Error { kind: ConversionError("Unable to fit integer value '2147483648' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+  clientVersion: '5.22.0'
+}
+stderr | tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647
+Internal Server Error: PrismaClientUnknownRequestError: 
+Invalid `prisma.goal.findFirst()` invocation in
+C:\Users\nopni\Project_SE\server\src\routes\goals.ts:229:36
+  226 const goalId = Number(req.params.id);
+  227 if (!isPositiveInteger(goalId)) throw goalNotFound();
+  228 
+→ 229 const goal = await prisma.goal.findFirst(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(0), cause: Some(Error { kind: ConversionError("Unable to fit integer value '2147483648' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+  clientVersion: '5.22.0'
+}
+stderr | tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647
+Internal Server Error: PrismaClientUnknownRequestError: 
+Invalid `prisma.goal.findFirst()` invocation in
+C:\Users\nopni\Project_SE\server\src\routes\goals.ts:145:36
+  142 if (!isPositiveInteger(goalId)) throw goalNotFound();
+  143 
+  144 // Step 3: Goal must exist and belong to the signed-in participant (404 otherwise — BR-05, D-10)
+→ 145 const goal = await prisma.goal.findFirst(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(0), cause: Some(Error { kind: ConversionError("Unable to fit integer value '2147483648' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+  clientVersion: '5.22.0'
+}
+Internal Server Error: PrismaClientUnknownRequestError: 
+Invalid `prisma.goal.findFirst()` invocation in
+C:\Users\nopni\Project_SE\server\src\routes\goals.ts:252:36
+  249 const goalId = Number(req.params.id);
+  250 if (!isPositiveInteger(goalId)) throw goalNotFound();
+  251 
+→ 252 const goal = await prisma.goal.findFirst(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(0), cause: Some(Error { kind: ConversionError("Unable to fit integer value '2147483648' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+  clientVersion: '5.22.0'
+}
+stderr | tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59b: creating a goal with templateId above 2147483647 is 422 TEMPLATE_NOT_PUBLISHED
+Internal Server Error: PrismaClientUnknownRequestError: 
+Invalid `prisma.activityTemplate.findUnique()` invocation in
+C:\Users\nopni\Project_SE\server\src\routes\goals.ts:70:52
+  67 }
+  68 
+  69 // Step 4: template must exist and be published (same answer for both, so drafts are not revealed).
+→ 70 const template = await prisma.activityTemplate.findUnique(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(0), cause: Some(Error { kind: ConversionError("Unable to fit integer value '2147483648' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+  clientVersion: '5.22.0'
+}
+stderr | tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59c: publishing a template id above 2147483647 is 404 NOT_FOUND
+Internal Server Error: PrismaClientUnknownRequestError: 
+Invalid `prisma.activityTemplate.findUnique()` invocation in
+C:\Users\nopni\Project_SE\server\src\routes\templates.ts:90:52
+  87   throw new AppError(404, "NOT_FOUND", "Template not found.");
+  88 }
+  89 
+→ 90 const template = await prisma.activityTemplate.findUnique(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(Error { kind: ToSql(0), cause: Some(Error { kind: ConversionError("Unable to fit integer value '2147483648' into an INT4 (32-bit signed integer)."), original_code: None, original_message: None }) }), transient: false })
+  clientVersion: '5.22.0'
+}
+ ❯ tests/ids.test.ts (4 tests | 3 failed) 1552ms
+   × Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647 965ms
+     → GET /api/goals/2147483648: expected 500 to be 404 // Object.is equality
+   × Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59b: creating a goal with templateId above 2147483647 is 422 TEMPLATE_NOT_PUBLISHED 175ms
+     → 2147483648: expected 500 to be 422 // Object.is equality
+   × Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59c: publishing a template id above 2147483647 is 404 NOT_FOUND 191ms
+     → 2147483648: expected 500 to be 404 // Object.is equality
+ ↓ tests/client-static.test.ts (6 tests | 6 skipped)
+ ↓ tests/seed.test.ts (3 tests | 3 skipped)
+ ↓ tests/ready.test.ts (3 tests | 3 skipped)
+ ↓ tests/health.test.ts (3 tests | 3 skipped)
+ ↓ tests/require-role.test.ts (3 tests | 3 skipped)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59a: goal routes answer 404 NOT_FOUND for ids above 2147483647
+AssertionError: GET /api/goals/2147483648: expected 500 to be 404 // Object.is equality
+- Expected
++ Received
+- 404
++ 500
+ ❯ tests/ids.test.ts:52:65
+     50|       ];
+     51|       for (const res of await Promise.all(calls)) {
+     52|         expect(res.status, `${res.req.method} ${res.req.path}`).toBe(4…
+       |                                                                 ^
+     53|         expect(res.body).toEqual({ error: { code: "NOT_FOUND", message…
+     54|       }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+ FAIL  tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59b: creating a goal with templateId above 2147483647 is 422 TEMPLATE_NOT_PUBLISHED
+AssertionError: 2147483648: expected 500 to be 422 // Object.is equality
+- Expected
++ Received
+- 422
++ 500
+ ❯ tests/ids.test.ts:61:46
+     59|     for (const templateId of TOO_LARGE) {
+     60|       const res = await request(app).post("/api/goals").set("Cookie", …
+     61|       expect(res.status, String(templateId)).toBe(422);
+       |                                              ^
+     62|       expect(res.body.error).toEqual({ code: "TEMPLATE_NOT_PUBLISHED",…
+     63|     }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+ FAIL  tests/ids.test.ts > Lab 6 KI-1 (#59): ids outside the database integer range > TEST-L6-59c: publishing a template id above 2147483647 is 404 NOT_FOUND
+AssertionError: 2147483648: expected 500 to be 404 // Object.is equality
+- Expected
++ Received
+- 404
++ 500
+ ❯ tests/ids.test.ts:70:38
+     68|     for (const id of TOO_LARGE) {
+     69|       const res = await request(app).post(`/api/templates/${id}/publis…
+     70|       expect(res.status, String(id)).toBe(404);
+       |                                      ^
+     71|       expect(res.body).toEqual({ error: { code: "NOT_FOUND", message: …
+     72|     }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+ Test Files  1 failed | 11 skipped (12)
+      Tests  3 failed | 1 passed | 72 skipped (76)
+   Start at  20:11:14
+   Duration  15.50s (transform 236ms, setup 0ms, collect 10.34s, tests 1.55s, environment 1ms, prepare 1.95s)

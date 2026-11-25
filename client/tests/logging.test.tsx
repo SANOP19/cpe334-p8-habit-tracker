@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { GoalsPage } from "../src/components/GoalsPage";
 
@@ -109,5 +109,99 @@ describe("F-04 Daily activity logging UI", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Value must be between 1 and 200 pages.");
     expect(screen.getByLabelText(/amount/i)).toHaveValue(999);
+  });
+
+  it("TEST-L6-61 (#61, F-04 §4, NFR-09): the date field uses today in Asia/Bangkok, not the device timezone", async () => {
+    // 17:30 UTC on 23 Nov is already 00:30 on 24 Nov in Bangkok. The device here is set to UTC.
+    // Vitest runs on Node, where changing TZ changes the local timezone; the client tsconfig has no
+    // Node types, so reach the environment through globalThis.
+    const env = (globalThis as unknown as { process: { env: Record<string, string | undefined> } }).process.env;
+    const previousTz = env.TZ;
+    env.TZ = "UTC";
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-23T17:30:00Z"));
+    try {
+      fetchMock.mockImplementation(async (url: string) => {
+        if (url === "/api/goals") return jsonResponse(200, { goals: [sampleGoal] });
+        if (url === "/api/goals/7/entries") return jsonResponse(200, { entries: [] });
+        throw new Error(`unexpected fetch: ${url}`);
+      });
+
+      render(<GoalsPage />);
+      expect(await screen.findByText("Reading")).toBeInTheDocument();
+
+      const date = screen.getByLabelText("Date");
+      expect(date).toHaveValue("2026-11-24");
+      expect(date).toHaveAttribute("max", "2026-11-24");
+      expect(date).toHaveAttribute("min", "2026-11-18");
+    } finally {
+      vi.useRealTimers();
+      if (previousTz === undefined) delete env.TZ;
+      else env.TZ = previousTz;
+    }
+  });
+
+  it("TEST-L6-64 (#64, F-04 §4): after saving an older date the history stays ordered newest date first", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-24T05:00:00Z")); // 12:00 on 24 Nov in Bangkok (and in UTC)
+    try {
+      const today = { ...sampleEntry, id: 201, entryDate: "2026-11-24", value: 25, note: null };
+      fetchMock.mockImplementation(async (url: string, init?: RequestInit) => {
+        if (url === "/api/goals") return jsonResponse(200, { goals: [sampleGoal] });
+        if (url === "/api/goals/7/entries" && init?.method === "POST") {
+          const body = JSON.parse(init.body as string);
+          return jsonResponse(201, {
+            entry: { id: 202, goalId: 7, entryDate: body.entryDate, value: body.value, note: null, createdAt: "2026-11-24T05:00:00.000Z" },
+          });
+        }
+        if (url === "/api/goals/7/entries") return jsonResponse(200, { entries: [today] });
+        throw new Error(`unexpected fetch: ${url}`);
+      });
+
+      render(<GoalsPage />);
+      expect(await screen.findByText("25 pages")).toBeInTheDocument();
+
+      fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-11-23" } });
+      await userEvent.type(screen.getByLabelText(/amount/i), "10");
+      await userEvent.click(screen.getByRole("button", { name: /save entry/i }));
+      expect(await screen.findByText("Entry saved.")).toBeInTheDocument();
+
+      const rows = screen.getAllByRole("listitem").map((li) => li.textContent ?? "");
+      expect(rows).toHaveLength(2);
+      expect(rows[0]).toContain("2026-11-24");
+      expect(rows[1]).toContain("2026-11-23");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("TEST-L6-65 (#65, F-04 §4): entry dates are badges and Save entry shows Loading while saving", async () => {
+    let finishSave: (r: Response) => void = () => {};
+    fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+      if (url === "/api/goals") return Promise.resolve(jsonResponse(200, { goals: [sampleGoal] }));
+      if (url === "/api/goals/7/entries" && init?.method === "POST") {
+        return new Promise<Response>((resolve) => {
+          finishSave = resolve;
+        });
+      }
+      if (url === "/api/goals/7/entries") return Promise.resolve(jsonResponse(200, { entries: [sampleEntry] }));
+      return Promise.reject(new Error(`unexpected fetch: ${url}`));
+    });
+
+    render(<GoalsPage />);
+    expect(await screen.findByText("25.5 pages")).toBeInTheDocument();
+
+    // History list: the date is shown as a badge.
+    expect(screen.getByText("2026-11-14")).toHaveClass("badge");
+
+    // While the request is pending: button disabled and the shared Loading component labelled "Saving entry".
+    await userEvent.type(screen.getByLabelText(/amount/i), "30");
+    await userEvent.click(screen.getByRole("button", { name: /save entry/i }));
+    expect(await screen.findByRole("status")).toHaveTextContent("Saving entry");
+    expect(screen.getByRole("button", { name: /save entry/i })).toBeDisabled();
+
+    finishSave(jsonResponse(422, { error: { code: "VALUE_OUT_OF_RANGE", message: "Value must be between 1 and 200 pages." } }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Value must be between 1 and 200 pages.");
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 });
