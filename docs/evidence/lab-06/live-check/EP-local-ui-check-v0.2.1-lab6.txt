@@ -1,0 +1,10 @@
+# Product Team check of KI-3, KI-6, KI-7 (client) and KI-8 (contract) on v0.2.1-lab6
+# commit: 9ea976509080b2eaa514a6f5e1064e8689a3c327, 2026-11-25T15:33Z
+
+## npm --prefix client test -- -t TEST-L6
+ ✓ tests/logging.test.tsx (5 tests | 2 skipped) 263ms
+ Test Files  1 passed | 8 skipped (9)
+      Tests  3 passed | 35 skipped (38)
+
+## KI-8: contract text vs code
+      2 No templates yet. Create your first template above.
