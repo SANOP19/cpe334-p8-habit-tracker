@@ -158,7 +158,7 @@ All cases below are runnable by one person using the partner's five accounts (`S
 ### YW-EX-04 — Backend enforcement of cutoff, freeze, immutability, duplicate feedback, and derived status
 - **Covers:** `AC-04-06`, `AC-05-03`, `AC-05-08`, `AC-05-10`, `AC-06-03`, `AC-06-04`, `AC-07-06`
 - **Purpose:** business rules hold on the API even when bypassing disabled UI controls.
-- **Preconditions:** `UAT-04` completed with tag `<RUN>` (`UAT <RUN> Demo` `<demoId>` is `Completed`); `UAT <RUN> Empty` created by `SUP-A` with future deadline and **no submission** (`<emptyId>`); seeded `"Sprint 0 Proposal"` (`<missedId>`, `Missed`).
+- **Preconditions:** `UAT-04` completed with tag `<RUN>` (`UAT <RUN> Demo` `<demoId>` is `Completed`); `UAT <RUN> Empty` created by `SUP-A` with future deadline and **no submission** (`<emptyId>`); `UAT <RUN> Cutoff` created by `SUP-A` with a deadline 2–3 minutes in the future and **no submission** (`<cutoffId>`), then wait until its deadline has passed so its status shows `Missed`.
 
 | # | Action | Expected result |
 |---|--------|-----------------|
@@ -167,7 +167,7 @@ All cases below are runnable by one person using the partner's five accounts (`S
 | 3 | Console (`SUP-A`): `fetch('/api/milestones/<emptyId>',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Renamed',status:'Completed'})}).then(r=>console.log(r.status))` and `fetch('/api/milestones/<emptyId>',{method:'DELETE'}).then(r=>console.log(r.status))` | Both return `404` or `405` (no edit/delete endpoint; milestone and derived status unchanged) (`AC-04-06`, `AC-07-06`) |
 | 4 | **Logout**, sign in as **STU-A1**; Console: `fetch('/api/milestones/<demoId>/submission',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'After Feedback',description:'',link:'https://github.com/example/x'})}).then(async r=>console.log(r.status,await r.json()))` | `409` `FEEDBACK_RECORDED`; submission unchanged (`AC-05-10`) |
 | 5 | Console (`STU-A1`): `fetch('/api/milestones/<demoId>/submission',{method:'DELETE'}).then(r=>console.log(r.status))` | `404` or `405`; submission remains (`AC-05-08`) |
-| 6 | Console (`STU-A1`): `fetch('/api/milestones/<missedId>/submission',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'Late',description:'',link:'https://github.com/example/late'})}).then(async r=>console.log(r.status,await r.json()))` | `422` `CUTOFF_PASSED`; `"Sprint 0 Proposal"` remains `Missed` with no submission (`AC-05-03`) |
+| 6 | Console (`STU-A1`): `fetch('/api/milestones/<cutoffId>/submission',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:'Late',description:'',link:'https://github.com/example/late'})}).then(async r=>console.log(r.status,await r.json()))` | `422` `CUTOFF_PASSED`; `GET /api/milestones/<cutoffId>/submission` still returns `{ submission: null }` and `UAT <RUN> Cutoff` stays `Missed` (`AC-05-03`) |
 
 ---
 
