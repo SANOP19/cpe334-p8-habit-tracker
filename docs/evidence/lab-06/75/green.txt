@@ -1,0 +1,7 @@
+# GREEN run for #75 (KI-9) — 2026-11-25T17:58Z
+# commit: fdb7867d65b62801fba263b5eacf6106c7a8b5f5 (fix commit)
+# command: npx playwright test -g "TEST-L6-75"
+
+Running 1 test using 1 worker
+  ok 1 [chromium] › e2e\layout.spec.ts:63:3 › Lab 6 KI-9 (#75): long notes stay inside the goal card › TEST-L6-75: a 500-character note without spaces wraps inside its card and the page does not scroll sideways (2.2s)
+  1 passed (7.2s)

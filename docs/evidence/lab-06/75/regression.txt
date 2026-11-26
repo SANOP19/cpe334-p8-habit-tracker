@@ -1,0 +1,20 @@
+# Regression for #75 (KI-9) — 2026-11-25T17:58Z
+# commit: fdb7867d65b62801fba263b5eacf6106c7a8b5f5 (fix commit); local PostgreSQL 18, Node v24.14.0
+
+## npm --prefix server test
+ Test Files  12 passed (12)
+      Tests  79 passed (79)
+
+## npm --prefix client test
+ Test Files  9 passed (9)
+      Tests  38 passed (38)
+
+## npx playwright test (all specs)
+  ok 1 [chromium] › e2e\journey.spec.ts:64:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out (1.4s)
+  ok 2 [chromium] › e2e\layout.spec.ts:63:3 › Lab 6 KI-9 (#75): long notes stay inside the goal card › TEST-L6-75: a 500-character note without spaces wraps inside its card and the page does not scroll sideways (375ms)
+  2 passed (6.9s)
+
+## tsc and build
+server: no errors
+client: no errors
+✓ built in 532ms
