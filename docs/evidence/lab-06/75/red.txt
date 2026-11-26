@@ -1,0 +1,22 @@
+# RED run for #75 (KI-9) — 2026-11-25T17:57Z
+# commit: 13f3fc0441af24b7e04060a8bd5b52023a051fbd (test(red) commit, before the fix)
+# command: npx playwright test -g "TEST-L6-75"
+
+Running 1 test using 1 worker
+  x  1 [chromium] › e2e\layout.spec.ts:63:3 › Lab 6 KI-9 (#75): long notes stay inside the goal card › TEST-L6-75: a 500-character note without spaces wraps inside its card and the page does not scroll sideways (1.8s)
+  1) [chromium] › e2e\layout.spec.ts:63:3 › Lab 6 KI-9 (#75): long notes stay inside the goal card › TEST-L6-75: a 500-character note without spaces wraps inside its card and the page does not scroll sideways 
+    Error: {"rowScrollWidth":4078,"rowClientWidth":516,"cardRight":631,"percentRight":4110.46875,"pageScrollWidth":4177,"viewportWidth":1280}
+    expect(received).toBeLessThanOrEqual(expected)
+    Expected: <= 517
+    Received:    4078
+      89 |
+      90 |     // The row's content fits the row (allow 1 px for rounding) ...
+    > 91 |     expect(sizes.rowScrollWidth, JSON.stringify(sizes)).toBeLessThanOrEqual(sizes.rowClientWidth + 1);
+         |                                                         ^
+      92 |     // ... the percent stays inside the card ...
+      93 |     expect(sizes.percentRight, JSON.stringify(sizes)).toBeLessThanOrEqual(sizes.cardRight + 1);
+      94 |     // ... and the page has no horizontal scrollbar.
+    Error Context: test-results\layout-Lab-6-KI-9-75-long--d57ed-ge-does-not-scroll-sideways-chromium\error-context.md
+    Error Context: test-results\layout-Lab-6-KI-9-75-long--d57ed-ge-does-not-scroll-sideways-chromium\error-context.md
+  1 failed
+    [chromium] › e2e\layout.spec.ts:63:3 › Lab 6 KI-9 (#75): long notes stay inside the goal card › TEST-L6-75: a 500-character note without spaces wraps inside its card and the page does not scroll sideways 

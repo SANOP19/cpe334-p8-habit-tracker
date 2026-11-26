@@ -194,13 +194,14 @@ function GoalCard({ goal }: GoalCardProps) {
             <ul className="list-group list-group-flush small">
               {entries.map((entry) => (
                 <li key={entry.id} className="list-group-item px-0 py-1 d-flex justify-content-between align-items-center">
-                  <div>
+                  {/* Long notes (up to 500 characters, even without spaces) wrap inside the card (Lab 6 KI-9, #75) */}
+                  <div className="me-2" style={{ minWidth: 0, overflowWrap: "anywhere" }}>
                     <span className="badge text-bg-light border me-2">{entry.entryDate}</span>
                     <span>{`${entry.value} ${goal.template.unit}`}</span>
                     {entry.note && <span className="text-muted ms-2">{entry.note}</span>}
                   </div>
                   {progressByDate.has(entry.entryDate) && (
-                    <div className="d-flex align-items-center gap-2">
+                    <div className="d-flex align-items-center gap-2 flex-shrink-0">
                       <span>{progressByDate.get(entry.entryDate)!.percent}%</span>
                       {progressByDate.get(entry.entryDate)!.achieved && (
                         <span className="badge text-bg-success">Achieved</span>
