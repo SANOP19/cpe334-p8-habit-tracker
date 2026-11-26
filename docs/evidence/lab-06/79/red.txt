@@ -1,0 +1,11 @@
+# RED run for #79 (KI-10) — 2026-11-26T07:19Z
+# commit: 825a0754019dd1948eba62d50d56ae19f4b46915 (test(red) commit, before the fix)
+# command: npx playwright test e2e/header.spec.ts
+
+  x  1 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Participant is inside the screen and the page does not scroll sideways (802ms)
+  x  2 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Program Manager is inside the screen and the page does not scroll sideways (503ms)
+  ok 3 [chromium] › e2e\header.spec.ts:94:3 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: on a 1280 px screen the header stays on one line (501ms)
+    Error: {"viewportWidth":375,"pageScrollWidth":482,"items":[{"text":"Habit Tracker","left":12,"right":127,"top":14},{"text":"Templates","left":143,"right":230,"top":14},{"text":"Goals","left":230,"right":285,"top":14},{"text":"Alex Student","left":285,"right":344,"top":10},{"text":"Participant","left":352,"right":429,"top":24},{"text":"Sign out","left":437,"right":482,"top":8}]}
+    Error: {"viewportWidth":375,"pageScrollWidth":469,"items":[{"text":"Habit Tracker","left":12,"right":127,"top":24},{"text":"Templates","left":143,"right":230,"top":24},{"text":"Dr. Morgan Staff","left":230,"right":290,"top":8},{"text":"Program Manager","left":298,"right":416,"top":34},{"text":"Sign out","left":424,"right":469,"top":18}]}
+  2 failed
+  1 passed (8.2s)
