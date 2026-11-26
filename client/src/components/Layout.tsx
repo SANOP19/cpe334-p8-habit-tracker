@@ -44,7 +44,9 @@ export function Layout({
   return (
     <>
       <nav className="navbar navbar-expand bg-body-tertiary border-bottom">
-        <div className="container">
+        {/* flex-wrap: on a narrow (phone) screen the user group moves to its own line instead of
+            pushing the page wider than the viewport (KI-10, #79); wide screens keep one line. */}
+        <div className="container flex-wrap row-gap-2">
           <span className="navbar-brand">Habit Tracker</span>
           <ul className="navbar-nav me-auto">
             {navItemsFor(role).map((item) => (
@@ -61,8 +63,8 @@ export function Layout({
             ))}
           </ul>
           {role && displayName && (
-            <div className="d-flex align-items-center gap-2">
-              <span className="fw-semibold">{displayName}</span>
+            <div className="d-flex align-items-center gap-2 ms-auto">
+              <span className="fw-semibold text-nowrap">{displayName}</span>
               <span className="badge text-bg-secondary">{ROLE_LABELS[role]}</span>
               {onSignOut && (
                 <button type="button" className="btn btn-outline-secondary btn-sm" onClick={onSignOut}>
