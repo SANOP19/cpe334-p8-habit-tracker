@@ -1,0 +1,8 @@
+# GREEN run for #79 (KI-10) — 2026-11-26T07:20Z
+# commit: a522179a31be749f0f2ceca0ec2baf7139450662 (fix commit)
+# command: npx playwright test e2e/header.spec.ts
+
+  ok 1 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Participant is inside the screen and the page does not scroll sideways (815ms)
+  ok 2 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Program Manager is inside the screen and the page does not scroll sideways (365ms)
+  ok 3 [chromium] › e2e\header.spec.ts:94:3 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: on a 1280 px screen the header stays on one line (315ms)
+  3 passed (6.5s)
