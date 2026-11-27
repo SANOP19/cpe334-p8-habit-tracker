@@ -162,3 +162,60 @@ describe("F-05 progress API and privacy", () => {
     }
   });
 });
+
+// Lab 6 Part D, Issue #87 (PT finding EXP-02): F-05 §1.2 / D-08 — the percentage is truncated to one decimal and
+// is never 100% unless the target is met. A value just below the target must not be rounded up to 100, and the
+// same truncation must hold at every 0.1 step; floating-point noise (e.g. 0.3 / 0.1) must still give whole steps.
+describe("TEST-L6-87 (AC-24, Issue #87): truncation near a 0.1 step", () => {
+  it("never shows 100% for a value below the target (PT's 9.99999999999 of 10)", () => {
+    const days = calculateProgress(10, [
+      { entryDate: "2026-11-25", value: 9.99999999999 },
+      { entryDate: "2026-11-24", value: 9.99999999999999 },
+    ]).days;
+    expect(days).toEqual([
+      { entryDate: "2026-11-25", value: 9.99999999999, percent: 99.9, achieved: false },
+      { entryDate: "2026-11-24", value: 9.99999999999999, percent: 99.9, achieved: false },
+    ]);
+    expect(calculateProgress(20, [{ entryDate: "2026-11-25", value: 19.99999999999 }]).days[0]).toMatchObject({
+      percent: 99.9,
+      achieved: false,
+    });
+  });
+
+  it("truncates (does not round up) just below any other 0.1 step", () => {
+    expect(calculateProgress(1, [{ entryDate: "2026-11-25", value: 0.49999999999995 }]).days[0].percent).toBe(49.9);
+    expect(calculateProgress(10, [{ entryDate: "2026-11-25", value: 12.499999999999 }]).days[0].percent).toBe(124.9);
+  });
+
+  it("still gives whole steps despite floating-point noise", () => {
+    const pct = (dailyTarget: number, value: number) =>
+      calculateProgress(dailyTarget, [{ entryDate: "2026-11-25", value }]).days[0];
+    expect(pct(0.1, 0.3)).toMatchObject({ percent: 300, achieved: true });
+    expect(pct(0.1, 0.7)).toMatchObject({ percent: 700, achieved: true });
+    expect(pct(0.3, 0.1 * 3)).toMatchObject({ percent: 100, achieved: true });
+    expect(pct(0.3, 0.3)).toMatchObject({ percent: 100, achieved: true });
+    expect(pct(3, 1)).toMatchObject({ percent: 33.3, achieved: false });
+    expect(pct(20, 19.99)).toMatchObject({ percent: 99.9, achieved: false });
+  });
+
+  it("the progress endpoint returns 99.9 and not achieved for 9.99999999999 of 10", async () => {
+    await resetDatabase();
+    const p = await createUser({ email: "p87@example.test", password: PASSWORD, role: "PARTICIPANT" });
+    const m = await createUser({ email: "m87@example.test", password: PASSWORD, role: "PROGRAM_MANAGER" });
+    const cookie = await loginAs("p87@example.test");
+    const t = await prisma.activityTemplate.create({
+      data: { name: "Water", unit: "liters", minValue: 0.5, maxValue: 10.5, status: "PUBLISHED", createdById: m.id },
+    });
+    const goalId = (await prisma.goal.create({ data: { participantId: p.id, templateId: t.id, dailyTarget: 10 } })).id;
+    await prisma.activityEntry.create({ data: { goalId, entryDate: "2026-11-25", value: 9.99999999999 } });
+
+    const res = await request(app).get(`/api/goals/${goalId}/progress`).set("Cookie", cookie);
+
+    expect(res.status).toBe(200);
+    expect(res.body.progress).toMatchObject({
+      entriesCount: 1,
+      achievedCount: 0,
+      days: [{ entryDate: "2026-11-25", value: 9.99999999999, percent: 99.9, achieved: false }],
+    });
+  });
+});

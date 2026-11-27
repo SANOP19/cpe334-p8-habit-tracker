@@ -1,0 +1,19 @@
+# GREEN run for #87 — 2026-11-27T14:41Z
+# commit: 86b8ab103d3b9de7d761730f74962241306751e7 (fix commit)
+# command: npx vitest run tests/progress.test.ts --reporter=verbose (server, local PostgreSQL test database)
+
+ ✓ tests/progress.test.ts > TEST-24a (AC-24): calculateProgress > calculates truncated, uncapped percentages and achieved flags
+ ✓ tests/progress.test.ts > TEST-24a (AC-24): calculateProgress > truncates to one decimal place (1 of 3 is 33.3) and orders days newest first
+ ✓ tests/progress.test.ts > TEST-24a (AC-24): calculateProgress > returns zero counts and no days when there are no entries
+ ✓ tests/progress.test.ts > F-05 progress API and privacy > TEST-24b (AC-24): progress endpoint returns per-day percentages and counts for the owner 445ms
+ ✓ tests/progress.test.ts > F-05 progress API and privacy > TEST-24c (AC-24): a goal with no entries has empty progress
+ ✓ tests/progress.test.ts > F-05 progress API and privacy > TEST-25 (AC-25): a participant reads their own progress but gets 404 for another participant's goal, entries and progress
+ ✓ tests/progress.test.ts > F-05 progress API and privacy > TEST-26 (AC-26): the owner reads their progress but a program manager gets 403 for goal, entries and progress
+ ✓ tests/progress.test.ts > F-05 progress API and privacy > TEST-29 (AC-29): every kind of error has the same safe body 329ms
+ ✓ tests/progress.test.ts > TEST-L6-87 (AC-24, Issue #87): truncation near a 0.1 step > never shows 100% for a value below the target (PT's 9.99999999999 of 10)
+ ✓ tests/progress.test.ts > TEST-L6-87 (AC-24, Issue #87): truncation near a 0.1 step > truncates (does not round up) just below any other 0.1 step
+ ✓ tests/progress.test.ts > TEST-L6-87 (AC-24, Issue #87): truncation near a 0.1 step > still gives whole steps despite floating-point noise
+ ✓ tests/progress.test.ts > TEST-L6-87 (AC-24, Issue #87): truncation near a 0.1 step > the progress endpoint returns 99.9 and not achieved for 9.99999999999 of 10
+      Tests  12 passed (12)
+
+# Extra check (not part of the suite): new percentOf vs exact integer arithmetic, 548,810 value/target pairs with up to 3 decimals (targets 0.001..30): 0 mismatches (the old formula also had 0 — no change for ordinary values).
