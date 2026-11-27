@@ -1,0 +1,21 @@
+# RED run for #88 (PT EXP-03) — 2026-11-27T15:40Z
+# commit: fd91c09bccd5dc840d3b9d30cfe1524d40c32ba6 (test(red) commit, before the fix)
+# command: npx playwright test e2e/cards.spec.ts --reporter=list
+
+  x  1 [chromium] › e2e\cards.spec.ts:127:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: manager Templates page fits card and viewport at 375 px (415ms)
+  x  2 [chromium] › e2e\cards.spec.ts:137:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Templates page (with Set goal open) fits card and viewport at 375 px (366ms)
+  x  3 [chromium] › e2e\cards.spec.ts:151:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Goals page fits card and viewport at 375 px (394ms)
+  x  4 [chromium] › e2e\cards.spec.ts:127:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: manager Templates page fits card and viewport at 1280 px (297ms)
+  x  5 [chromium] › e2e\cards.spec.ts:137:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Templates page (with Set goal open) fits card and viewport at 1280 px (366ms)
+  x  6 [chromium] › e2e\cards.spec.ts:151:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Goals page fits card and viewport at 1280 px (343ms)
+  ok 7 [chromium] › e2e\cards.spec.ts:165:3 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88 (control): short-name card keeps badge on the same line as title at 1280 px (312ms)
+
+    Error: Manager Templates 375 px: {"cardRight":363,"titleRight":969,"badgeRight":1049,"maxRight":1049,"offendersCount":2,"offenders":[{"tag":"H5","cls":"card-title mb-0","right":969},{"tag":"SPAN","cls":"badge text-bg-success","right":1049}],"pageScrollWidth":1049,"viewportWidth":375}
+    Error: Participant Templates 375 px: {"cardRight":363,"titleRight":969,"badgeRight":null,"maxRight":969,"offendersCount":2,"offenders":[{"tag":"H5","cls":"card-title mb-0","right":969},{"tag":"LABEL","cls":"form-label","right":478}],"pageScrollWidth":969,"viewportWidth":375}
+    Error: Participant Goals 375 px: {"cardRight":363,"titleRight":969,"badgeRight":1026,"maxRight":1026,"offendersCount":3,"offenders":[{"tag":"H5","cls":"card-title mb-0","right":969},{"tag":"SPAN","cls":"badge text-bg-primary","right":1026},{"tag":"LABEL","cls":"form-label small mb-1","right":422}],"pageScrollWidth":1026,"viewportWidth":375}
+    Error: Manager Templates 1280 px: {"cardRight":1198,"titleRight":1605,"badgeRight":1685,"maxRight":1685,"offendersCount":2,"offenders":[{"tag":"H5","cls":"card-title mb-0","right":1605},{"tag":"SPAN","cls":"badge text-bg-success","right":1685}],"pageScrollWidth":1685,"viewportWidth":1280}
+    Error: Participant Templates 1280 px: {"cardRight":1198,"titleRight":1605,"badgeRight":null,"maxRight":1605,"offendersCount":1,"offenders":[{"tag":"H5","cls":"card-title mb-0","right":1605}],"pageScrollWidth":1605,"viewportWidth":1280}
+    Error: Participant Goals 1280 px: {"cardRight":632,"titleRight":1039,"badgeRight":1096,"maxRight":1096,"offendersCount":3,"offenders":[{"tag":"H5","cls":"card-title mb-0","right":1039},{"tag":"SPAN","cls":"badge text-bg-primary","right":1096},{"tag":"LABEL","cls":"form-label small mb-1","right":667}],"pageScrollWidth":1280,"viewportWidth":1280}
+
+  6 failed
+  1 passed (8.5s)
