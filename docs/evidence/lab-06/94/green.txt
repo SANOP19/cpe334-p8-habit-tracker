@@ -1,0 +1,14 @@
+# GREEN run for #94 (Product Team O-11) — 2026-11-27T17:26Z (2026-11-28T00:26+07:00)
+# commit: 86441d67c3b90f525fecda9e73edf3a22ca2389f (fix commit)
+# command: npx playwright test e2e/header.spec.ts --reporter=list
+
+  ok 1 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Participant is inside the screen and the page does not scroll sideways (340ms)
+  ok 2 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Program Manager is inside the screen and the page does not scroll sideways (275ms)
+  ok 3 [chromium] › e2e\header.spec.ts:94:3 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: on a 1280 px screen the header stays on one line (251ms)
+  ok 4 [chromium] › e2e\header.spec.ts:193:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94: at 375 px a Participant named with a 30-character name with spaces keeps every header item inside the screen (283ms)
+  ok 5 [chromium] › e2e\header.spec.ts:193:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94: at 375 px a Participant named with a 40-character name without spaces keeps every header item inside the screen (278ms)
+  ok 6 [chromium] › e2e\header.spec.ts:193:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94: at 375 px a Program Manager named with a 30-character name with spaces keeps every header item inside the screen (276ms)
+  ok 7 [chromium] › e2e\header.spec.ts:193:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94: at 375 px a Program Manager named with a 40-character name without spaces keeps every header item inside the screen (280ms)
+  ok 8 [chromium] › e2e\header.spec.ts:211:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94 (control): at 375 px the seed name of a Participant stays on one line (279ms)
+  ok 9 [chromium] › e2e\header.spec.ts:211:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94 (control): at 375 px the seed name of a Program Manager stays on one line (279ms)
+  9 passed (5.6s)
