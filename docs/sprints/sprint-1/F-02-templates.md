@@ -4,6 +4,7 @@
 |---|---|---|---|---|
 | 1.0 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Contract written before implementation (PR3, Issue #18) |
 | 1.1 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | §4 empty-state text corrected from "below" to "above": the reviewed layout puts the create form above the list and the code already says "above" (Lab 6 pre-UAT KI-8, Issue #66) |
+| 1.2 | 2026-11-27 | Nitithorn Ketkaew | Nara Kosiyaporn | §1.3, §2, §4, §5 AC-08, §6: `minValue` must be 0 or more (422 `INVALID_RANGE`), so every template has a range in which a positive daily target (F-03, BR-08) is possible; checked before `minValue < maxValue`. Accepted defect from the partner team's UAT (Lab 6 Part D, Issue #86) |
 
 **Requirements:** FR-04, FR-05, FR-06 · BR-06 · decisions D-05, D-06, D-10, D-11  
 **Acceptance criteria:** AC-07, AC-08, AC-09, AC-10, AC-11, AC-30, AC-31  
@@ -31,6 +32,7 @@
 |---|---|
 | Required fields | `name` (non-empty string), `unit` (non-empty string), `minValue` (finite number), `maxValue` (finite number) are required $\rightarrow$ otherwise 422 `VALIDATION_ERROR` with `details` per field. |
 | Range constraint (BR-06, D-06) | `minValue` must be strictly less than `maxValue` (`minValue < maxValue`). If `minValue >= maxValue`, the request is rejected with 422 `INVALID_RANGE`. The database CHECK constraint provides defence-in-depth. |
+| Non-negative minimum (D-06, BR-08; v1.2, Issue #86) | `minValue` must be 0 or more. If `minValue < 0`, the request is rejected with 422 `INVALID_RANGE`, message "minValue must be 0 or more.", details `[{ "field": "minValue", "message": "Must be 0 or more" }]`, and no row is created. This check runs before the range check. Together with `minValue < maxValue` it guarantees `maxValue > 0`, so a participant can always set a positive daily target inside the range (F-03, BR-08) and no entry or percentage can be negative. Templates created before v1.2 are not changed (no database constraint is added). |
 | Program Manager only | Non-manager (Participant) calling `POST /api/templates` or `POST /api/templates/:id/publish` receives 403 `FORBIDDEN`. |
 | Creator isolation (AC-30) | A manager attempting to publish a template created by a different manager receives 404 `NOT_FOUND` (preventing template enumeration or unauthorized publication). |
 | Idempotency / Double publish (AC-31) | Publishing an already published template returns 409 `ALREADY_PUBLISHED`. |
@@ -64,6 +66,7 @@ Responses:
 | 201 | `{ "template": { "id": 1, "name": "Daily Steps", "unit": "steps", "minValue": 0, "maxValue": 50000, "status": "DRAFT", "createdById": 1, "createdAt": "..." } }` | Created |
 | 401 | `{ "error": { "code": "UNAUTHENTICATED", "message": "Please sign in." } }` | Not signed in |
 | 403 | `{ "error": { "code": "FORBIDDEN", "message": "You do not have permission to do this." } }` | Non-manager |
+| 422 | `{ "error": { "code": "INVALID_RANGE", "message": "minValue must be 0 or more.", "details": [{ "field": "minValue", "message": "Must be 0 or more" }] } }` | `minValue < 0` (checked first) |
 | 422 | `{ "error": { "code": "INVALID_RANGE", "message": "minValue must be strictly less than maxValue.", "details": [...] } }` | `minValue >= maxValue` |
 | 422 | `{ "error": { "code": "VALIDATION_ERROR", "message": "...", "details": [...] } }` | Missing field or non-numeric value |
 
@@ -109,7 +112,7 @@ When user navigates to the "Templates" tab (`page === "templates"`):
 
 ### Program Manager view:
 - **Header & Action:** "Activity Templates" heading with a "Create template" form.
-- **Creation Form:** Inputs for `name`, `unit`, `minValue`, `maxValue`, and a "Create template" submit button.
+- **Creation Form:** Inputs for `name`, `unit`, `minValue`, `maxValue`, and a "Create template" submit button. The minimum value input has `min="0"`; a negative minimum shows the error "minValue must be 0 or more." without calling the server (v1.2).
 - **States:**
   - While submitting: submit button disabled, `<Loading label="Creating template" />`.
   - On error: `<ErrorMessage message={error} />`.
@@ -136,7 +139,7 @@ When user navigates to the "Templates" tab (`page === "templates"`):
 | AC | Given / When / Then |
 |---|---|
 | **AC-07** | Given a signed-in program manager, when they submit a template with name, unit, and minValue < maxValue, then the response is 201 Created with status `DRAFT`, `createdById` set to the manager, and the template persists in the database. |
-| **AC-08** | Given a program manager, when they submit a template with minValue >= maxValue, then the response is 422 `INVALID_RANGE`, and no row is created. |
+| **AC-08** | Given a program manager, when they submit a template with minValue >= maxValue, or with a negative minValue (v1.2), then the response is 422 `INVALID_RANGE`, and no row is created. |
 | **AC-09** | Given a signed-in participant, when they attempt to create a template via `POST /api/templates`, then the server returns 403 `FORBIDDEN`. |
 | **AC-10** | Given a manager's draft template, when the manager publishes it, then the response is 200 with status `PUBLISHED`, and it becomes available to participants. |
 | **AC-11** | Given a signed-in participant, when they call `GET /api/templates`, then only templates with status `PUBLISHED` are returned. Given a signed-in manager, when they call `GET /api/templates`, then their own templates (both draft and published) are returned. |
@@ -151,6 +154,7 @@ When user navigates to the "Templates" tab (`page === "templates"`):
 |---|---|---|---|---|---|
 | TEST-07 | AC-07 | API + DB | Signed-in manager | `POST /api/templates` with valid name, unit, min < max | 201 Created; body has template with status `DRAFT`; DB row exists |
 | TEST-08 | AC-08 | API + DB | Signed-in manager | `POST /api/templates` with minValue >= maxValue | 422 `INVALID_RANGE`; DB count = 0 |
+| TEST-L6-86 | AC-08 (v1.2) | API + DB | Signed-in manager | `POST /api/templates` with minValue −10 / maxValue 0 (partner case), −1 / 10, and −0.5 / 5; controls 0 / 1 and 0.5 / 10.5 | 422 `INVALID_RANGE` with message "minValue must be 0 or more." and detail on `minValue`; DB count unchanged; controls 201 |
 | TEST-08b | AC-08 | API | Signed-in manager | `POST /api/templates` with missing required fields | 422 `VALIDATION_ERROR` with details |
 | TEST-08c | AC-08 | API | Signed-in manager | `POST /api/templates` with boolean or string min/max | 422 `VALIDATION_ERROR` with details |
 | TEST-09 | AC-09 | API | Signed-in participant | `POST /api/templates` with valid body | 403 `FORBIDDEN`; no DB row created |
@@ -161,6 +165,7 @@ When user navigates to the "Templates" tab (`page === "templates"`):
 | TEST-31 | AC-31 | API + DB | Manager owns published template | `POST /api/templates/:id/publish` second time | 409 `ALREADY_PUBLISHED`; status remains `PUBLISHED` |
 | TEST-04-ext | AC-04 | API | No session cookie | `POST /api/templates`, `POST /api/templates/:id/publish`, `GET /api/templates` | 401 `UNAUTHENTICATED` |
 | TEST-UI-03 | AC-07, AC-08 (UI) | Component | Manager signed in | Submit template form (valid, then invalid min >= max) | Form validation, loading state, error display, refresh list |
+| TEST-UI-L6-86 | AC-08 (UI, v1.2) | Component | Manager signed in | Minimum value input; submit with minimum −10, maximum 0 | Input has `min="0"`; alert "minValue must be 0 or more."; no `POST /api/templates` call |
 | TEST-UI-04 | AC-10, AC-11 (UI) | Component | Participant vs Manager view | Render templates page for each role; click Publish | Participant sees published list only; Manager sees own with publish buttons |
 
 ---

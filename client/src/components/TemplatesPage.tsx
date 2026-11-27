@@ -53,6 +53,13 @@ export function TemplatesPage({ role }: { role: Role }) {
     const min = Number(minValue);
     const max = Number(maxValue);
 
+    // F-02 v1.2 (Lab 6 Issue #86): same order as the server — non-negative minimum first, then the range.
+    if (min < 0) {
+      setFormError("minValue must be 0 or more.");
+      setSubmitting(false);
+      return;
+    }
+
     if (min >= max) {
       setFormError("minValue must be strictly less than maxValue.");
       setSubmitting(false);
@@ -154,6 +161,7 @@ export function TemplatesPage({ role }: { role: Role }) {
                     id="template-min"
                     type="number"
                     step="any"
+                    min="0"
                     className="form-control"
                     required
                     value={minValue}

@@ -1,0 +1,26 @@
+# GREEN run for #86 — 2026-11-27T15:17Z
+# commit: aefb4d25e32596d86062042e386e8966ca6732d9 (fix commit)
+
+$ (server) npx vitest run tests/templates.test.ts --reporter=verbose
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-07 (AC-07): program manager creates a draft template with valid fields (201 Created) 481ms
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-08 (AC-08): minValue >= maxValue is rejected with 422 INVALID_RANGE
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-L6-86 (AC-08, F-02 v1.2): a negative minValue is rejected with 422 INVALID_RANGE and no row is created
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-08b (AC-08): missing required fields returns 422 VALIDATION_ERROR with field details
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-08c (AC-08): non-number values for minValue or maxValue return 422 VALIDATION_ERROR
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-09 (AC-09): participant attempting to create a template receives 403 FORBIDDEN
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-10 (AC-10): program manager publishes own draft template (200 OK)
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-11a (AC-11): participant calls GET /api/templates and sees only PUBLISHED templates
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-11b (AC-11): program manager calls GET /api/templates and sees all own templates 357ms
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-30 (AC-30): manager publishing another manager's template returns 404 NOT_FOUND
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-31 (AC-31): publishing an already published template returns 409 ALREADY_PUBLISHED
+ ✓ tests/templates.test.ts > F-02 Activity Template Management > TEST-09b: participant calling POST /api/templates/:id/publish receives 403 FORBIDDEN
+      Tests  12 passed (12)
+
+$ (client) npx vitest run tests/templates.test.tsx --reporter=verbose
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-03: Program Manager view > renders create form, loads templates, and submits a new draft template 702ms
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-03: Program Manager view > displays error message when minValue >= maxValue 559ms
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-L6-86: negative minimum (F-02 v1.2) > the minimum input has min=0 and a negative minimum shows the error without calling the server 589ms
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-04: Publish action & Participant view > manager can publish a draft template and see its status change to PUBLISHED
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-04: Publish action & Participant view > participant view shows only published templates and no create form or publish button
+ ✓ tests/templates.test.tsx > F-02 Activity Template UI > TEST-UI-04: Publish action & Participant view > participant view displays empty state when no published templates exist
+      Tests  6 passed (6)

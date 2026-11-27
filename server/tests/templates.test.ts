@@ -112,6 +112,35 @@ describe("F-02 Activity Template Management", () => {
     expect(await prisma.activityTemplate.count()).toBe(0);
   });
 
+  // Lab 6 Part D, Issue #86 (partner finding EXP-01): F-02 v1.2 — minValue must be 0 or more, so every template
+  // has a range in which a positive daily target (F-03, BR-08) is possible.
+  it("TEST-L6-86 (AC-08, F-02 v1.2): a negative minValue is rejected with 422 INVALID_RANGE and no row is created", async () => {
+    for (const [minValue, maxValue] of [[-10, 0], [-1, 10], [-0.5, 5]]) {
+      const res = await request(app)
+        .post("/api/templates")
+        .set("Cookie", managerCookie)
+        .send({ name: `Negative ${minValue}`, unit: "min", minValue, maxValue });
+
+      expect(res.status, `${minValue}..${maxValue}`).toBe(422);
+      expect(res.body.error).toEqual({
+        code: "INVALID_RANGE",
+        message: "minValue must be 0 or more.",
+        details: [{ field: "minValue", message: "Must be 0 or more" }],
+      });
+    }
+    expect(await prisma.activityTemplate.count()).toBe(0);
+
+    // Controls: a minimum of 0 and a positive decimal minimum are still accepted.
+    for (const [minValue, maxValue] of [[0, 1], [0.5, 10.5]]) {
+      const ok = await request(app)
+        .post("/api/templates")
+        .set("Cookie", managerCookie)
+        .send({ name: `Valid ${minValue}`, unit: "min", minValue, maxValue });
+      expect(ok.status, `${minValue}..${maxValue}`).toBe(201);
+    }
+    expect(await prisma.activityTemplate.count()).toBe(2);
+  });
+
   it("TEST-08b (AC-08): missing required fields returns 422 VALIDATION_ERROR with field details", async () => {
     const res = await request(app)
       .post("/api/templates")
