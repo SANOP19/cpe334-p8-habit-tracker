@@ -104,3 +104,122 @@ test.describe("Lab 6 KI-10 (#79): the header fits a phone-width screen", () => {
     await page.getByRole("button", { name: "Sign out" }).click();
   });
 });
+
+// Lab 6 O-11 (#94): long display names (30 chars with spaces or 40 chars without spaces) must wrap
+// inside the 375 px header so role label and Sign out stay on screen, while seed names stay on one line.
+const LONG_NAME_ACCOUNTS = [
+  {
+    email: "e2e-header-long-1-participant@example.test",
+    displayName: "Professor Alexandra Montgomery",
+    role: "PARTICIPANT" as const,
+    seed: "participant@example.test",
+    password: PARTICIPANT_PASSWORD,
+    label: "Participant",
+    shape: "a 30-character name with spaces",
+  },
+  {
+    email: "e2e-header-long-2-participant@example.test",
+    displayName: "N".repeat(40),
+    role: "PARTICIPANT" as const,
+    seed: "participant@example.test",
+    password: PARTICIPANT_PASSWORD,
+    label: "Participant",
+    shape: "a 40-character name without spaces",
+  },
+  {
+    email: "e2e-header-long-1-manager@example.test",
+    displayName: "Professor Alexandra Montgomery",
+    role: "PROGRAM_MANAGER" as const,
+    seed: "manager@example.test",
+    password: MANAGER_PASSWORD,
+    label: "Program Manager",
+    shape: "a 30-character name with spaces",
+  },
+  {
+    email: "e2e-header-long-2-manager@example.test",
+    displayName: "N".repeat(40),
+    role: "PROGRAM_MANAGER" as const,
+    seed: "manager@example.test",
+    password: MANAGER_PASSWORD,
+    label: "Program Manager",
+    shape: "a 40-character name without spaces",
+  },
+];
+
+const CONTROL_NAME_ACCOUNTS = [
+  {
+    email: "e2e-header-ctrl-participant@example.test",
+    displayName: "Alex Student",
+    role: "PARTICIPANT" as const,
+    seed: "participant@example.test",
+    password: PARTICIPANT_PASSWORD,
+    label: "Participant",
+  },
+  {
+    email: "e2e-header-ctrl-manager@example.test",
+    displayName: "Dr. Morgan Staff",
+    role: "PROGRAM_MANAGER" as const,
+    seed: "manager@example.test",
+    password: MANAGER_PASSWORD,
+    label: "Program Manager",
+  },
+];
+
+test.describe("Lab 6 O-11 (#94): long display names wrap inside the 375 px header", () => {
+  const ids: number[] = [];
+
+  test.beforeAll(async () => {
+    for (const a of [...LONG_NAME_ACCOUNTS, ...CONTROL_NAME_ACCOUNTS]) {
+      const seedUser = await prisma.user.findUnique({ where: { email: a.seed } });
+      if (!seedUser) throw new Error("Seed users not found. Run 'npm run seed' first.");
+      const user = await prisma.user.upsert({
+        where: { email: a.email },
+        update: { passwordHash: seedUser.passwordHash, displayName: a.displayName, role: a.role },
+        create: { email: a.email, passwordHash: seedUser.passwordHash, displayName: a.displayName, role: a.role },
+      });
+      ids.push(user.id);
+    }
+  });
+
+  test.afterAll(async () => {
+    for (const id of ids) {
+      await prisma.session.deleteMany({ where: { userId: id } });
+      await prisma.user.delete({ where: { id } }).catch(() => {});
+    }
+    await prisma.$disconnect();
+  });
+
+  for (const a of LONG_NAME_ACCOUNTS) {
+    test(`TEST-L6-94: at 375 px a ${a.label} named with ${a.shape} keeps every header item inside the screen`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 812 });
+      await signIn(page, a.email, a.password);
+      await expect(page.locator("nav")).toContainText(a.label);
+
+      const m = await measureHeader(page);
+      const outside = m.items.filter((i) => i.left < 0 || i.right > m.viewportWidth);
+      expect(outside, JSON.stringify(m)).toEqual([]);
+      expect(m.pageScrollWidth, JSON.stringify(m)).toBeLessThanOrEqual(m.viewportWidth);
+
+      await page.getByRole("button", { name: "Sign out" }).click();
+      await expect(page.locator("#signin-email")).toBeVisible();
+    });
+  }
+
+  for (const a of CONTROL_NAME_ACCOUNTS) {
+    test(`TEST-L6-94 (control): at 375 px the seed name of a ${a.label} stays on one line`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 812 });
+      await signIn(page, a.email, a.password);
+      await expect(page.locator("nav")).toContainText(a.label);
+
+      const lineCount = await page.locator("nav .fw-semibold").evaluate((el) => el.getClientRects().length);
+      expect(lineCount).toBe(1);
+
+      await page.getByRole("button", { name: "Sign out" }).click();
+      await expect(page.locator("#signin-email")).toBeVisible();
+    });
+  }
+});
