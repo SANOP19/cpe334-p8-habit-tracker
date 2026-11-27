@@ -45,8 +45,9 @@ export function Layout({
     <>
       <nav className="navbar navbar-expand bg-body-tertiary border-bottom">
         {/* flex-wrap: on a narrow (phone) screen the user group moves to its own line instead of
-            pushing the page wider than the viewport (KI-10, #79); wide screens keep one line. */}
-        <div className="container flex-wrap row-gap-2">
+            pushing the page wider than the viewport (KI-10, #79); wide screens keep one line.
+            Long display names wrap inside the user group while keeping role badge and Sign out intact (#94). */}
+        <div className="container flex-wrap row-gap-2 px-2 px-sm-3">
           <span className="navbar-brand">Habit Tracker</span>
           <ul className="navbar-nav me-auto">
             {navItemsFor(role).map((item) => (
@@ -63,11 +64,11 @@ export function Layout({
             ))}
           </ul>
           {role && displayName && (
-            <div className="d-flex align-items-center gap-2 ms-auto">
-              <span className="fw-semibold text-nowrap">{displayName}</span>
-              <span className="badge text-bg-secondary">{ROLE_LABELS[role]}</span>
+            <div className="d-flex align-items-center gap-1 gap-sm-2 ms-auto" style={{ minWidth: 0 }}>
+              <span className="fw-semibold small" style={{ minWidth: 0, overflowWrap: "anywhere" }}>{displayName}</span>
+              <span className="badge text-bg-secondary flex-shrink-0">{ROLE_LABELS[role]}</span>
               {onSignOut && (
-                <button type="button" className="btn btn-outline-secondary btn-sm" onClick={onSignOut}>
+                <button type="button" className="btn btn-outline-secondary btn-sm flex-shrink-0" onClick={onSignOut}>
                   Sign out
                 </button>
               )}
