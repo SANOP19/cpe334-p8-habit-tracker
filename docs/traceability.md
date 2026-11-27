@@ -19,6 +19,7 @@
 | 1.4 | 2026-11-26 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT correction KI-9 long notes overflow the goal card (Issue #75), found in the Product Team dry run |
 | 1.5 | 2026-11-26 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT correction KI-10 header does not fit a phone-width screen (Issue #79), found in the Product Team live check of `v0.2.2-lab6` |
 | 1.6 | 2026-11-27 | Nitithorn Ketkaew | Nara Kosiyaporn | Section 8 added: Lab 6 Part D corrections of partner-team findings; #87 percentage rounded up to 100 below the target (PT EXP-02) |
+| 1.7 | 2026-11-27 | Nitithorn Ketkaew | Nara Kosiyaporn | #86 negative template minimum (PT EXP-01): F-02 v1.2 approved change (§6) and section 8 row; TEST-L6-86 added to FR-04 / AC-08 |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -33,7 +34,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | FR-01 | F-01 | 1 | AC-01, AC-02 | TEST-01, TEST-02 | PR2 (#17) | `server/tests/auth.test.ts` TEST-01, TEST-02a/b/c; `client/tests/signin.test.tsx` TEST-UI-01 — pass (`docs/evidence/F-01/green-run-*.txt`) | Verified |
 | FR-02 | F-01 | 1 | AC-05 | TEST-05 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05 (×2); `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
 | FR-03 | F-01 | 1 | AC-03 | TEST-03 | PR2 (#17) | `server/tests/auth.test.ts` TEST-03; `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
-| FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | `server/tests/templates.test.ts` TEST-07, TEST-08, TEST-08b; `client/tests/templates.test.tsx` TEST-UI-03 — pass (`docs/evidence/F-02/green-run-*.txt`) | Verified |
+| FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | `server/tests/templates.test.ts` TEST-07, TEST-08, TEST-08b, TEST-L6-86 (Lab 6 #86); `client/tests/templates.test.tsx` TEST-UI-03 — pass (`docs/evidence/F-02/green-run-*.txt`) | Verified |
 | FR-05 | F-02 | 1 | AC-10, AC-30, AC-31 | TEST-10, TEST-30, TEST-31 | PR3 (#18) | `server/tests/templates.test.ts` TEST-10, TEST-30, TEST-31; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
 | FR-06 | F-02 | 1 | AC-11 | TEST-11 | PR3 (#18) | `server/tests/templates.test.ts` TEST-11a, TEST-11b; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
 | FR-07 | F-03 | 1 | AC-12 | TEST-12 | PR4 (#19) | `server/tests/goals.test.ts` TEST-12; `client/tests/goals.test.tsx` TEST-UI-05/06 — pass (`docs/evidence/F-03/green-run-*.txt`) | Verified |
@@ -83,7 +84,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 |---|---|---|---|---|
 | AC-16 | Manager creating a goal → 403 | Role matrix (SDS §5.4) | TEST-16 — pass | PR4 (#19) |
 | AC-02 | Same 401 message for unknown email and wrong password | SDS §5.3 (no account enumeration) | TEST-02 | PR2 (#17) |
-| AC-08 | minValue ≥ maxValue → 422 | Decision D-06 | TEST-08 | PR3 (#18) |
+| AC-08 | minValue ≥ maxValue → 422; from F-02 v1.2 also minValue < 0 → 422 | Decision D-06; Lab 6 #86 | TEST-08, TEST-L6-86 | PR3 (#18); Lab 6 #86 |
 
 Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 
@@ -141,3 +142,4 @@ Defects found by the partner team (CPMS, Theme 6) in independent UAT of `v0.2.3-
 | Issue | Deviation | Contract | Test | Delivered in | Result |
 |---|---|---|---|---|---|
 | #87 (PT EXP-02, minor) | A value just below a 0.1 step was rounded up: 9.99999999999 of 10 showed 100% while not achieved | F-05 §1.2 (truncated; never 100% unless the target is met), D-08, AC-24 | `server/tests/progress.test.ts` TEST-L6-87 (unit + API, with a floating-point noise control) | branch `fix/87-percent-truncation` | RED 3 failed / 1 passed (control), GREEN 4 passed; server 83, client 38, E2E 5 (`docs/evidence/lab-06/87/`) |
+| #86 (PT EXP-01, minor) | A template with a negative minimum (e.g. −10..0) was created (201) and published, although no positive daily target fits its range, so no goal could be set; a range such as −10..10 also allowed −100% | F-02 v1.2 §1.3 (approved change, §6), AC-08, F-03 / BR-08, D-06 | `server/tests/templates.test.ts` TEST-L6-86 (with 0..1 and 0.5..10.5 controls); `client/tests/templates.test.tsx` TEST-UI-L6-86 | branch `fix/86-template-min-zero` | Contract first (`b5cb443`); RED 1 failed server (201 instead of 422) / 1 failed client (no `min`), GREEN 12 and 6 passed; server 84, client 39, E2E 5 (`docs/evidence/lab-06/86/`) |
