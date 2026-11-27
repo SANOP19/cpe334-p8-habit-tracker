@@ -209,10 +209,10 @@ export function TemplatesPage({ role }: { role: Role }) {
               <div className="card h-100">
                 <div className="card-body">
                   <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h5 className="card-title mb-0">{t.name}</h5>
+                    <h5 className="card-title mb-0" style={{ minWidth: 0, overflowWrap: "anywhere" }}>{t.name}</h5>
                     {isManager && (
                       <span
-                        className={`badge ${
+                        className={`badge flex-shrink-0 ms-2 ${
                           t.status === "PUBLISHED" ? "text-bg-success" : "text-bg-secondary"
                         }`}
                       >
@@ -220,7 +220,7 @@ export function TemplatesPage({ role }: { role: Role }) {
                       </span>
                     )}
                   </div>
-                  <p className="card-text text-muted mb-2">
+                  <p className="card-text text-muted mb-2" style={{ overflowWrap: "anywhere" }}>
                     Target range: {t.minValue} – {t.maxValue} {t.unit}
                   </p>
                   {!isManager && <SetGoalForm template={t} />}
@@ -286,7 +286,7 @@ function SetGoalForm({ template }: { template: ActivityTemplate }) {
   return (
     <form onSubmit={handleSave} className="mt-2">
       <ErrorMessage message={error} />
-      <label htmlFor={inputId} className="form-label">
+      <label htmlFor={inputId} className="form-label" style={{ overflowWrap: "anywhere" }}>
         Daily target ({template.unit})
       </label>
       <input
