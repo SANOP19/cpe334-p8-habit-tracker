@@ -165,6 +165,15 @@ const CONTROL_NAME_ACCOUNTS = [
   },
 ];
 
+/** Number of visual text lines rendered inside the header display-name span (using a Range on its text, since the flex-item span itself always has a single box rect). */
+async function measureDisplayNameLines(page: Page) {
+  return page.locator("nav .fw-semibold").evaluate((el) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    return new Set([...range.getClientRects()].map((r) => Math.round(r.top))).size;
+  });
+}
+
 test.describe("Lab 6 O-11 (#94): long display names wrap inside the 375 px header", () => {
   const ids: number[] = [];
 
@@ -201,6 +210,8 @@ test.describe("Lab 6 O-11 (#94): long display names wrap inside the 375 px heade
       const outside = m.items.filter((i) => i.left < 0 || i.right > m.viewportWidth);
       expect(outside, JSON.stringify(m)).toEqual([]);
       expect(m.pageScrollWidth, JSON.stringify(m)).toBeLessThanOrEqual(m.viewportWidth);
+      const lines = await measureDisplayNameLines(page);
+      expect(lines, `${a.displayName}: ${lines} lines`).toBeGreaterThan(1);
 
       await page.getByRole("button", { name: "Sign out" }).click();
       await expect(page.locator("#signin-email")).toBeVisible();
@@ -215,8 +226,8 @@ test.describe("Lab 6 O-11 (#94): long display names wrap inside the 375 px heade
       await signIn(page, a.email, a.password);
       await expect(page.locator("nav")).toContainText(a.label);
 
-      const lineCount = await page.locator("nav .fw-semibold").evaluate((el) => el.getClientRects().length);
-      expect(lineCount).toBe(1);
+      const lines = await measureDisplayNameLines(page);
+      expect(lines, `${a.displayName}: ${lines} lines`).toBe(1);
 
       await page.getByRole("button", { name: "Sign out" }).click();
       await expect(page.locator("#signin-email")).toBeVisible();
