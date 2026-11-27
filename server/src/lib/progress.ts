@@ -15,9 +15,16 @@ export interface ProgressSummary {
   days: ProgressDay[];
 }
 
+// Relative tolerance for floating-point noise: 0.3 / 0.1 is 2.9999999999999996 in binary, so without it
+// truncation would give 299.9 instead of 300. It is relative (not a fixed 1e-9) so that a real value just
+// below a 0.1 step, such as 9.99999999999 of 10, is still truncated (Lab 6 Issue #87).
+const NOISE = 1e-14;
+
 export function percentOf(value: number, dailyTarget: number): number {
-  // The tiny epsilon absorbs floating-point error such as 0.1 * 3 = 0.30000000000000004.
-  return Math.floor((value / dailyTarget) * 1000 + 1e-9) / 10;
+  const tenths = (value / dailyTarget) * 1000;
+  const percent = Math.floor(tenths + Math.abs(tenths) * NOISE) / 10;
+  // D-08: 100% or more only when the target is met, and at least 100% when it is met.
+  return value < dailyTarget ? Math.min(percent, 99.9) : Math.max(percent, 100);
 }
 
 export function calculateProgress(
