@@ -111,6 +111,7 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 | AC-32 verified in PR4 (F-03) instead of PR6 (F-05) | PR4 | The goal endpoints and their role guard are built in F-03, so the manager-403 check belongs with them |
 | Work allocation reduced from ~30 parts to 8 PRs | PR1 (brief §11) | Fewer review round-trips; no requirement or AC removed |
 | F-02 §4 empty-state text "…template below." corrected to "…template above." | Lab 6 PR-4 (Issue #66) | The contract text contradicted the reviewed layout (create form above the list); the code was already right, so only the text changes |
+| F-02 v1.2: `minValue` must be 0 or more (422 `INVALID_RANGE`, checked before `minValue < maxValue`); AC-08 extended | Lab 6 Part D (Issue #86, partner-team finding EXP-01) | D-06 allowed any `minValue < maxValue`, so a template such as −10..0 could be published although F-03 / BR-08 need a positive target inside the range: no goal could ever be set. A non-negative minimum makes every template usable and rules out negative entries and percentages; existing templates are not changed |
 
 ---
 
