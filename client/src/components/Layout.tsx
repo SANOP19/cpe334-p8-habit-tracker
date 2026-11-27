@@ -65,7 +65,7 @@ export function Layout({
           </ul>
           {role && displayName && (
             <div className="d-flex align-items-center gap-1 gap-sm-2 ms-auto" style={{ minWidth: 0 }}>
-              <span className="fw-semibold" style={{ minWidth: 0, overflowWrap: "anywhere" }}>{displayName}</span>
+              <span className="fw-semibold small" style={{ minWidth: 0, overflowWrap: "anywhere" }}>{displayName}</span>
               <span className="badge text-bg-secondary flex-shrink-0">{ROLE_LABELS[role]}</span>
               {onSignOut && (
                 <button type="button" className="btn btn-outline-secondary btn-sm flex-shrink-0" onClick={onSignOut}>
