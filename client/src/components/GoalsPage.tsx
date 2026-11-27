@@ -105,10 +105,10 @@ function GoalCard({ goal }: GoalCardProps) {
     <div className="card h-100">
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-start mb-2">
-          <h5 className="card-title mb-0">{goal.template.name}</h5>
-          <span className="badge text-bg-primary">{goal.status}</span>
+          <h5 className="card-title mb-0" style={{ minWidth: 0, overflowWrap: "anywhere" }}>{goal.template.name}</h5>
+          <span className="badge text-bg-primary flex-shrink-0 ms-2">{goal.status}</span>
         </div>
-        <p className="card-text mb-3">
+        <p className="card-text mb-3" style={{ overflowWrap: "anywhere" }}>
           Daily target: {goal.dailyTarget} {goal.template.unit}
         </p>
 
@@ -137,7 +137,7 @@ function GoalCard({ goal }: GoalCardProps) {
                 />
               </div>
               <div className="col-sm-4">
-                <label htmlFor={`amount-${goal.id}`} className="form-label small mb-1">
+                <label htmlFor={`amount-${goal.id}`} className="form-label small mb-1" style={{ overflowWrap: "anywhere" }}>
                   Amount ({goal.template.unit})
                 </label>
                 <input
