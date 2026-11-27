@@ -72,15 +72,15 @@ test.describe("Lab 6 #88: long names and units stay inside the cards", () => {
 
     const mgr = await prisma.user.upsert({
       where: { email: MANAGER_EMAIL },
-      update: { passwordHash: seedManager.passwordHash },
-      create: { email: MANAGER_EMAIL, passwordHash: seedManager.passwordHash, displayName: "E2E Cards Manager", role: "PROGRAM_MANAGER" },
+      update: { passwordHash: seedManager.passwordHash, displayName: "Dr. Morgan Staff" },
+      create: { email: MANAGER_EMAIL, passwordHash: seedManager.passwordHash, displayName: "Dr. Morgan Staff", role: "PROGRAM_MANAGER" },
     });
     managerId = mgr.id;
 
     const part = await prisma.user.upsert({
       where: { email: PARTICIPANT_EMAIL },
-      update: { passwordHash: seedParticipant.passwordHash },
-      create: { email: PARTICIPANT_EMAIL, passwordHash: seedParticipant.passwordHash, displayName: "E2E Cards Participant", role: "PARTICIPANT" },
+      update: { passwordHash: seedParticipant.passwordHash, displayName: "Alex Student" },
+      create: { email: PARTICIPANT_EMAIL, passwordHash: seedParticipant.passwordHash, displayName: "Alex Student", role: "PARTICIPANT" },
     });
     participantId = part.id;
 
