@@ -1,6 +1,7 @@
 # RED run for #94 (Product Team O-11) — 2026-11-27T17:25Z (2026-11-28T00:25+07:00)
 # commit: 3119c275aa1747c36789800227754bbca58c3f6e (test(red) commit, before the fix)
 # command: npx playwright test e2e/header.spec.ts --reporter=list
+# Note: after review TEST-L6-94 counts the display name's rendered text lines via Range (commit 4129e73); against 3119c27's Layout.tsx the same 4 long-name tests still fail on width before the line check (4 failed / 5 passed, 9.2s).
 
   ok 1 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Participant is inside the screen and the page does not scroll sideways (840ms)
   ok 2 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Program Manager is inside the screen and the page does not scroll sideways (282ms)
@@ -12,10 +13,14 @@
   ok 8 [chromium] › e2e\header.spec.ts:211:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94 (control): at 375 px the seed name of a Participant stays on one line (330ms)
   ok 9 [chromium] › e2e\header.spec.ts:211:5 › Lab 6 O-11 (#94): long display names wrap inside the 375 px header › TEST-L6-94 (control): at 375 px the seed name of a Program Manager stays on one line (274ms)
 
-    Error (Participant, 30 chars): {"viewportWidth":375,"pageScrollWidth":396,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"Goals","left":231,"right":286,"top":8},{"text":"Professor Alexandra Montgomery","left":12,"right":257,"top":70},{"text":"Participant","left":265,"right":343,"top":72},{"text":"Sign out","left":351,"right":396,"top":56}]}
-    Error (Participant, 40 chars no spaces): {"viewportWidth":375,"pageScrollWidth":641,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"Goals","left":231,"right":286,"top":8},{"text":"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","left":12,"right":503,"top":70},{"text":"Participant","left":511,"right":588,"top":72},{"text":"Sign out","left":596,"right":641,"top":56}]}
-    Error (Program Manager, 30 chars): {"viewportWidth":375,"pageScrollWidth":437,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"Professor Alexandra Montgomery","left":12,"right":257,"top":70},{"text":"Program Manager","left":265,"right":384,"top":72},{"text":"Sign out","left":392,"right":437,"top":56}]}
-    Error (Program Manager, 40 chars no spaces): {"viewportWidth":375,"pageScrollWidth":682,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","left":12,"right":503,"top":70},{"text":"Program Manager","left":511,"right":629,"top":72},{"text":"Sign out","left":637,"right":682,"top":56}]}
+# Case 1: Participant, 30-character name with spaces
+    Error: {"viewportWidth":375,"pageScrollWidth":396,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"Goals","left":231,"right":286,"top":8},{"text":"Professor Alexandra Montgomery","left":12,"right":257,"top":70},{"text":"Participant","left":265,"right":343,"top":72},{"text":"Sign out","left":351,"right":396,"top":56}]}
+# Case 2: Participant, 40-character name without spaces
+    Error: {"viewportWidth":375,"pageScrollWidth":641,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"Goals","left":231,"right":286,"top":8},{"text":"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","left":12,"right":503,"top":70},{"text":"Participant","left":511,"right":588,"top":72},{"text":"Sign out","left":596,"right":641,"top":56}]}
+# Case 3: Program Manager, 30-character name with spaces
+    Error: {"viewportWidth":375,"pageScrollWidth":437,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"Professor Alexandra Montgomery","left":12,"right":257,"top":70},{"text":"Program Manager","left":265,"right":384,"top":72},{"text":"Sign out","left":392,"right":437,"top":56}]}
+# Case 4: Program Manager, 40-character name without spaces
+    Error: {"viewportWidth":375,"pageScrollWidth":682,"items":[{"text":"Habit Tracker","left":12,"right":128,"top":8},{"text":"Templates","left":144,"right":231,"top":8},{"text":"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN","left":12,"right":503,"top":70},{"text":"Program Manager","left":511,"right":629,"top":72},{"text":"Sign out","left":637,"right":682,"top":56}]}
 
   4 failed
   5 passed (10.0s)
