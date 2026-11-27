@@ -56,6 +56,14 @@ templatesRouter.post("/", requireAuth, requireRole("PROGRAM_MANAGER"), async (re
     const min = minValue as number;
     const max = maxValue as number;
 
+    // F-02 v1.2 (Lab 6 Issue #86): a non-negative minimum, checked first, so that with min < max every template
+    // has a range in which a positive daily target (F-03, BR-08) is possible.
+    if (min < 0) {
+      throw new AppError(422, "INVALID_RANGE", "minValue must be 0 or more.", [
+        { field: "minValue", message: "Must be 0 or more" },
+      ]);
+    }
+
     if (min >= max) {
       throw new AppError(422, "INVALID_RANGE", "minValue must be strictly less than maxValue.", [
         { field: "minValue", message: "Must be strictly less than maxValue" },
