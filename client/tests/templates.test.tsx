@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { TemplatesPage } from "../src/components/TemplatesPage";
 import type { ActivityTemplate } from "../src/types";
@@ -129,6 +129,28 @@ describe("F-02 Activity Template UI", () => {
       await userEvent.click(screen.getByRole("button", { name: "Create template" }));
 
       expect(await screen.findByRole("alert")).toHaveTextContent("minValue must be strictly less than maxValue.");
+    });
+  });
+
+  // Lab 6 Part D, Issue #86: F-02 v1.2 §4 — the minimum input has min="0"; a negative minimum is refused in the form.
+  describe("TEST-UI-L6-86: negative minimum (F-02 v1.2)", () => {
+    it("the minimum input has min=0 and a negative minimum shows the error without calling the server", async () => {
+      fetchMock.mockResolvedValueOnce(jsonResponse(200, { templates: [] }));
+
+      render(<TemplatesPage role="PROGRAM_MANAGER" />);
+
+      expect(await screen.findByText(/no templates/i)).toBeInTheDocument();
+      expect(screen.getByLabelText("Minimum value")).toHaveAttribute("min", "0");
+
+      await userEvent.type(screen.getByLabelText("Template name"), "Negative Range");
+      await userEvent.type(screen.getByLabelText("Unit"), "min");
+      await userEvent.type(screen.getByLabelText("Minimum value"), "-10");
+      await userEvent.type(screen.getByLabelText("Maximum value"), "0");
+      // Submit the form directly: a real browser would stop at min="0"; this checks the code path behind it.
+      fireEvent.submit(screen.getByRole("button", { name: "Create template" }).closest("form")!);
+
+      expect(await screen.findByRole("alert")).toHaveTextContent("minValue must be 0 or more.");
+      expect(fetchMock).toHaveBeenCalledTimes(1); // only the initial GET /api/templates
     });
   });
 
