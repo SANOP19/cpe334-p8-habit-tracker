@@ -1,0 +1,20 @@
+# Regression for #87 — 2026-11-27T14:41Z, commit 86b8ab103d3b9de7d761730f74962241306751e7, Node v24.14.0, local PostgreSQL
+$ npm --prefix server test
+ Test Files  12 passed (12)
+      Tests  83 passed (83)
+$ npm --prefix client test
+ Test Files  9 passed (9)
+      Tests  38 passed (38)
+$ npx playwright test
+  ok 1 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Participant is inside the screen and the page does not scroll sideways (1.3s)
+  ok 2 [chromium] › e2e\header.spec.ts:76:5 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: at 375 px every header item of a Program Manager is inside the screen and the page does not scroll sideways (796ms)
+  ok 3 [chromium] › e2e\header.spec.ts:94:3 › Lab 6 KI-10 (#79): the header fits a phone-width screen › TEST-L6-79: on a 1280 px screen the header stays on one line (846ms)
+  ok 4 [chromium] › e2e\journey.spec.ts:64:3 › TEST-27 (AC-27): Participant Lifecycle Journey E2E › completes full cycle: sign in, set goal, log entry, verify progress, duplicate rejection, and sign out (1.7s)
+  ok 5 [chromium] › e2e\layout.spec.ts:63:3 › Lab 6 KI-9 (#75): long notes stay inside the goal card › TEST-L6-75: a 500-character note without spaces wraps inside its card and the page does not scroll sideways (913ms)
+  5 passed (17.2s)
+$ (server) npx tsc --noEmit
+clean
+$ (client) npx tsc --noEmit
+clean
+$ npm run build
+✓ built in 1.83s

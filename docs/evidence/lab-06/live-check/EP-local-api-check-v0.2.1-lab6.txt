@@ -1,0 +1,38 @@
+# Product Team check of KI-1, KI-2, KI-4, KI-5 (+ regression journey) on v0.2.1-lab6
+# commit: 9ea976509080b2eaa514a6f5e1064e8689a3c327 (= tag v0.2.1-lab6), 2026-11-25T15:32Z
+# server code run in-process with supertest against the LOCAL dev PostgreSQL (not production); local seed accounts; no passwords printed
+
+PASS REG    manager creates a draft template -> 201 DRAFT                          actual: 201
+PASS REG    manager publishes it -> 200 PUBLISHED                                  actual: 200
+PASS REG    participant sets a goal (target 30) -> 201                             actual: 201
+PASS REG    entry T value 45 -> 201                                                actual: 201
+PASS REG    progress percent 150, achieved true                                    actual: {"entryDate":"2026-11-25","value":45,"percent":150,"achieved":true}
+PASS REG    second entry same day -> 409 DUPLICATE_ENTRY                           actual: {"error":{"code":"DUPLICATE_ENTRY","message":"An activity entry for this date already exists."}}
+PASS REG    participant2 reads participant's progress -> 404                       actual: 404
+PASS REG    manager reads a goal -> 403 FORBIDDEN                                  actual: 403
+PASS KI-1   GET /api/goals/2147483648 -> 404 Goal not found.                       actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   GET /api/goals/2147483648/entries -> 404 Goal not found.               actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   GET /api/goals/2147483648/progress -> 404 Goal not found.              actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   POST /api/goals/2147483648/entries -> 404 Goal not found.              actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   POST /api/goals templateId 2147483648 -> 422 TEMPLATE_NOT_PUBLISHED    actual: {"error":{"code":"TEMPLATE_NOT_PUBLISHED","message":"This activity is not available for goals."}}
+PASS KI-1   POST /api/templates/2147483648/publish -> 404 Template not found.      actual: {"error":{"code":"NOT_FOUND","message":"Template not found."}}
+PASS KI-1   GET /api/goals/3000000000 -> 404 Goal not found.                       actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   GET /api/goals/3000000000/entries -> 404 Goal not found.               actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   GET /api/goals/3000000000/progress -> 404 Goal not found.              actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   POST /api/goals/3000000000/entries -> 404 Goal not found.              actual: {"error":{"code":"NOT_FOUND","message":"Goal not found."}}
+PASS KI-1   POST /api/goals templateId 3000000000 -> 422 TEMPLATE_NOT_PUBLISHED    actual: {"error":{"code":"TEMPLATE_NOT_PUBLISHED","message":"This activity is not available for goals."}}
+PASS KI-1   POST /api/templates/3000000000/publish -> 404 Template not found.      actual: {"error":{"code":"NOT_FOUND","message":"Template not found."}}
+PASS KI-1   control: GET /api/goals/2147483647 -> 404                              actual: 404
+PASS KI-2   200 KB body -> 413 PAYLOAD_TOO_LARGE                                   actual: {"error":{"code":"PAYLOAD_TOO_LARGE","message":"The request is too large."}}
+PASS KI-2   control: 50 KB body is parsed (unknown route -> 404)                   actual: 404
+PASS KI-4   note 501 characters -> 422 detail note 'Must be at most 500 characters' actual: {"error":{"code":"VALIDATION_ERROR","message":"Invalid entry data.","details":[{"field":"note","message":"Must be at most 500 characters"}]}
+PASS KI-4   control: 500 characters plus spaces -> 201, stored length 500          actual: 201
+PASS KI-5   note 123 -> 422 detail note 'Must be text'                             actual: {"error":{"code":"VALIDATION_ERROR","message":"Invalid entry data.","details":[{"field":"note","message":"Must be text"}]}}
+PASS KI-5   note true -> 422 detail note 'Must be text'                            actual: {"error":{"code":"VALIDATION_ERROR","message":"Invalid entry data.","details":[{"field":"note","message":"Must be text"}]}}
+PASS KI-5   note {"text":"x"} -> 422 detail note 'Must be text'                    actual: {"error":{"code":"VALIDATION_ERROR","message":"Invalid entry data.","details":[{"field":"note","message":"Must be text"}]}}
+PASS KI-5   note ["x"] -> 422 detail note 'Must be text'                           actual: {"error":{"code":"VALIDATION_ERROR","message":"Invalid entry data.","details":[{"field":"note","message":"Must be text"}]}}
+PASS KI-5   control: note null -> 201 with no note                                 actual: 201
+PASS KI-6   GET entries ordered newest date first                                  actual: ["2026-11-25","2026-11-24","2026-11-23"]
+
+SUMMARY: 31 passed, 0 failed (template UAT00-YW-LOCAL-1795620774987, local dev DB)
+exit=0

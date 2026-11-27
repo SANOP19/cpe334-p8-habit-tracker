@@ -1,0 +1,12 @@
+# GREEN run for #88 (PT EXP-03) — 2026-11-27T16:18Z
+# commit: c5a07ea2abd82c47dde2958db2182bfa1da76c58 (test-data fix on top of fix commit 5f57481)
+# command: npx playwright test e2e/cards.spec.ts --reporter=list
+
+  ok 1 [chromium] › e2e\cards.spec.ts:127:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: manager Templates page fits card and viewport at 375 px (758ms)
+  ok 2 [chromium] › e2e\cards.spec.ts:137:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Templates page (with Set goal open) fits card and viewport at 375 px (316ms)
+  ok 3 [chromium] › e2e\cards.spec.ts:151:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Goals page fits card and viewport at 375 px (376ms)
+  ok 4 [chromium] › e2e\cards.spec.ts:127:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: manager Templates page fits card and viewport at 1280 px (257ms)
+  ok 5 [chromium] › e2e\cards.spec.ts:137:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Templates page (with Set goal open) fits card and viewport at 1280 px (320ms)
+  ok 6 [chromium] › e2e\cards.spec.ts:151:5 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88: participant Goals page fits card and viewport at 1280 px (339ms)
+  ok 7 [chromium] › e2e\cards.spec.ts:165:3 › Lab 6 #88: long names and units stay inside the cards › TEST-L6-88 (control): short-name card keeps badge on the same line as title at 1280 px (277ms)
+  7 passed (6.2s)

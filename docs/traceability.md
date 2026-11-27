@@ -18,6 +18,9 @@
 | 1.3 | 2026-11-25 | Nitithorn Ketkaew | Nara Kosiyaporn | KI-8 F-02 contract wording (Issue #66) as an approved change; section 7 rows point to their merged PRs and are ordered by Issue |
 | 1.4 | 2026-11-26 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT correction KI-9 long notes overflow the goal card (Issue #75), found in the Product Team dry run |
 | 1.5 | 2026-11-26 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 6 pre-UAT correction KI-10 header does not fit a phone-width screen (Issue #79), found in the Product Team live check of `v0.2.2-lab6` |
+| 1.6 | 2026-11-27 | Nitithorn Ketkaew | Nara Kosiyaporn | Section 8 added: Lab 6 Part D corrections of partner-team findings; #87 percentage rounded up to 100 below the target (PT EXP-02) |
+| 1.7 | 2026-11-27 | Nitithorn Ketkaew | Nara Kosiyaporn | #86 negative template minimum (PT EXP-01): F-02 v1.2 approved change (§6) and section 8 row; TEST-L6-86 added to FR-04 / AC-08 |
+| 1.8 | 2026-11-27 | Nara Kosiyaporn | Nitithorn Ketkaew | #88 long template names and units overflow the cards (PT EXP-03): section 8 row |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -32,12 +35,12 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | FR-01 | F-01 | 1 | AC-01, AC-02 | TEST-01, TEST-02 | PR2 (#17) | `server/tests/auth.test.ts` TEST-01, TEST-02a/b/c; `client/tests/signin.test.tsx` TEST-UI-01 — pass (`docs/evidence/F-01/green-run-*.txt`) | Verified |
 | FR-02 | F-01 | 1 | AC-05 | TEST-05 | PR2 (#17) | `server/tests/auth.test.ts` TEST-05 (×2); `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
 | FR-03 | F-01 | 1 | AC-03 | TEST-03 | PR2 (#17) | `server/tests/auth.test.ts` TEST-03; `client/tests/app.test.tsx` TEST-UI-02 — pass | Verified |
-| FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | `server/tests/templates.test.ts` TEST-07, TEST-08, TEST-08b; `client/tests/templates.test.tsx` TEST-UI-03 — pass (`docs/evidence/F-02/green-run-*.txt`) | Verified |
+| FR-04 | F-02 | 1 | AC-07, AC-08 | TEST-07, TEST-08 | PR3 (#18) | `server/tests/templates.test.ts` TEST-07, TEST-08, TEST-08b, TEST-L6-86 (Lab 6 #86); `client/tests/templates.test.tsx` TEST-UI-03 — pass (`docs/evidence/F-02/green-run-*.txt`) | Verified |
 | FR-05 | F-02 | 1 | AC-10, AC-30, AC-31 | TEST-10, TEST-30, TEST-31 | PR3 (#18) | `server/tests/templates.test.ts` TEST-10, TEST-30, TEST-31; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
 | FR-06 | F-02 | 1 | AC-11 | TEST-11 | PR3 (#18) | `server/tests/templates.test.ts` TEST-11a, TEST-11b; `client/tests/templates.test.tsx` TEST-UI-04 — pass | Verified |
 | FR-07 | F-03 | 1 | AC-12 | TEST-12 | PR4 (#19) | `server/tests/goals.test.ts` TEST-12; `client/tests/goals.test.tsx` TEST-UI-05/06 — pass (`docs/evidence/F-03/green-run-*.txt`) | Verified |
 | FR-08 | F-04 | 1 | AC-17 | TEST-17 | PR5 (#20) | `server/tests/logging.test.ts` TEST-17; `client/tests/logging.test.tsx` TEST-UI-07 — pass (`docs/evidence/F-04/green-run-*.txt`) | Verified |
-| FR-09 | F-05 | 1 | AC-24, AC-27 | TEST-24, TEST-27 (E2E) | PR6 (#21), PR7 (#22) | `server/tests/progress.test.ts` TEST-24a/b/c; `client/tests/progress.test.tsx` TEST-UI-08; `e2e/journey.spec.ts` TEST-27 — pass (`docs/evidence/PR7/`) | Verified |
+| FR-09 | F-05 | 1 | AC-24, AC-27 | TEST-24, TEST-27 (E2E) | PR6 (#21), PR7 (#22) | `server/tests/progress.test.ts` TEST-24a/b/c, TEST-L6-87 (Lab 6 #87); `client/tests/progress.test.tsx` TEST-UI-08; `e2e/journey.spec.ts` TEST-27 — pass (`docs/evidence/PR7/`) | Verified |
 | FR-10 | F-06 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | FR-11 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | FR-12 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
@@ -82,7 +85,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 |---|---|---|---|---|
 | AC-16 | Manager creating a goal → 403 | Role matrix (SDS §5.4) | TEST-16 — pass | PR4 (#19) |
 | AC-02 | Same 401 message for unknown email and wrong password | SDS §5.3 (no account enumeration) | TEST-02 | PR2 (#17) |
-| AC-08 | minValue ≥ maxValue → 422 | Decision D-06 | TEST-08 | PR3 (#18) |
+| AC-08 | minValue ≥ maxValue → 422; from F-02 v1.2 also minValue < 0 → 422 | Decision D-06; Lab 6 #86 | TEST-08, TEST-L6-86 | PR3 (#18); Lab 6 #86 |
 
 Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 
@@ -110,6 +113,7 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 | AC-32 verified in PR4 (F-03) instead of PR6 (F-05) | PR4 | The goal endpoints and their role guard are built in F-03, so the manager-403 check belongs with them |
 | Work allocation reduced from ~30 parts to 8 PRs | PR1 (brief §11) | Fewer review round-trips; no requirement or AC removed |
 | F-02 §4 empty-state text "…template below." corrected to "…template above." | Lab 6 PR-4 (Issue #66) | The contract text contradicted the reviewed layout (create form above the list); the code was already right, so only the text changes |
+| F-02 v1.2: `minValue` must be 0 or more (422 `INVALID_RANGE`, checked before `minValue < maxValue`); AC-08 extended | Lab 6 Part D (Issue #86, partner-team finding EXP-01) | D-06 allowed any `minValue < maxValue`, so a template such as −10..0 could be published although F-03 / BR-08 need a positive target inside the range: no goal could ever be set. A non-negative minimum makes every template usable and rules out negative entries and percentages; existing templates are not changed |
 
 ---
 
@@ -129,3 +133,15 @@ Contract deviations found by the Product Team's own audit (24 Nov 2026) and dry 
 | #66 KI-8 | F-02 contract text said the empty state points "below"; the form is above | F-02 §4 (contract text only) | none — documentation only; the code (`TemplatesPage.tsx`) already said "above" | PR-4 | Contract v1.1 and §6 approved change; no behaviour change |
 | #75 KI-9 | A 500-character note without spaces made the history row, the card and the page thousands of pixels wide | F-04 §1 (note up to 500 characters), §4 (history row), NFR-07 | `e2e/layout.spec.ts` TEST-L6-75 (Playwright, real layout) | branch `fix/75-note-wrap` (PR-5) | RED 1 failed (row 4078 px for a 516 px row), GREEN 1 passed; server 79, client 38, E2E 2 (`docs/evidence/lab-06/75/`) |
 | #79 KI-10 | At 375 px the header's user group (display name, role label, Sign out) ended at x = 482 (Participant) / 469 (Program Manager), so the page scrolled sideways and Sign out was off screen | F-01 §UI (Header), SRS A-05 (desktop or mobile browser), NFR-07 | `e2e/header.spec.ts` TEST-L6-79 (Playwright at 375 px for both roles, plus a 1280 px one-line control) | branch `fix/79-header-mobile` (PR-6) | RED 2 failed / 1 passed (control), GREEN 3 passed; server 79, client 38, E2E 5 (`docs/evidence/lab-06/79/`) |
+
+---
+
+## 8. Lab 6 Part D corrections (partner-team findings)
+
+Defects found by the partner team (CPMS, Theme 6) in independent UAT of `v0.2.3-lab6` (`b51c5e7`) and accepted in our triage. Each is corrected with a failing test first, for release `v0.2.4-lab6`.
+
+| Issue | Deviation | Contract | Test | Delivered in | Result |
+|---|---|---|---|---|---|
+| #87 (PT EXP-02, minor) | A value just below a 0.1 step was rounded up: 9.99999999999 of 10 showed 100% while not achieved | F-05 §1.2 (truncated; never 100% unless the target is met), D-08, AC-24 | `server/tests/progress.test.ts` TEST-L6-87 (unit + API, with a floating-point noise control) | branch `fix/87-percent-truncation` | RED 3 failed / 1 passed (control), GREEN 4 passed; server 83, client 38, E2E 5 (`docs/evidence/lab-06/87/`) |
+| #86 (PT EXP-01, minor) | A template with a negative minimum (e.g. −10..0) was created (201) and published, although no positive daily target fits its range, so no goal could be set; a range such as −10..10 also allowed −100% | F-02 v1.2 §1.3 (approved change, §6), AC-08, F-03 / BR-08, D-06 | `server/tests/templates.test.ts` TEST-L6-86 (with 0..1 and 0.5..10.5 controls); `client/tests/templates.test.tsx` TEST-UI-L6-86 | branch `fix/86-template-min-zero` | Contract first (`b5cb443`); RED 1 failed server (201 instead of 422) / 1 failed client (no `min`), GREEN 12 and 6 passed; server 84, client 39, E2E 5 (`docs/evidence/lab-06/86/`) |
+| #88 (PT EXP-03, minor) | An 80-character template name and 40-character unit without spaces overflowed the template and goal cards (title x = 969 / 1605, badge x = 1049 / 1685, unit label x = 478 / 667, page scroll width up to 1049 at 375 px and 1685 at 1280 px) | F-02 §4, F-03 §4, F-04 §4, SRS A-05 | `e2e/cards.spec.ts` TEST-L6-88 (Playwright at 375 and 1280 px, with a short-name control) | branch `fix/88-card-wrap` | RED 6 failed / 1 passed (control), GREEN 7 passed; server 84, client 39, E2E 12 (`docs/evidence/lab-06/88/`) |
