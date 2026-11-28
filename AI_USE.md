@@ -86,6 +86,15 @@ Lab 6 limits on AI (in addition to the list below):
 - PASS/FAIL, triage decisions and both acceptance decisions were made by the students; every run record names the tester and says "AI-assisted".
 - No AI tool deployed, merged into `main`, ran `gcloud` or changed the partner's data beyond normal user actions with our own run tags.
 
+## Lab 7 (maintenance change: entry correction with revision history, Issue #99)
+| Part / PR | Task assisted | Tool | Author | Reviewer |
+|---|---|---|---|---|
+| Plan | Choice of the change (after the instructor's announcement), complexity and scope, step plan, checks of the plan against the handout | Claude Code | Nitithorn | Nara |
+| #99 | Change-request text; label, Issue and Nitithorn's approval comment posted with `gh` at Nitithorn's instruction (Nara posts Nara's own approval) | Claude Code | Nitithorn | Nara |
+| PR-L7-1 | Contract revision (SRS 0.3, F-04 v1.2, F-05 v1.2, System SDS 0.5, brief, features, traceability 2.0) and `docs/labs/lab-07/impact-CR-99.md` | Claude Code | Nitithorn | Nara |
+
+Rows for PR-L7-2 (API) and PR-L7-3 (UI) are added in those PRs by their authors.
+
 ## What AI was not trusted with
 - No secret was ever given to an AI tool; local passwords stay in `server/.env` (ignored by Git).
 - "All tests pass" was never accepted from an AI statement: every result in the report comes from a recorded run (command, commit, counts) in `docs/evidence/`.

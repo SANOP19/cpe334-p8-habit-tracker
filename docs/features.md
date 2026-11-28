@@ -4,6 +4,7 @@
 | Version | Date | Author | Reviewer | Change |
 |---|---|---|---|---|
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | First version (PR1, Issue #16) |
+| 0.2 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 approved change (CR #99): F-04 gains entry correction with revision history (FR-15, FR-16, BR-13) |
 
 Requirement IDs are defined in `docs/srs.md` §4. Acceptance criteria (AC) and planned tests for Sprint 1 are listed in `docs/project-brief.md` §9 and mapped in `docs/traceability.md`.
 
@@ -16,7 +17,7 @@ Requirement IDs are defined in `docs/srs.md` §4. Acceptance criteria (AC) and p
 | **F-01** | Authentication and session | Seeded users sign in with email and password, see their identity, and sign out. Server-side sessions in the database; random token in an HttpOnly cookie; only its hash stored; fixed expiry. Provides the `requireAuth` / `requireRole` checks used by every later feature. | FR-01, FR-02, FR-03, NFR-01, NFR-02, NFR-03 | Server and client foundation (P1, P2) | 1 |
 | **F-02** | Activity template management | A program manager creates a template (name, unit, minValue < maxValue) as a draft and publishes it. Participants see only published templates; managers see their own. | FR-04, FR-05, FR-06, BR-06 | F-01 | 1 |
 | **F-03** | Goal setting | A participant creates a goal from a published template with a daily target that is positive and within the template range; at most one active goal per template. | FR-07, BR-08, BR-09 | F-01, F-02 | 1 |
-| **F-04** | Daily activity logging | A participant records one entry per goal per calendar day; value within range; date not in the future and not more than 6 days back (Asia/Bangkok); simultaneous duplicates cannot both be stored. | FR-08, BR-01, BR-02, BR-03, BR-04, NFR-09, NFR-10 | F-03 | 1 |
+| **F-04** | Daily activity logging | A participant records one entry per goal per calendar day; value within range; date not in the future and not more than 6 days back (Asia/Bangkok); simultaneous duplicates cannot both be stored. (v0.2, CR #99) The owner can correct an entry's value/note inside the same window, with a reason and the version they saw; every correction is kept as a revision they can read back; stale or simultaneous corrections cannot overwrite each other. | FR-08, FR-15, FR-16, BR-01, BR-02, BR-03, BR-04, BR-13, NFR-09, NFR-10 | F-03 | 1 (correction: Lab 7 change) |
 | **F-05** | Progress and privacy isolation | A participant sees entries and calculated progress (percent, achieved) for their own goals. Other participants' records return 404; program managers receive 403 on all goal data. | FR-09, BR-05, BR-07 | F-04 | 1 |
 | **F-06** | Goal revision, pause and archive | A participant changes a goal's target, pauses or archives it; past progress keeps its original meaning. | FR-10, BR-10 | F-03, F-05 | 2 |
 | **F-07** | History and streak | Entry history and goal revision history; consecutive-day streak calculation. | FR-11, FR-12, BR-11 | F-04, F-06 | 2 |
@@ -41,7 +42,7 @@ Some requirements are not owned by one feature. Each responsibility is establish
 
 ## 3. Coverage check
 
-- Every FR (FR-01..FR-14) belongs to exactly one feature.
-- Every BR (BR-01..BR-12) belongs to a feature.
+- Every FR (FR-01..FR-16) belongs to exactly one feature (FR-15, FR-16 added to F-04 by the Lab 7 change, CR #99).
+- Every BR (BR-01..BR-13) belongs to a feature (BR-13 added to F-04 by CR #99).
 - Every NFR (NFR-01..NFR-10) belongs to a feature or a cross-cutting responsibility.
 - Features F-06..F-09 have requirements and a sprint now; their acceptance criteria and tests are written in their sprint's contracts.

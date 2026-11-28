@@ -5,6 +5,7 @@
 |---|---|---|---|---|
 | 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Sections 1–3, 5 and 6: context, actors, scope, assumptions, decisions and questions (P3a, Issue #5) |
 | 0.2 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Section 4: Functional Requirements, Business Rules, and Non-Functional Requirements (P3b, Issue #6) |
+| 0.3 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 approved change (CR #99): entry correction with revision history — §3.2 note, §3.3 exclusion narrowed, FR-15, FR-16, BR-13 added, NFR-10 extended to corrections, D-03 revised |
 
 **Team:** Nitithorn Ketkaew (67070505203) · Nara Kosiyaporn (67070505218)  
 **Source:** decisions agreed in `docs/project-brief.md` (P0, PR #2).
@@ -55,6 +56,7 @@ Each account has exactly one role (D-02). Accounts are created by the seed proce
 
 ### 3.2 In scope for Sprint 1
 Authentication and session; template creation and publication; goal setting; daily logging with business-rule validation; progress calculation and privacy isolation (features F-01..F-05 in `docs/project-brief.md` §5).
+Lab 7 change (v0.3, CR #99): the maintained Sprint 1 scope now also lets a participant correct their own recent entries, with a revision history (FR-15, FR-16, BR-13; F-04 v1.2).
 
 ### 3.3 Explicit exclusions
 | Excluded | Reason |
@@ -64,7 +66,7 @@ Authentication and session; template creation and publication; goal setting; dai
 | Account administration and multiple roles per account | Not required; one role per account keeps permissions simple |
 | Sending real reminders (email, SMS, push) | No external messaging services; reminders are placeholders |
 | Sharing private records with staff, even with consent | Not defined by the stakeholder; avoids a privacy design that cannot be verified in scope |
-| Editing or deleting an entry in Sprint 1 | Keeps the first slice small; later correction would be a separate, specified change |
+| Deleting an entry; changing an entry's date; correcting an entry older than the logging window; editing or deleting a correction record | Keeps history trustworthy. (v0.3: until Lab 7 this row excluded all editing in Sprint 1; correction inside the window is now specified as FR-15/BR-13 — CR #99) |
 | Integration with wearables or other external apps | No external APIs; synthetic data only |
 | Real personal data | Synthetic demo data only |
 
@@ -90,6 +92,8 @@ Authentication and session; template creation and publication; goal setting; dai
 | **FR-12** | The system computes consecutive-day streak metrics indicating continuous adherence to daily targets. | Participant / System | 2 | Sprint 2 contract verification |
 | **FR-13** | A participant views aggregated weekly and monthly habit performance and completion rate analytics. | Participant | 2 | Sprint 2 contract verification |
 | **FR-14** | A participant defines daily reminder schedules rendered as visual timetable cues (mocked schedules; external dispatch out of scope). | Participant | 3 | Sprint 3 contract verification |
+| **FR-15** | A participant corrects the value and/or note of their own entry inside the logging window, giving a reason and the version they saw; the system stores the correction and a revision with the previous and new values in one transaction, and progress uses the corrected value. | Participant | 1 (Lab 7 change, CR #99) | API tests `TEST-34a/b` |
+| **FR-16** | A participant reads the correction history (revisions, newest first) of their own entry. | Participant | 1 (Lab 7 change, CR #99) | API tests `TEST-34b`, `TEST-37` |
 
 ---
 
@@ -109,6 +113,7 @@ Authentication and session; template creation and publication; goal setting; dai
 | **BR-10** | **Historical Invariance Upon Revision:** Revising a goal does not change the meaning or calculated percentages of past recorded progress. | defined in Sprint 2 contract | Domain service design | 2 |
 | **BR-11** | **Consecutive-Day Streak Rule:** Streak counts consecutive calendar days where logged activity met or exceeded `dailyTarget` (draft — finalised in the Sprint 2 contract). | defined in Sprint 2 contract | Domain service calculation | 2 |
 | **BR-12** | **Reminders Are Placeholders:** Reminders are display placeholders within the application and never send external messages. | — | Presentation layer only | 3 |
+| **BR-13** | **Correction Integrity:** (a) an entry can be corrected only while its date is today or up to 6 days before in `Asia/Bangkok`; (b) only against its latest version; (c) only with a real change and a reason of 1–200 characters. The entry date never changes. | (a) `422` `ENTRY_LOCKED`; (b) `409` `STALE_ENTRY`; (c) `422` `NO_CHANGE` / `VALIDATION_ERROR` | API service + conditional database update in one transaction | 1 (Lab 7 change, CR #99) |
 
 ---
 
@@ -125,7 +130,7 @@ Authentication and session; template creation and publication; goal setting; dai
 | **NFR-07** | Main screens show loading, empty, and error states | UI/E2E tests and screenshots | 1 |
 | **NFR-08** | No real secret in Git or client code | Review of diffs and `.env.example` | 1 |
 | **NFR-09** | Timezone consistency: calendar days and rolling back-dating window evaluated in `Asia/Bangkok` | Unit tests with mocked clock | 1 |
-| **NFR-10** | Concurrency robustness: simultaneous submissions for the same goal and day yield one record and 409 | Integration test (`TEST-22`) | 1 |
+| **NFR-10** | Concurrency robustness: simultaneous submissions for the same goal and day yield one record and 409; (v0.3) simultaneous corrections of the same entry version yield one correction and one 409 `STALE_ENTRY` | Integration tests (`TEST-22`, `TEST-38c`) | 1 |
 
 ---
 
@@ -150,7 +155,7 @@ Authentication and session; template creation and publication; goal setting; dai
 |---|---|---|---|
 | D-01 | Context: study and exercise habit programme for university students | Familiar domain; simple numeric activities; synthetic data is easy to create | Agreed in PR #2 |
 | D-02 | Roles `PARTICIPANT` and `PROGRAM_MANAGER`; one role per account; seeded accounts only | Matches the Theme 8 brief; one role per account makes backend checks simple and testable | Agreed in PR #2 |
-| D-03 | One entry per goal per calendar day; no accumulation; no editing in Sprint 1 | The brief asks us to choose one-entry-per-day or accumulation; one entry is easier to verify and gives a clear duplicate rule enforceable by a database constraint | Agreed in PR #2 |
+| D-03 | One entry per goal per calendar day; no accumulation; correction of value/note inside the logging window with a revision history (BR-13); no deletion. *(Until v0.3: "…no editing in Sprint 1".)* | The brief asks us to choose one-entry-per-day or accumulation; one entry is easier to verify and gives a clear duplicate rule enforceable by a database constraint. Revised because mistyped values left progress permanently wrong; correction keeps one entry per day (the date cannot change) and an audit trail | Agreed in PR #2; revised by CR #99 (Lab 7, team-approved per the instructor's announcement) |
 | D-04 | "Today" is decided by server time in Asia/Bangkok | The client clock can be wrong or manipulated; one fixed zone follows assumption A-01 | Agreed in PR #2 |
 | D-05 | Entries allowed for today and up to 6 days before (7 days including today) | Lets participants catch up on a missed week without allowing old history to be rewritten; gives clear boundary tests (6 days accepted, 7 rejected) | Agreed in PR #2; confirm with TA (Q-01) |
 | D-06 | Template fields name, unit, minValue, maxValue with minValue < maxValue; `DRAFT` → `PUBLISHED`; published templates cannot change in Sprint 1 | A valid range makes entries comparable; freezing published templates keeps existing goals and entries meaningful | Agreed in PR #2 |
