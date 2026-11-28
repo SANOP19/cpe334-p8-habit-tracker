@@ -1,0 +1,29 @@
+# Full server suite on the RED commit ee59680 — command: npm --prefix server test
+# Time: 2026-11-29 01:15:29 ICT
+ ❯ tests/entry-correction.test.ts (10 tests | 10 failed) 3444ms
+ ✓ tests/logging.test.ts (14 tests) 4157ms
+ ✓ tests/templates.test.ts (12 tests) 2335ms
+ ✓ tests/progress.test.ts (12 tests) 1333ms
+ ✓ tests/goals.test.ts (10 tests) 2303ms
+ ✓ tests/auth.test.ts (10 tests) 1811ms
+ ✓ tests/db-constraints.test.ts (3 tests) 633ms
+ ✓ tests/ids.test.ts (4 tests) 988ms
+ ✓ tests/client-static.test.ts (6 tests) 339ms
+ ✓ tests/seed.test.ts (3 tests) 964ms
+ ✓ tests/health.test.ts (4 tests) 53ms
+ ✓ tests/ready.test.ts (3 tests) 254ms
+ ✓ tests/require-role.test.ts (3 tests) 3ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ ❯ tests/entry-correction.test.ts:94:37
+ ❯ tests/entry-correction.test.ts:140:26
+ ❯ tests/entry-correction.test.ts:162:23
+ ❯ tests/entry-correction.test.ts:182:27
+ ❯ tests/entry-correction.test.ts:222:5
+ ❯ tests/entry-correction.test.ts:266:30
+ ❯ tests/entry-correction.test.ts:293:24
+ ❯ tests/entry-correction.test.ts:303:111
+ ❯ tests/entry-correction.test.ts:325:63
+ ❯ tests/entry-correction.test.ts:355:22
+ Test Files  1 failed | 12 passed (13)
+      Tests  10 failed | 84 passed (94)
+   Duration  28.94s (transform 412ms, setup 0ms, collect 5.69s, tests 18.62s, environment 2ms, prepare 1.57s)

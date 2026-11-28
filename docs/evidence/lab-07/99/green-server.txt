@@ -1,0 +1,19 @@
+# GREEN run — Lab 7 CR #99, PR-L7-2 (API)
+# Commit under test: 89fcc4f5eb486bb3695f0fc09c9c3c9a5488a729 (feat(F-04): correct an entry with revision history and conflict detection (FR-15, FR-16, B)
+# Same tests as red-server.txt; RED commit was ee59680
+# Time: 2026-11-29 01:20:01 ICT; Node v24.14.0; npm 11.9.0; psql (PostgreSQL) 18.1
+# Command: npm --prefix server test -- entry-correction
+
+
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+
+ ✓ tests/entry-correction.test.ts (10 tests) 3081ms
+   ✓ Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-34a (AC-34): the owner corrects value and note with a reason; a revision is stored and readable 487ms
+   ✓ Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-36 (AC-36): invalid corrections are rejected with 422 and change nothing 650ms
+   ✓ Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38c (AC-38, NFR-10): of two simultaneous corrections of the same version exactly one wins (5 rounds) 420ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  01:20:04
+   Duration  3.81s (transform 102ms, setup 0ms, collect 459ms, tests 3.08s, environment 0ms, prepare 96ms)
+

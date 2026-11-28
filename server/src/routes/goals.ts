@@ -29,10 +29,25 @@ const entrySelect = {
   value: true,
   note: true,
   createdAt: true,
+  // Lab 7 CR #99 (F-04 v1.2 §2): correction tracking
+  updatedAt: true,
+  version: true,
+} as const;
+
+// Lab 7 CR #99 (FR-16): the user who made a correction is stored but not returned (always the owner).
+const revisionSelect = {
+  id: true,
+  changedAt: true,
+  previousValue: true,
+  newValue: true,
+  previousNote: true,
+  newNote: true,
+  reason: true,
 } as const;
 
 const isFiniteNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
 const MAX_NOTE_LENGTH = 500;
+const MAX_REASON_LENGTH = 200; // Lab 7 CR #99, BR-13(c)
 const isPositiveInteger = (value: unknown): value is number => Number.isInteger(value) && (value as number) > 0;
 
 const isValidCalendarDate = (dateStr: unknown): dateStr is string => {
@@ -54,6 +69,11 @@ const duplicateGoal = () =>
 const duplicateEntry = () =>
   new AppError(409, "DUPLICATE_ENTRY", "An activity entry for this date already exists.");
 const goalNotFound = () => new AppError(404, "NOT_FOUND", "Goal not found.");
+const entryNotFound = () => new AppError(404, "NOT_FOUND", "Entry not found.");
+const entryLocked = () =>
+  new AppError(422, "ENTRY_LOCKED", "Only entries from today and the past 6 days can be corrected.");
+const staleEntry = () =>
+  new AppError(409, "STALE_ENTRY", "This entry was changed elsewhere. Reload it and try again.");
 
 // POST /api/goals — AC-12..AC-15
 goalsRouter.post("/", async (req, res, next) => {
@@ -251,6 +271,148 @@ goalsRouter.get("/:id/entries", async (req, res, next) => {
       select: entrySelect,
     });
     res.status(200).json({ entries });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Lab 7 CR #99 — entry correction with revision history (F-04 v1.2 §1.7; FR-15, FR-16, BR-13).
+// Checks 3-4 of §1.7: the goal belongs to the caller and the entry belongs to that goal (404 otherwise).
+async function findOwnEntry(userId: number, rawGoalId: string, rawEntryId: string) {
+  const goalId = Number(rawGoalId);
+  if (!isDbId(goalId)) throw goalNotFound();
+  const goal = await prisma.goal.findFirst({
+    where: { id: goalId, participantId: userId },
+    include: { template: true },
+  });
+  if (!goal) throw goalNotFound();
+
+  const entryId = Number(rawEntryId);
+  if (!isDbId(entryId)) throw entryNotFound();
+  const entry = await prisma.activityEntry.findFirst({ where: { id: entryId, goalId }, select: { id: true } });
+  if (!entry) throw entryNotFound();
+  return { goal, entryId };
+}
+
+// Trimmed note; "" and null both mean "no note" (same storage rule as POST).
+const normalizeNote = (note: string | null): string | null => {
+  if (note === null) return null;
+  const trimmed = note.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+// PATCH /api/goals/:id/entries/:entryId — FR-15, BR-13 (AC-34..AC-38)
+goalsRouter.patch("/:id/entries/:entryId", async (req, res, next) => {
+  try {
+    // Steps 1-2 are the router guard; steps 3-4:
+    const { goal, entryId } = await findOwnEntry(req.user!.id, req.params.id, req.params.entryId);
+
+    // Step 5: body shape
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const { value, note, reason, version } = body;
+    const details: Array<{ field: string; message: string }> = [];
+    if (Object.prototype.hasOwnProperty.call(body, "entryDate")) {
+      details.push({ field: "entryDate", message: "Cannot be changed" });
+    }
+    if (value !== undefined && !isFiniteNumber(value)) {
+      details.push({ field: "value", message: "Must be a valid number" });
+    }
+    if (note !== undefined && note !== null && typeof note !== "string") {
+      details.push({ field: "note", message: "Must be text" });
+    } else if (typeof note === "string" && note.trim().length > MAX_NOTE_LENGTH) {
+      details.push({ field: "note", message: `Must be at most ${MAX_NOTE_LENGTH} characters` });
+    }
+    if (value === undefined && note === undefined) {
+      details.push({ field: "body", message: "Provide value or note" });
+    }
+    if (typeof reason !== "string" || reason.trim().length < 1 || reason.trim().length > MAX_REASON_LENGTH) {
+      details.push({ field: "reason", message: `Must be 1 to ${MAX_REASON_LENGTH} characters` });
+    }
+    if (!Number.isInteger(version) || (version as number) < 0) {
+      details.push({ field: "version", message: "Must be a whole number of 0 or more" });
+    }
+    if (details.length > 0) {
+      throw new AppError(422, "VALIDATION_ERROR", "Invalid correction data.", details);
+    }
+
+    const expectedVersion = version as number;
+    const oldestAllowed = getOldestAllowedDate(clock.todayBangkok(), 6);
+
+    // Steps 6-9 and the write run in one transaction: the conditional update decides concurrent
+    // requests (the second waits for the first, re-reads the row and matches nothing), and the
+    // revision is stored only together with a successful update (invariant: revisions = version).
+    const result = await prisma.$transaction(async (tx) => {
+      const current = await tx.activityEntry.findFirst({ where: { id: entryId, goalId: goal.id } });
+      if (!current) throw entryNotFound();
+
+      // Step 6: BR-13(a) window
+      if (current.entryDate < oldestAllowed) throw entryLocked();
+
+      // Step 7: BR-01 range of the new value
+      if (isFiniteNumber(value) && (value < goal.template.minValue || value > goal.template.maxValue)) {
+        throw new AppError(
+          422,
+          "VALUE_OUT_OF_RANGE",
+          `Value must be between ${goal.template.minValue} and ${goal.template.maxValue} ${goal.template.unit}.`,
+        );
+      }
+
+      // Step 8: BR-13(b) latest version only
+      if (current.version !== expectedVersion) throw staleEntry();
+
+      // Step 9: BR-13(c) a real change
+      const newValue = isFiniteNumber(value) ? value : current.value;
+      const newNote = note === undefined ? current.note : normalizeNote(note as string | null);
+      if (newValue === current.value && newNote === current.note) {
+        throw new AppError(422, "NO_CHANGE", "Nothing to change.");
+      }
+
+      const now = clock.now();
+      const updated = await tx.activityEntry.updateMany({
+        where: { id: entryId, goalId: goal.id, version: expectedVersion, entryDate: { gte: oldestAllowed } },
+        data: { value: newValue, note: newNote, version: { increment: 1 }, updatedAt: now },
+      });
+      if (updated.count === 0) {
+        // Changed between the read and the update: report why, store nothing.
+        const latest = await tx.activityEntry.findFirst({ where: { id: entryId, goalId: goal.id } });
+        if (!latest) throw entryNotFound();
+        if (latest.entryDate < oldestAllowed) throw entryLocked();
+        throw staleEntry();
+      }
+
+      const revision = await tx.activityEntryRevision.create({
+        data: {
+          entryId,
+          previousValue: current.value,
+          newValue,
+          previousNote: current.note,
+          newNote,
+          reason: (reason as string).trim(),
+          changedById: req.user!.id,
+          changedAt: now,
+        },
+        select: revisionSelect,
+      });
+      const entry = await tx.activityEntry.findUniqueOrThrow({ where: { id: entryId }, select: entrySelect });
+      return { entry, revision };
+    });
+
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/goals/:id/entries/:entryId/revisions — FR-16 (AC-34, AC-37)
+goalsRouter.get("/:id/entries/:entryId/revisions", async (req, res, next) => {
+  try {
+    const { entryId } = await findOwnEntry(req.user!.id, req.params.id, req.params.entryId);
+    const revisions = await prisma.activityEntryRevision.findMany({
+      where: { entryId },
+      orderBy: [{ changedAt: "desc" }, { id: "desc" }],
+      select: revisionSelect,
+    });
+    res.status(200).json({ revisions });
   } catch (err) {
     next(err);
   }

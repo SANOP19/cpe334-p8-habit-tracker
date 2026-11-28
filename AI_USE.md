@@ -92,8 +92,9 @@ Lab 6 limits on AI (in addition to the list below):
 | Plan | Choice of the change (after the instructor's announcement), complexity and scope, step plan, checks of the plan against the handout | Claude Code | Nitithorn | Nara |
 | #99 | Change-request text; label, Issue and Nitithorn's approval comment posted with `gh` at Nitithorn's instruction (Nara posts Nara's own approval) | Claude Code | Nitithorn | Nara |
 | PR-L7-1 | Contract revision (SRS 0.3, F-04 v1.2, F-05 v1.2, System SDS 0.5, brief, features, traceability 2.0) and `docs/labs/lab-07/impact-CR-99.md` | Claude Code | Nitithorn | Nara |
+| PR-L7-2 | RED tests (`entry-correction.test.ts`) written from the merged contract and run before any implementation; migration generated with `prisma migrate diff`; PATCH and revisions routes; RED/GREEN/regression runs and evidence | Claude Code | Nitithorn | Nara |
 
-Rows for PR-L7-2 (API) and PR-L7-3 (UI) are added in those PRs by their authors.
+The row for PR-L7-3 (UI) is added in that PR by its author.
 
 ## What AI was not trusted with
 - No secret was ever given to an AI tool; local passwords stay in `server/.env` (ignored by Git).

@@ -1,0 +1,242 @@
+# RED run — Lab 7 CR #99, PR-L7-2 (API)
+# Commit under test: ee59680ac6fd9c3f10948a787da8c55dde4a4736 (test(red): entry correction API and history, AC-34..AC-38 (CR #99))
+# Pre-change proof: git diff --stat bd97c01 HEAD -- server/src server/prisma -> (empty)
+# Time: 2026-11-29 01:15:18 ICT; Node v24.14.0; npm 11.9.0; psql (PostgreSQL) 18.1
+# Command: npm --prefix server test -- entry-correction
+
+
+ RUN  v2.1.9 C:/Users/nopni/Project_SE/server
+
+ ❯ tests/entry-correction.test.ts (10 tests | 10 failed) 2408ms
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-34a (AC-34): the owner corrects value and note with a reason; a revision is stored and readable 369ms
+     → expected undefined to be +0 // Object.is equality
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-34b (AC-34): a second correction gives version 2 and two revisions, newest first 69ms
+     → expected 404 to be 200 // Object.is equality
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-35a (AC-35): an entry 6 days old can be corrected; 7 days old is locked 256ms
+     → expected 404 to be 200 // Object.is equality
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-35b (AC-35, NFR-09): the lock moves at midnight in Asia/Bangkok, not UTC 231ms
+     → expected 404 to be 200 // Object.is equality
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-36 (AC-36): invalid corrections are rejected with 422 and change nothing 220ms
+     → value = min: expected 404 to be 200 // Object.is equality
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-37 (AC-37): both routes reject other users, managers and unknown entries without changes 262ms
+     → expected { code: 'NOT_FOUND', …(1) } to deeply equal { code: 'NOT_FOUND', …(1) }
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38a (AC-38): progress follows the corrected value 194ms
+     → expected 404 to be 200 // Object.is equality
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38b (AC-38): a correction based on an out-of-date version is rejected with 409 209ms
+     → expected 404 to be 200 // Object.is equality
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38c (AC-38, NFR-10): of two simultaneous corrections of the same version exactly one wins (5 rounds) 347ms
+     → round 0: expected [ 404, 404 ] to deeply equal [ 200, 409 ]
+   × Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38d (AC-38): for every entry the number of revisions equals its version; rejected requests add none 250ms
+     → expected { Object (1, 2, ...) } to deeply equal { '1': 2, '2': 1, '3': +0 }
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-34a (AC-34): the owner corrects value and note with a reason; a revision is stored and readable
+AssertionError: expected undefined to be +0 // Object.is equality
+
+- Expected: 
+0
+
++ Received: 
+undefined
+
+ ❯ tests/entry-correction.test.ts:94:37
+     92|     const post = await postEntry(aCookie, aGoalId, { entryDate: "2026-…
+     93|     expect(post.status).toBe(201);
+     94|     expect(post.body.entry.version).toBe(0);
+       |                                     ^
+     95|     expect(post.body.entry.updatedAt).toBeNull();
+     96|     const entryId = post.body.entry.id;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-34b (AC-34): a second correction gives version 2 and two revisions, newest first
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/entry-correction.test.ts:140:26
+    138|     const entry = await createEntry("2026-11-14", 15);
+    139|     const first = await patchEntry(aCookie, aGoalId, entry.id, { value…
+    140|     expect(first.status).toBe(200);
+       |                          ^
+    141| 
+    142|     clock.setMock("2026-11-14T13:00:00+07:00");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-35a (AC-35): an entry 6 days old can be corrected; 7 days old is locked
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/entry-correction.test.ts:162:23
+    160| 
+    161|     const ok = await patchEntry(aCookie, aGoalId, sixDays.id, { value:…
+    162|     expect(ok.status).toBe(200);
+       |                       ^
+    163|     expect(ok.body.entry.version).toBe(1);
+    164| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-35b (AC-35, NFR-09): the lock moves at midnight in Asia/Bangkok, not UTC
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/entry-correction.test.ts:182:27
+    180|     clock.setMock("2026-11-14T16:59:59Z"); // 23:59:59 on 14 Nov in Ba…
+    181|     const before = await patchEntry(aCookie, aGoalId, entry.id, { valu…
+    182|     expect(before.status).toBe(200);
+       |                           ^
+    183| 
+    184|     clock.setMock("2026-11-14T17:00:00Z"); // 00:00:00 on 15 Nov in Ba…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-36 (AC-36): invalid corrections are rejected with 422 and change nothing
+AssertionError: value = min: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ accept tests/entry-correction.test.ts:202:33
+    200|     const accept = async (body: Record<string, unknown>, value: number…
+    201|       const res = await patchEntry(aCookie, aGoalId, entry.id, { ...bo…
+    202|       expect(res.status, label).toBe(200);
+       |                                 ^
+    203|       version += 1;
+    204|       revisionCount += 1;
+ ❯ tests/entry-correction.test.ts:222:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-37 (AC-37): both routes reject other users, managers and unknown entries without changes
+AssertionError: expected { code: 'NOT_FOUND', …(1) } to deeply equal { code: 'NOT_FOUND', …(1) }
+
+- Expected
++ Received
+
+  Object {
+    "code": "NOT_FOUND",
+-   "message": "Goal not found.",
++   "message": "The requested resource was not found",
+  }
+
+ ❯ tests/entry-correction.test.ts:266:30
+    264|     for (const res of [await patchEntry(bCookie, aGoalId, entry.id, bo…
+    265|       expect(res.status).toBe(404);
+    266|       expect(res.body.error).toEqual({ code: "NOT_FOUND", message: "Go…
+       |                              ^
+    267|     }
+    268| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38a (AC-38): progress follows the corrected value
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/entry-correction.test.ts:293:24
+    291| 
+    292|     const res = await patchEntry(aCookie, aGoalId, entry.id, { value: …
+    293|     expect(res.status).toBe(200);
+       |                        ^
+    294| 
+    295|     const after = await getProgress(aCookie, aGoalId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38b (AC-38): a correction based on an out-of-date version is rejected with 409
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/entry-correction.test.ts:303:111
+    301|     clock.setMock(NOON_14_NOV);
+    302|     const entry = await createEntry("2026-11-14", 15);
+    303|     expect((await patchEntry(aCookie, aGoalId, entry.id, { value: 25, …
+       |                                                                                                               ^
+    304| 
+    305|     const stale = await patchEntry(aCookie, aGoalId, entry.id, { value…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38c (AC-38, NFR-10): of two simultaneous corrections of the same version exactly one wins (5 rounds)
+AssertionError: round 0: expected [ 404, 404 ] to deeply equal [ 200, 409 ]
+
+- Expected
++ Received
+
+  Array [
+-   200,
+-   409,
++   404,
++   404,
+  ]
+
+ ❯ tests/entry-correction.test.ts:325:63
+    323|         patchEntry(aCookie, aGoalId, entry.id, { value: 30 + round, re…
+    324|       ]);
+    325|       expect([r1.status, r2.status].sort(), `round ${round}`).toEqual(…
+       |                                                               ^
+    326|       const loser = r1.status === 409 ? r1 : r2;
+    327|       expect(loser.body.error.code, `round ${round}`).toBe("STALE_ENTR…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  tests/entry-correction.test.ts > Lab 7 CR #99 — entry correction with revision history (F-04 v1.2) > TEST-38d (AC-38): for every entry the number of revisions equals its version; rejected requests add none
+AssertionError: expected { Object (1, 2, ...) } to deeply equal { '1': 2, '2': 1, '3': +0 }
+
+- Expected
++ Received
+
+  Object {
+-   "1": 2,
+-   "2": 1,
+-   "3": 0,
++   "1": undefined,
++   "2": undefined,
++   "3": undefined,
+  }
+
+ ❯ tests/entry-correction.test.ts:355:22
+    353|     const versions: Record<number, number> = {};
+    354|     for (const e of list.body.entries) versions[e.id] = e.version;
+    355|     expect(versions).toEqual({ [e1.id]: 2, [e2.id]: 1, [e3.id]: 0 });
+       |                      ^
+    356| 
+    357|     for (const e of list.body.entries) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+ Test Files  1 failed (1)
+      Tests  10 failed (10)
+   Start at  01:15:21
+   Duration  3.12s (transform 104ms, setup 0ms, collect 463ms, tests 2.41s, environment 0ms, prepare 93ms)
+

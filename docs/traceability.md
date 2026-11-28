@@ -23,6 +23,7 @@
 | 1.8 | 2026-11-27 | Nara Kosiyaporn | Nitithorn Ketkaew | #88 long template names and units overflow the cards (PT EXP-03): section 8 row |
 | 1.9 | 2026-11-28 | Nara Kosiyaporn | Nitithorn Ketkaew | #94 long display name overflows the phone-width header (Product Team observation O-11) |
 | 2.0 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 approved change (CR #99): FR-15, FR-16, BR-13 rows (Planned), NFR-10 extended, AC-34..AC-39, §6 row, section 10 added; written before implementation |
+| 2.1 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 PR-L7-2 (CR #99): API results — FR-15/FR-16 server part, BR-13, NFR-10 corrections and AC-34..AC-38 verified (RED `ee59680`, GREEN `89fcc4f`); AC-39 (UI) still planned |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -48,8 +49,8 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | FR-12 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | FR-13 | F-08 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | FR-14 | F-09 | 3 | Sprint 3 contract | Sprint 3 STS | Sprint 3 | — | Later sprint |
-| FR-15 | F-04 | 1 (Lab 7 change, CR #99) | AC-34, AC-39 | TEST-34a, TEST-34b, TEST-39a–e, TEST-E2E-L7 | Lab 7 PR-L7-2 (API), PR-L7-3 (UI) | — | Planned |
-| FR-16 | F-04 | 1 (Lab 7 change, CR #99) | AC-34, AC-37, AC-39 | TEST-34b, TEST-37, TEST-39e | Lab 7 PR-L7-2, PR-L7-3 | — | Planned |
+| FR-15 | F-04 | 1 (Lab 7 change, CR #99) | AC-34, AC-39 | TEST-34a, TEST-34b, TEST-39a–e, TEST-E2E-L7 | Lab 7 PR-L7-2 (API), PR-L7-3 (UI) | API: `server/tests/entry-correction.test.ts` TEST-34a, TEST-34b — pass at `89fcc4f` (`docs/evidence/lab-07/99/green-server.txt`); UI: planned (PR-L7-3) | Verified (API); Planned (UI) |
+| FR-16 | F-04 | 1 (Lab 7 change, CR #99) | AC-34, AC-37, AC-39 | TEST-34b, TEST-37, TEST-39e | Lab 7 PR-L7-2, PR-L7-3 | API: TEST-34b, TEST-37 — pass at `89fcc4f`; UI: planned (PR-L7-3) | Verified (API); Planned (UI) |
 
 ## 2. Business rules
 
@@ -67,7 +68,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | BR-10 | F-06 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | BR-11 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | BR-12 | F-09 | 3 | Sprint 3 contract | Sprint 3 STS | Sprint 3 | — | Later sprint |
-| BR-13 | F-04 | 1 (Lab 7 change, CR #99) | AC-35, AC-36, AC-38 | TEST-35a/b (boundary, midnight), TEST-36, TEST-38b/c/d (TDD evidence) | Lab 7 PR-L7-2 | — | Planned |
+| BR-13 | F-04 | 1 (Lab 7 change, CR #99) | AC-35, AC-36, AC-38 | TEST-35a/b (boundary, midnight), TEST-36, TEST-38b/c/d (TDD evidence) | Lab 7 PR-L7-2 | `server/tests/entry-correction.test.ts` TEST-35a, TEST-35b, TEST-36, TEST-38b, TEST-38c, TEST-38d — RED 10 failed at `ee59680` (`docs/evidence/lab-07/99/red-server.txt`), pass at `89fcc4f` | Verified |
 
 ## 3. Non-functional requirements
 
@@ -82,7 +83,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | NFR-07 | CC-04 | 1 | Loading / empty / error states on main screens | Component tests + TEST-27 (E2E) + screenshots | PR2–PR7 | `client/tests/components.test.tsx` (shared states), `signin.test.tsx` (loading), `templates.test.tsx` and `goals.test.tsx` (empty, error), `progress.test.tsx` (quiet failure), `e2e/journey.spec.ts` — pass. Screenshots for the report are taken from the release | Verified |
 | NFR-08 | CC-03 | 1 | No secret in Git or client code | Diff review in every PR; `.env.example` check; GitHub secret scanning enabled | Every PR; release check | Release check on `3ed2771`: no `.env` file ever committed (full history), no credential-bearing connection string and none of the real local seed/DB passwords in any tracked file; only synthetic test-fixture passwords in tests; GitHub secret scanning and push protection enabled, 0 alerts | Verified |
 | NFR-09 | F-04 | 1 | AC-19, AC-20 | TEST-19, TEST-20 with mocked clock | PR5 (#20) | `server/tests/logging.test.ts` TEST-19, TEST-19b (midnight crossing 17:30 UTC = 00:30 Bangkok), TEST-20 — pass | Verified |
-| NFR-10 | F-04 | 1 | AC-22; (v2.0) AC-38 | TEST-22; (v2.0) TEST-38c | PR5 (#20); Lab 7 PR-L7-2 | `server/tests/logging.test.ts` TEST-22 (two simultaneous submissions, repeated 5×) — pass. Corrections part (TEST-38c): planned | Verified (entries); Planned (corrections) |
+| NFR-10 | F-04 | 1 | AC-22; (v2.0) AC-38 | TEST-22; (v2.0) TEST-38c | PR5 (#20); Lab 7 PR-L7-2 | `server/tests/logging.test.ts` TEST-22 (two simultaneous submissions, repeated 5×) — pass. Corrections: `entry-correction.test.ts` TEST-38c (two simultaneous corrections ×5 → one 200, one 409) — pass at `89fcc4f` | Verified |
 
 ## 4. Acceptance criteria not tied to a single FR/BR/NFR
 
@@ -170,11 +171,11 @@ Change request: Issue #99 (team-approved; no Instructor/TA approval needed per t
 
 | AC | Requirement | What it verifies | Tests | Delivered in | Result |
 |---|---|---|---|---|---|
-| AC-34 | FR-15, FR-16 | Correction with a reason → 200, `version` +1, `updatedAt`, revision stored and readable newest first; new entries `version` 0 | TEST-34a, TEST-34b | PR-L7-2 | Planned |
-| AC-35 | BR-13(a), NFR-09 | 6 days old correctable, 7 days old → `ENTRY_LOCKED`; lock moves at Bangkok midnight | TEST-35a, TEST-35b | PR-L7-2 | Planned |
-| AC-36 | BR-13(c), BR-01 | Invalid corrections → 422 (`VALIDATION_ERROR`, `VALUE_OUT_OF_RANGE`, `NO_CHANGE`), nothing changes | TEST-36 | PR-L7-2 | Planned |
-| AC-37 | BR-05, BR-07, NFR-01 | Both new routes: 401 / 403 / 404 | TEST-37 | PR-L7-2 | Planned |
-| AC-38 | BR-13(b), BR-04, NFR-10, FR-09 | Stale version → 409 `STALE_ENTRY`; simultaneous corrections → one wins; revisions = version; progress follows | TEST-38a, TEST-38b, TEST-38c, TEST-38d | PR-L7-2 | Planned |
+| AC-34 | FR-15, FR-16 | Correction with a reason → 200, `version` +1, `updatedAt`, revision stored and readable newest first; new entries `version` 0 | TEST-34a, TEST-34b | PR-L7-2 | Verified at `89fcc4f` (RED `ee59680`) |
+| AC-35 | BR-13(a), NFR-09 | 6 days old correctable, 7 days old → `ENTRY_LOCKED`; lock moves at Bangkok midnight | TEST-35a, TEST-35b | PR-L7-2 | Verified at `89fcc4f` (RED `ee59680`) |
+| AC-36 | BR-13(c), BR-01 | Invalid corrections → 422 (`VALIDATION_ERROR`, `VALUE_OUT_OF_RANGE`, `NO_CHANGE`), nothing changes | TEST-36 | PR-L7-2 | Verified at `89fcc4f` (RED `ee59680`) |
+| AC-37 | BR-05, BR-07, NFR-01 | Both new routes: 401 / 403 / 404 | TEST-37 | PR-L7-2 | Verified at `89fcc4f` (RED `ee59680`) |
+| AC-38 | BR-13(b), BR-04, NFR-10, FR-09 | Stale version → 409 `STALE_ENTRY`; simultaneous corrections → one wins; revisions = version; progress follows | TEST-38a, TEST-38b, TEST-38c, TEST-38d | PR-L7-2 | Verified at `89fcc4f` (RED `ee59680`) |
 | AC-39 | F-04 §4 UI | Edit inside the window, reason, Edited badge, History, conflict handling | TEST-39a–e, TEST-E2E-L7 | PR-L7-3 | Planned |
 
 Unchanged behaviour protected by the existing suites (no existing test is changed): F-04 POST rules and races (TEST-17..TEST-23, TEST-19b), privacy (TEST-04, TEST-25, TEST-26, TEST-MGR), progress (TEST-24, TEST-L6-87), persistence (TEST-28, `scripts/verify-nfr04-restart.cjs`), UI (`client/tests/*`), E2E journey and layout (`e2e/*`).
