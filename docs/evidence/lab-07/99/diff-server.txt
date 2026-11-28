@@ -1,0 +1,288 @@
+diff --git a/server/prisma/migrations/20261129000000_entry_correction/migration.sql b/server/prisma/migrations/20261129000000_entry_correction/migration.sql
+new file mode 100644
+index 0000000..5d2c297
+--- /dev/null
++++ b/server/prisma/migrations/20261129000000_entry_correction/migration.sql
+@@ -0,0 +1,31 @@
++-- Lab 7 CR #99: entry correction with revision history (F-04 v1.2 §3).
++-- Additive only: existing entries get version 0 and updatedAt NULL; no data is rewritten.
++
++-- AlterTable
++ALTER TABLE "activity_entries" ADD COLUMN     "updatedAt" TIMESTAMP(3),
++ADD COLUMN     "version" INTEGER NOT NULL DEFAULT 0;
++
++-- CreateTable
++CREATE TABLE "activity_entry_revisions" (
++    "id" SERIAL NOT NULL,
++    "entryId" INTEGER NOT NULL,
++    "previousValue" DOUBLE PRECISION NOT NULL,
++    "newValue" DOUBLE PRECISION NOT NULL,
++    "previousNote" TEXT,
++    "newNote" TEXT,
++    "reason" TEXT NOT NULL,
++    "changedById" INTEGER NOT NULL,
++    "changedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++
++    CONSTRAINT "activity_entry_revisions_pkey" PRIMARY KEY ("id")
++);
++
++-- CreateIndex
++CREATE INDEX "activity_entry_revisions_entryId_changedAt_idx" ON "activity_entry_revisions"("entryId", "changedAt");
++
++-- AddForeignKey
++ALTER TABLE "activity_entry_revisions" ADD CONSTRAINT "activity_entry_revisions_entryId_fkey" FOREIGN KEY ("entryId") REFERENCES "activity_entries"("id") ON DELETE CASCADE ON UPDATE CASCADE;
++
++-- AddForeignKey
++ALTER TABLE "activity_entry_revisions" ADD CONSTRAINT "activity_entry_revisions_changedById_fkey" FOREIGN KEY ("changedById") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
++
+diff --git a/server/prisma/schema.prisma b/server/prisma/schema.prisma
+index 58aa20e..532e11c 100644
+--- a/server/prisma/schema.prisma
++++ b/server/prisma/schema.prisma
+@@ -18,6 +18,7 @@ model User {
+   sessions     Session[]
+   templates    ActivityTemplate[]
+   goals        Goal[]
++  entryRevisions ActivityEntryRevision[]
+ 
+   @@map("users")
+ }
+@@ -88,9 +89,35 @@ model ActivityEntry {
+   value     Float
+   note      String?
+   createdAt DateTime @default(now())
++  // Lab 7 CR #99 (F-04 v1.2 §3): null until the first correction. Deliberately not @updatedAt,
++  // which would also be set when the entry is created.
++  updatedAt DateTime?
++  // Number of corrections; optimistic concurrency check for BR-13(b). Existing rows get 0.
++  version   Int      @default(0)
+ 
+   goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
++  revisions ActivityEntryRevision[]
+ 
+   @@unique([goalId, entryDate])
+   @@map("activity_entries")
+ }
++
++// Lab 7 CR #99 (FR-15, FR-16): one stored correction of an activity entry.
++// Invariant: an entry has exactly `version` revisions.
++model ActivityEntryRevision {
++  id            Int      @id @default(autoincrement())
++  entryId       Int
++  previousValue Float
++  newValue      Float
++  previousNote  String?
++  newNote       String?
++  reason        String
++  changedById   Int
++  changedAt     DateTime @default(now())
++
++  entry     ActivityEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
++  changedBy User          @relation(fields: [changedById], references: [id], onDelete: Cascade)
++
++  @@index([entryId, changedAt])
++  @@map("activity_entry_revisions")
++}
+diff --git a/server/src/routes/goals.ts b/server/src/routes/goals.ts
+index 41b27d4..0a96e7e 100644
+--- a/server/src/routes/goals.ts
++++ b/server/src/routes/goals.ts
+@@ -29,10 +29,25 @@ const entrySelect = {
+   value: true,
+   note: true,
+   createdAt: true,
++  // Lab 7 CR #99 (F-04 v1.2 §2): correction tracking
++  updatedAt: true,
++  version: true,
++} as const;
++
++// Lab 7 CR #99 (FR-16): the user who made a correction is stored but not returned (always the owner).
++const revisionSelect = {
++  id: true,
++  changedAt: true,
++  previousValue: true,
++  newValue: true,
++  previousNote: true,
++  newNote: true,
++  reason: true,
+ } as const;
+ 
+ const isFiniteNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+ const MAX_NOTE_LENGTH = 500;
++const MAX_REASON_LENGTH = 200; // Lab 7 CR #99, BR-13(c)
+ const isPositiveInteger = (value: unknown): value is number => Number.isInteger(value) && (value as number) > 0;
+ 
+ const isValidCalendarDate = (dateStr: unknown): dateStr is string => {
+@@ -54,6 +69,11 @@ const duplicateGoal = () =>
+ const duplicateEntry = () =>
+   new AppError(409, "DUPLICATE_ENTRY", "An activity entry for this date already exists.");
+ const goalNotFound = () => new AppError(404, "NOT_FOUND", "Goal not found.");
++const entryNotFound = () => new AppError(404, "NOT_FOUND", "Entry not found.");
++const entryLocked = () =>
++  new AppError(422, "ENTRY_LOCKED", "Only entries from today and the past 6 days can be corrected.");
++const staleEntry = () =>
++  new AppError(409, "STALE_ENTRY", "This entry was changed elsewhere. Reload it and try again.");
+ 
+ // POST /api/goals — AC-12..AC-15
+ goalsRouter.post("/", async (req, res, next) => {
+@@ -256,6 +276,148 @@ goalsRouter.get("/:id/entries", async (req, res, next) => {
+   }
+ });
+ 
++// Lab 7 CR #99 — entry correction with revision history (F-04 v1.2 §1.7; FR-15, FR-16, BR-13).
++// Checks 3-4 of §1.7: the goal belongs to the caller and the entry belongs to that goal (404 otherwise).
++async function findOwnEntry(userId: number, rawGoalId: string, rawEntryId: string) {
++  const goalId = Number(rawGoalId);
++  if (!isDbId(goalId)) throw goalNotFound();
++  const goal = await prisma.goal.findFirst({
++    where: { id: goalId, participantId: userId },
++    include: { template: true },
++  });
++  if (!goal) throw goalNotFound();
++
++  const entryId = Number(rawEntryId);
++  if (!isDbId(entryId)) throw entryNotFound();
++  const entry = await prisma.activityEntry.findFirst({ where: { id: entryId, goalId }, select: { id: true } });
++  if (!entry) throw entryNotFound();
++  return { goal, entryId };
++}
++
++// Trimmed note; "" and null both mean "no note" (same storage rule as POST).
++const normalizeNote = (note: string | null): string | null => {
++  if (note === null) return null;
++  const trimmed = note.trim();
++  return trimmed.length > 0 ? trimmed : null;
++};
++
++// PATCH /api/goals/:id/entries/:entryId — FR-15, BR-13 (AC-34..AC-38)
++goalsRouter.patch("/:id/entries/:entryId", async (req, res, next) => {
++  try {
++    // Steps 1-2 are the router guard; steps 3-4:
++    const { goal, entryId } = await findOwnEntry(req.user!.id, req.params.id, req.params.entryId);
++
++    // Step 5: body shape
++    const body = (req.body ?? {}) as Record<string, unknown>;
++    const { value, note, reason, version } = body;
++    const details: Array<{ field: string; message: string }> = [];
++    if (Object.prototype.hasOwnProperty.call(body, "entryDate")) {
++      details.push({ field: "entryDate", message: "Cannot be changed" });
++    }
++    if (value !== undefined && !isFiniteNumber(value)) {
++      details.push({ field: "value", message: "Must be a valid number" });
++    }
++    if (note !== undefined && note !== null && typeof note !== "string") {
++      details.push({ field: "note", message: "Must be text" });
++    } else if (typeof note === "string" && note.trim().length > MAX_NOTE_LENGTH) {
++      details.push({ field: "note", message: `Must be at most ${MAX_NOTE_LENGTH} characters` });
++    }
++    if (value === undefined && note === undefined) {
++      details.push({ field: "body", message: "Provide value or note" });
++    }
++    if (typeof reason !== "string" || reason.trim().length < 1 || reason.trim().length > MAX_REASON_LENGTH) {
++      details.push({ field: "reason", message: `Must be 1 to ${MAX_REASON_LENGTH} characters` });
++    }
++    if (!Number.isInteger(version) || (version as number) < 0) {
++      details.push({ field: "version", message: "Must be a whole number of 0 or more" });
++    }
++    if (details.length > 0) {
++      throw new AppError(422, "VALIDATION_ERROR", "Invalid correction data.", details);
++    }
++
++    const expectedVersion = version as number;
++    const oldestAllowed = getOldestAllowedDate(clock.todayBangkok(), 6);
++
++    // Steps 6-9 and the write run in one transaction: the conditional update decides concurrent
++    // requests (the second waits for the first, re-reads the row and matches nothing), and the
++    // revision is stored only together with a successful update (invariant: revisions = version).
++    const result = await prisma.$transaction(async (tx) => {
++      const current = await tx.activityEntry.findFirst({ where: { id: entryId, goalId: goal.id } });
++      if (!current) throw entryNotFound();
++
++      // Step 6: BR-13(a) window
++      if (current.entryDate < oldestAllowed) throw entryLocked();
++
++      // Step 7: BR-01 range of the new value
++      if (isFiniteNumber(value) && (value < goal.template.minValue || value > goal.template.maxValue)) {
++        throw new AppError(
++          422,
++          "VALUE_OUT_OF_RANGE",
++          `Value must be between ${goal.template.minValue} and ${goal.template.maxValue} ${goal.template.unit}.`,
++        );
++      }
++
++      // Step 8: BR-13(b) latest version only
++      if (current.version !== expectedVersion) throw staleEntry();
++
++      // Step 9: BR-13(c) a real change
++      const newValue = isFiniteNumber(value) ? value : current.value;
++      const newNote = note === undefined ? current.note : normalizeNote(note as string | null);
++      if (newValue === current.value && newNote === current.note) {
++        throw new AppError(422, "NO_CHANGE", "Nothing to change.");
++      }
++
++      const now = clock.now();
++      const updated = await tx.activityEntry.updateMany({
++        where: { id: entryId, goalId: goal.id, version: expectedVersion, entryDate: { gte: oldestAllowed } },
++        data: { value: newValue, note: newNote, version: { increment: 1 }, updatedAt: now },
++      });
++      if (updated.count === 0) {
++        // Changed between the read and the update: report why, store nothing.
++        const latest = await tx.activityEntry.findFirst({ where: { id: entryId, goalId: goal.id } });
++        if (!latest) throw entryNotFound();
++        if (latest.entryDate < oldestAllowed) throw entryLocked();
++        throw staleEntry();
++      }
++
++      const revision = await tx.activityEntryRevision.create({
++        data: {
++          entryId,
++          previousValue: current.value,
++          newValue,
++          previousNote: current.note,
++          newNote,
++          reason: (reason as string).trim(),
++          changedById: req.user!.id,
++          changedAt: now,
++        },
++        select: revisionSelect,
++      });
++      const entry = await tx.activityEntry.findUniqueOrThrow({ where: { id: entryId }, select: entrySelect });
++      return { entry, revision };
++    });
++
++    res.status(200).json(result);
++  } catch (err) {
++    next(err);
++  }
++});
++
++// GET /api/goals/:id/entries/:entryId/revisions — FR-16 (AC-34, AC-37)
++goalsRouter.get("/:id/entries/:entryId/revisions", async (req, res, next) => {
++  try {
++    const { entryId } = await findOwnEntry(req.user!.id, req.params.id, req.params.entryId);
++    const revisions = await prisma.activityEntryRevision.findMany({
++      where: { entryId },
++      orderBy: [{ changedAt: "desc" }, { id: "desc" }],
++      select: revisionSelect,
++    });
++    res.status(200).json({ revisions });
++  } catch (err) {
++    next(err);
++  }
++});
++
+ // GET /api/goals/:id/progress — F-05 (AC-24..AC-26). Owner only; managers already stopped by the router guard.
+ goalsRouter.get("/:id/progress", async (req, res, next) => {
+   try {
+diff --git a/server/tests/harness.ts b/server/tests/harness.ts
+index f9c6389..06d5dec 100644
+--- a/server/tests/harness.ts
++++ b/server/tests/harness.ts
+@@ -61,6 +61,6 @@ export async function resetDatabase(): Promise<void> {
+   const db = await getTestPrisma();
+   // Atomic truncation with CASCADE to handle foreign keys and reset identity sequences
+   await db.$executeRawUnsafe(
+-    `TRUNCATE TABLE "activity_entries", "goals", "activity_templates", "sessions", "users" RESTART IDENTITY CASCADE;`
++    `TRUNCATE TABLE "activity_entry_revisions", "activity_entries", "goals", "activity_templates", "sessions", "users" RESTART IDENTITY CASCADE;`
+   );
+ }

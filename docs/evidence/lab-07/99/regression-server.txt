@@ -1,0 +1,37 @@
+# Server regression on GREEN commit 89fcc4f — command: npm --prefix server test (run twice to check the race test is stable); npx tsc --noEmit -p server
+# Time: 2026-11-29 01:20:07 ICT; Node v24.14.0; psql (PostgreSQL) 18.1
+tsc: OK (0 errors)
+## run 1
+ ✓ tests/entry-correction.test.ts (10 tests) 3374ms
+ ✓ tests/logging.test.ts (14 tests) 3499ms
+ ✓ tests/templates.test.ts (12 tests) 2464ms
+ ✓ tests/progress.test.ts (12 tests) 1420ms
+ ✓ tests/goals.test.ts (10 tests) 2216ms
+ ✓ tests/auth.test.ts (10 tests) 3112ms
+ ✓ tests/db-constraints.test.ts (3 tests) 655ms
+ ✓ tests/ids.test.ts (4 tests) 1279ms
+ ✓ tests/client-static.test.ts (6 tests) 334ms
+ ✓ tests/seed.test.ts (3 tests) 1000ms
+ ✓ tests/health.test.ts (4 tests) 54ms
+ ✓ tests/ready.test.ts (3 tests) 174ms
+ ✓ tests/require-role.test.ts (3 tests) 3ms
+ Test Files  13 passed (13)
+      Tests  94 passed (94)
+   Duration  26.01s (transform 193ms, setup 0ms, collect 3.49s, tests 19.58s, environment 2ms, prepare 1.16s)
+## run 2
+ ✓ tests/entry-correction.test.ts (10 tests) 3155ms
+ ✓ tests/logging.test.ts (14 tests) 3526ms
+ ✓ tests/templates.test.ts (12 tests) 2274ms
+ ✓ tests/progress.test.ts (12 tests) 1394ms
+ ✓ tests/goals.test.ts (10 tests) 2655ms
+ ✓ tests/auth.test.ts (10 tests) 2222ms
+ ✓ tests/db-constraints.test.ts (3 tests) 784ms
+ ✓ tests/ids.test.ts (4 tests) 1255ms
+ ✓ tests/client-static.test.ts (6 tests) 330ms
+ ✓ tests/seed.test.ts (3 tests) 1019ms
+ ✓ tests/health.test.ts (4 tests) 62ms
+ ✓ tests/ready.test.ts (3 tests) 233ms
+ ✓ tests/require-role.test.ts (3 tests) 3ms
+ Test Files  13 passed (13)
+      Tests  94 passed (94)
+   Duration  25.41s (transform 181ms, setup 0ms, collect 3.51s, tests 18.91s, environment 2ms, prepare 1.16s)
