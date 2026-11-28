@@ -18,6 +18,7 @@ model User {
   sessions     Session[]
   templates    ActivityTemplate[]
   goals        Goal[]
+  entryRevisions ActivityEntryRevision[]
 
   @@map("users")
 }
@@ -88,9 +89,35 @@ model ActivityEntry {
   value     Float
   note      String?
   createdAt DateTime @default(now())
+  // Lab 7 CR #99 (F-04 v1.2 §3): null until the first correction. Deliberately not @updatedAt,
+  // which would also be set when the entry is created.
+  updatedAt DateTime?
+  // Number of corrections; optimistic concurrency check for BR-13(b). Existing rows get 0.
+  version   Int      @default(0)
 
   goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  revisions ActivityEntryRevision[]
 
   @@unique([goalId, entryDate])
   @@map("activity_entries")
+}
+
+// Lab 7 CR #99 (FR-15, FR-16): one stored correction of an activity entry.
+// Invariant: an entry has exactly `version` revisions.
+model ActivityEntryRevision {
+  id            Int      @id @default(autoincrement())
+  entryId       Int
+  previousValue Float
+  newValue      Float
+  previousNote  String?
+  newNote       String?
+  reason        String
+  changedById   Int
+  changedAt     DateTime @default(now())
+
+  entry     ActivityEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  changedBy User          @relation(fields: [changedById], references: [id], onDelete: Cascade)
+
+  @@index([entryId, changedAt])
+  @@map("activity_entry_revisions")
 }

@@ -61,6 +61,6 @@ export async function resetDatabase(): Promise<void> {
   const db = await getTestPrisma();
   // Atomic truncation with CASCADE to handle foreign keys and reset identity sequences
   await db.$executeRawUnsafe(
-    `TRUNCATE TABLE "activity_entries", "goals", "activity_templates", "sessions", "users" RESTART IDENTITY CASCADE;`
+    `TRUNCATE TABLE "activity_entry_revisions", "activity_entries", "goals", "activity_templates", "sessions", "users" RESTART IDENTITY CASCADE;`
   );
 }
