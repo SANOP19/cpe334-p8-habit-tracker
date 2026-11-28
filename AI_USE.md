@@ -53,6 +53,39 @@ Lab 5 limits on AI (in addition to the list below):
 - Seed passwords were typed by Nara at `kit.sh`'s hidden prompt and never given to an AI tool, an Issue or a screenshot.
 - Deploy results were accepted only from recorded evidence: workflow runs, `gcloud ... describe` output and screenshots with the URL bar visible.
 
+## Lab 6 (independent UAT and defect management)
+Partner team: CPMS (Theme 6). The partner's own AI use is declared in their report.
+
+### Product Team work on HabitPulse
+| Issue / PR | Task assisted | Tool | Author | Reviewer |
+|---|---|---|---|---|
+| — | Lab 6 plan and the pre-UAT audit of Sprint 1 against the contracts that found KI-1..KI-8 | Claude Code | Nitithorn | Nara |
+| #59–#66 · PR #69–#72 | Pre-UAT corrections KI-1..KI-8: RED tests, fixes, evidence, traceability §7 | Claude Code | Nitithorn | Nara |
+| #75 · PR #76, #79 · PR #80 | KI-9 (found in the dry run), KI-10 (found in the live check) | Claude Code | Nitithorn | Nara |
+| PR #68 | UAT finding Issue form | Claude Code | Nitithorn | Nara |
+| PR #73, #77, #81, #92, #96 · #67, #74, #78, #82, #93, #97 | Release and sync PR texts, pre-release checks, deploy/digest/bundle checks, tags | Claude Code | Nitithorn | Nara (merged, ran `gcloud`) |
+| PR #83 | UAT cases, Product Team dry run, live checks | Claude Code (dry run and live checks: Nitithorn signed in, Claude Code operated the browser) | Nitithorn | Nara |
+| PR #84 | UAT handoff | Antigravity | Nara | Nitithorn |
+| #86–#88 | Triage: local reproduction (temporary tests, deleted), classification and severity proposal, Issue replies | Claude Code | Nitithorn | Nara (checked the reasoning) |
+| #87 · PR #89, #86 · PR #90 | Part D corrections (F-02 v1.2 contract change for #86) | Claude Code | Nitithorn | Nara |
+| #88 · PR #91, #94 · PR #95 | Part D correction and the Product Team correction O-11 | Antigravity (from task prompts / Issue instructions prepared with Claude Code) | Nara | Nitithorn (review checks run and review / merge posted with Claude Code on Nitithorn's instruction) |
+| — | Live check of `v0.2.5-lab6` before the partner's re-test | Claude Code operated the browser; Nitithorn signed in | Nitithorn | — |
+| this PR | `docs/labs/lab-06/triage.md`, `version-table.md`, this section | Claude Code | Nitithorn | Nara |
+
+### UAT of the partner's product (CPMS)
+| Run / item | What the AI did | What the student did | Tester |
+|---|---|---|---|
+| NK1 (25 Nov), NK2 re-test (28 Nov) | Antigravity drove the browser through the cases and drafted the result rows and Issue comments | Nara reviewed every result and decided PASS/FAIL | Nara |
+| YW1 (26 Nov) | UAT-01, UAT-02: Claude Code gave the next step, read the page and drafted rows; UAT-06: Claude Code operated the browser | Nitithorn clicked and typed in UAT-01/02, signed in to every account and decided PASS/FAIL | Nitithorn |
+| YW2 exploratory, YW3 and YW4 re-tests (26–28 Nov) | Claude Code operated the browser, sent single API requests and measured layouts | Nitithorn signed in to every account and decided PASS/FAIL | Nitithorn |
+| Coverage review (proposed YW-EX-01..06, which were then run in YW2) | Antigravity drafted the review | Nara checked it against the 50 ACs | Nara |
+| Findings #38–#42, #45 and decision comments | Claude Code drafted the reports; screenshots checked byte for byte | Nitithorn and Nara reviewed every text before posting; both decided the decisions | Nitithorn, Nara |
+
+Lab 6 limits on AI (in addition to the list below):
+- Passwords were exchanged only privately between the teams (ours by direct message, the partner's in the team chat) and never put in Git, an Issue or a screenshot. In Nitithorn's runs Claude Code never typed or saw a password: Nitithorn signed in to every account. In Nara's runs (NK1, NK2) Nara typed the passwords; Antigravity did not type them.
+- PASS/FAIL, triage decisions and both acceptance decisions were made by the students; every run record names the tester and says "AI-assisted".
+- No AI tool deployed, merged into `main`, ran `gcloud` or changed the partner's data beyond normal user actions with our own run tags.
+
 ## What AI was not trusted with
 - No secret was ever given to an AI tool; local passwords stay in `server/.env` (ignored by Git).
 - "All tests pass" was never accepted from an AI statement: every result in the report comes from a recorded run (command, commit, counts) in `docs/evidence/`.
