@@ -4,6 +4,11 @@
 **Scope of this brief:** Project Deliverable 1 — engineering baseline for the whole product and the Sprint 1 increment.
 **Team:** Nitithorn Ketkaew (67070505203, @SANOP19) · Nara Kosiyaporn (67070505218, @narakosi-dev)
 
+| Version | Date | Author | Reviewer | Change |
+|---|---|---|---|---|
+| 0.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Project brief (P0, PR #2) |
+| 0.2 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 approved change (CR #99): D-03 revised (entry correction with revision history); AC-34..AC-39 added to §9 |
+
 This brief is the shared starting point. The formal documents (`docs/srs.md`, `docs/features.md`, `docs/traceability.md`, `docs/system-sds.md`, `docs/sprints/`) are written from it in parts P3–P5. When a formal document changes a decision, update this brief in the same PR.
 
 ---
@@ -27,7 +32,7 @@ This brief is the shared starting point. The formal documents (`docs/srs.md`, `d
 |---|---|---|---|
 | D-01 | Context | Study and exercise habit programme for university students | proposed |
 | D-02 | Roles | `PARTICIPANT`, `PROGRAM_MANAGER`; one role per account; seeded accounts only | proposed |
-| D-03 | Duplicate entries | One entry per goal per calendar day (no accumulation). Editing an entry is not in Sprint 1 | proposed |
+| D-03 | Duplicate entries | One entry per goal per calendar day (no accumulation). Editing an entry is not in Sprint 1. *Revised (v0.2, CR #99, Lab 7): value/note can be corrected inside the logging window with a revision history (BR-13); no deletion; the date never changes* | agreed; revised by CR #99 |
 | D-04 | Calendar day | "Today" is decided by server time in Asia/Bangkok | proposed |
 | D-05 | Back-dating | An entry may be recorded for today or up to 6 days before today (7 days including today) | proposed |
 | D-06 | Template | Fields: name, unit, minValue, maxValue (minValue < maxValue). Status `DRAFT` → `PUBLISHED`. A published template cannot be changed in Sprint 1 | proposed |
@@ -222,6 +227,12 @@ Error body for every failure: `{ "error": { "code": "...", "message": "..." } }`
 | | AC-31 | Publishing an already published template → 409 `ALREADY_PUBLISHED` | TEST-31 | API |
 | F-05 | AC-32 | Manager calling `GET /api/goals` → 403 | TEST-32 | API |
 | F-01 | AC-33 | A session whose `expiresAt` has passed → 401 on `/me` | TEST-33 | API + DB |
+| F-04 | AC-34 | (v0.2) Owner corrects an entry with a reason → 200, `version` +1, revision stored and readable | TEST-34a, TEST-34b | API + DB |
+| | AC-35 | (v0.2) Entry 6 days old correctable, 7 days old → 422 `ENTRY_LOCKED`; lock moves at Bangkok midnight | TEST-35a, TEST-35b | API + DB (boundary) |
+| | AC-36 | (v0.2) Invalid corrections → 422 (`VALIDATION_ERROR`, `VALUE_OUT_OF_RANGE`, `NO_CHANGE`); nothing changes | TEST-36 | API + DB (boundary) |
+| | AC-37 | (v0.2) Correction and history routes: 401 / 403 / 404 | TEST-37 | API |
+| | AC-38 | (v0.2) Stale version → 409 `STALE_ENTRY`; simultaneous corrections → one wins; revisions = version; progress follows | TEST-38a..TEST-38d | API + DB + Integration |
+| | AC-39 | (v0.2) UI: Edit inside the window, reason, Edited badge, History, conflict message | TEST-39a..TEST-39e, TEST-E2E-L7 | Component + E2E |
 
 AC-30..AC-32 were added after the P4b review found these role-matrix cases had no test (System SDS §5.4). AC-33 was added while building the traceability matrix: NFR-03 covers expiry, but AC-05 only covered logout.
 NFR-06, NFR-07 and NFR-08 are verified by recorded checks (clean clone, screenshots, diff review).

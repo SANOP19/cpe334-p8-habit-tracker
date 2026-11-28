@@ -7,6 +7,7 @@
 | 0.2 | 2026-11-14 | Nara Kosiyaporn | Nitithorn Ketkaew | Sections 1–4: Architecture, data model, auth/session lifecycle, configuration & delivery (P4a, Issue #7) |
 | 0.3 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | §5.4: role-matrix gaps now covered by AC-30..AC-32 (PR1, Issue #16) |
 | 0.4 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | §3.1, §4.1: bcrypt cost fixed at 10, `BCRYPT_ROUNDS` removed (F-01, PR2) |
+| 0.5 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 approved change (CR #99), entry correction: §1.3 BR-13 row; §2.1 `ActivityEntry.updatedAt`/`version` and new entity `ActivityEntryRevision`; §2.2 ERD; §5.3 codes `ENTRY_LOCKED`, `NO_CHANGE`, `STALE_ENTRY` and the conditional-update rule; §5.4 two endpoints and the record summary |
 
 **Source:** `docs/project-brief.md` (P0, PR #2). Feature contracts (`docs/sprints/sprint-1/`) give the detailed endpoints, fields, and acceptance criteria; this document defines the overarching architectural patterns, data structures, and operational conventions they must adhere to.
 
@@ -82,6 +83,7 @@ A fundamental principle of the system design is that **the API service layer and
 | **BR-07** | Program manager barred from participant data | Express Role Guard (`user.role !== 'PARTICIPANT'`) | `403 FORBIDDEN` |
 | **BR-08** | Goal requires published template and positive dailyTarget inside `[minValue, maxValue]` | API Service Layer (status guard & target check) | `422 TEMPLATE_NOT_PUBLISHED` / `422 TARGET_OUT_OF_RANGE` |
 | **BR-09** | One active goal per participant per template | **Dual Layer:** API Service check + PostgreSQL partial unique index | `409 DUPLICATE_ACTIVE_GOAL` |
+| **BR-13** (v0.5) | Correction integrity: (a) entry date within `[today − 6 days, today]` (Asia/Bangkok), (b) latest `version` only, (c) a real change with a reason | **Dual Layer:** API Service checks + one transaction whose `UPDATE … WHERE id, goalId, version, entryDate ≥ today − 6` decides concurrent requests; the revision row is inserted in the same transaction | `422 ENTRY_LOCKED` / `409 STALE_ENTRY` / `422 NO_CHANGE` / `422 VALIDATION_ERROR` |
 | **D-06 / Invariant** | Template `minValue < maxValue` | API Validation Layer + DB `CHECK ("minValue" < "maxValue")` | `422 INVALID_RANGE` |
 | **D-06 / Invariant** | Published template cannot be re-published or modified | API Service State Guard (`status === 'PUBLISHED'`) | `409 ALREADY_PUBLISHED` |
 | **D-06 / Invariant** | Template modification restricted to creator manager | API Service Ownership Guard (`template.createdById === user.id`) | `404 NOT_FOUND` |
@@ -137,7 +139,19 @@ The persistence model for Sprint 1 consists of 5 relational entities mapped via 
    - `value`: Float (Double Precision). Quantity completed on that day.
    - `note`: String (Text), Nullable. Optional contextual comment from the participant.
    - `createdAt`: DateTime (UTC). Timestamp when the record was received.
+   - `updatedAt` (v0.5): DateTime (UTC), Nullable. Time of the latest correction; null if never corrected.
+   - `version` (v0.5): Integer, NOT NULL, default 0. Number of corrections; used for optimistic concurrency (`BR-13`b).
    - *Constraint:* **`@@unique([goalId, entryDate])`** (`BR-04`). Guarantees no duplicate entries per goal per day.
+
+6. **`ActivityEntryRevision` (`activity_entry_revisions` table, v0.5):** One stored correction of an activity entry (`FR-15`, `FR-16`).
+   - `id`: Integer, Primary Key, Auto-increment.
+   - `entryId`: Integer, Foreign Key referencing `activity_entries(id)` with `ON DELETE CASCADE`.
+   - `previousValue`, `newValue`: Float (Double Precision).
+   - `previousNote`, `newNote`: String (Text), Nullable.
+   - `reason`: String (Text). 1–200 characters after trimming.
+   - `changedById`: Integer, Foreign Key referencing `users(id)` with `ON DELETE CASCADE` (always the entry's owner; not returned by the API).
+   - `changedAt`: DateTime (UTC), default now().
+   - *Index:* `(entryId, changedAt)`. *Invariant:* the number of revisions of an entry equals its `version`.
 
 ### 2.2 Entity Relationship Diagram (ERD)
 
@@ -148,6 +162,8 @@ erDiagram
     users ||--o{ goals : "owns (participant)"
     activity_templates ||--o{ goals : "instantiated by"
     goals ||--o{ activity_entries : "accumulates"
+    activity_entries ||--o{ activity_entry_revisions : "corrected by (v0.5)"
+    users ||--o{ activity_entry_revisions : "changed by (v0.5)"
 
     users {
         int id PK
@@ -193,6 +209,20 @@ erDiagram
         float value
         string note
         datetime createdAt
+        datetime updatedAt "v0.5, nullable"
+        int version "v0.5, default 0"
+    }
+
+    activity_entry_revisions {
+        int id PK
+        int entryId FK
+        float previousValue
+        float newValue
+        string previousNote
+        string newNote
+        string reason
+        int changedById FK
+        datetime changedAt
     }
 ```
 
@@ -453,7 +483,10 @@ Every error response uses one shape:
 | `VALUE_OUT_OF_RANGE` | 422 | Entry value outside the template range (BR-01) |
 | `DATE_IN_FUTURE` | 422 | Entry date after today (BR-02) |
 | `DATE_TOO_OLD` | 422 | Entry date more than 6 days before today (BR-03) |
+| `ENTRY_LOCKED` | 422 | (v0.5) Entry dated more than 6 days before today can no longer be corrected (BR-13a) |
+| `NO_CHANGE` | 422 | (v0.5) A correction would leave the value and note unchanged (BR-13c) |
 | `DUPLICATE_ENTRY` | 409 | An entry already exists for this goal and day (BR-04) |
+| `STALE_ENTRY` | 409 | (v0.5) The entry was corrected since the version the client sent (BR-13b) |
 | `DUPLICATE_ACTIVE_GOAL` | 409 | The participant already has an active goal for this template (BR-09) |
 | `ALREADY_PUBLISHED` | 409 | Template is already published |
 | `INTERNAL_ERROR` | 500 | Unexpected failure; message is generic |
@@ -462,7 +495,7 @@ Feature contracts may add codes; they must follow this table's style and be adde
 
 **Validation and safe error handling**
 - The API validates every request body on the server before any database write, even when the UI already checked it.
-- Business rules are enforced in the API service layer; uniqueness rules (BR-04, BR-09) are also enforced by database constraints so that simultaneous requests cannot both succeed. A constraint violation is translated to the 409 code above, not returned as a database error.
+- Business rules are enforced in the API service layer; uniqueness rules (BR-04, BR-09) are also enforced by database constraints so that simultaneous requests cannot both succeed. A constraint violation is translated to the 409 code above, not returned as a database error. (v0.5) Corrections (BR-13) use optimistic concurrency instead: one transaction updates the entry only if its `version` and date window still match, then inserts the revision; a request whose update matches no row stores nothing and returns 404, `ENTRY_LOCKED` or `STALE_ENTRY`.
 - One error-handling middleware produces every error body. Unexpected errors are logged on the server with details and returned to the client as `INTERNAL_ERROR` with a generic message: no stack trace, SQL or internal identifiers (NFR-05).
 - Sign-in failures do not reveal whether the email exists.
 
@@ -484,6 +517,8 @@ Enforced by server middleware and service checks. A hidden button or link in the
 | `POST /api/goals/:id/entries` | Record entry | 401 | own goal: allowed · others: 404 | 403 |
 | `GET /api/goals/:id/entries` | List entries | 401 | own goal: allowed · others: 404 | 403 |
 | `GET /api/goals/:id/progress` | Progress | 401 | own goal: allowed · others: 404 | 403 |
+| `PATCH /api/goals/:id/entries/:entryId` (v0.5) | Correct entry | 401 | own goal and its entry: allowed · others' goal: 404 · entry of another goal: 404 | 403 |
+| `GET /api/goals/:id/entries/:entryId/revisions` (v0.5) | Correction history | 401 | own goal and its entry: allowed · others' goal: 404 · entry of another goal: 404 | 403 |
 
 **Record access summary**
 
@@ -491,7 +526,8 @@ Enforced by server middleware and service checks. A hidden button or link in the
 |---|---|---|
 | Activity template | Read published | Create, publish and read own |
 | Goal | Create and read own | None |
-| Activity entry | Create and read own (through own goal) | None |
+| Activity entry | Create and read own (through own goal); (v0.5) correct own inside the logging window | None |
+| Entry revision (v0.5) | Read own (created only by a correction) | None |
 | Progress | Read own | None |
 | User / session | Own identity only | Own identity only |
 

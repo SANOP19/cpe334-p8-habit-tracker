@@ -22,6 +22,7 @@
 | 1.7 | 2026-11-27 | Nitithorn Ketkaew | Nara Kosiyaporn | #86 negative template minimum (PT EXP-01): F-02 v1.2 approved change (§6) and section 8 row; TEST-L6-86 added to FR-04 / AC-08 |
 | 1.8 | 2026-11-27 | Nara Kosiyaporn | Nitithorn Ketkaew | #88 long template names and units overflow the cards (PT EXP-03): section 8 row |
 | 1.9 | 2026-11-28 | Nara Kosiyaporn | Nitithorn Ketkaew | #94 long display name overflows the phone-width header (Product Team observation O-11) |
+| 2.0 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 approved change (CR #99): FR-15, FR-16, BR-13 rows (Planned), NFR-10 extended, AC-34..AC-39, §6 row, section 10 added; written before implementation |
 
 **Chain:** requirement (`docs/srs.md` §4) → feature or responsibility (`docs/features.md`) → sprint → acceptance criterion (`docs/project-brief.md` §9) → planned test → status.
 **Status values:** *Planned* (AC and test defined, not implemented) · *Foundation* (supporting test already passes on staging, but the AC-level test is still to come) · *Verified* (AC test executed and passing at a recorded commit) · *Later sprint* (feature and sprint allocated; AC written in that sprint's contract).
@@ -47,6 +48,8 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | FR-12 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | FR-13 | F-08 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | FR-14 | F-09 | 3 | Sprint 3 contract | Sprint 3 STS | Sprint 3 | — | Later sprint |
+| FR-15 | F-04 | 1 (Lab 7 change, CR #99) | AC-34, AC-39 | TEST-34a, TEST-34b, TEST-39a–e, TEST-E2E-L7 | Lab 7 PR-L7-2 (API), PR-L7-3 (UI) | — | Planned |
+| FR-16 | F-04 | 1 (Lab 7 change, CR #99) | AC-34, AC-37, AC-39 | TEST-34b, TEST-37, TEST-39e | Lab 7 PR-L7-2, PR-L7-3 | — | Planned |
 
 ## 2. Business rules
 
@@ -64,6 +67,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | BR-10 | F-06 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | BR-11 | F-07 | 2 | Sprint 2 contract | Sprint 2 STS | Sprint 2 | — | Later sprint |
 | BR-12 | F-09 | 3 | Sprint 3 contract | Sprint 3 STS | Sprint 3 | — | Later sprint |
+| BR-13 | F-04 | 1 (Lab 7 change, CR #99) | AC-35, AC-36, AC-38 | TEST-35a/b (boundary, midnight), TEST-36, TEST-38b/c/d (TDD evidence) | Lab 7 PR-L7-2 | — | Planned |
 
 ## 3. Non-functional requirements
 
@@ -78,7 +82,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | NFR-07 | CC-04 | 1 | Loading / empty / error states on main screens | Component tests + TEST-27 (E2E) + screenshots | PR2–PR7 | `client/tests/components.test.tsx` (shared states), `signin.test.tsx` (loading), `templates.test.tsx` and `goals.test.tsx` (empty, error), `progress.test.tsx` (quiet failure), `e2e/journey.spec.ts` — pass. Screenshots for the report are taken from the release | Verified |
 | NFR-08 | CC-03 | 1 | No secret in Git or client code | Diff review in every PR; `.env.example` check; GitHub secret scanning enabled | Every PR; release check | Release check on `3ed2771`: no `.env` file ever committed (full history), no credential-bearing connection string and none of the real local seed/DB passwords in any tracked file; only synthetic test-fixture passwords in tests; GitHub secret scanning and push protection enabled, 0 alerts | Verified |
 | NFR-09 | F-04 | 1 | AC-19, AC-20 | TEST-19, TEST-20 with mocked clock | PR5 (#20) | `server/tests/logging.test.ts` TEST-19, TEST-19b (midnight crossing 17:30 UTC = 00:30 Bangkok), TEST-20 — pass | Verified |
-| NFR-10 | F-04 | 1 | AC-22 | TEST-22 | PR5 (#20) | `server/tests/logging.test.ts` TEST-22 (two simultaneous submissions, repeated 5×) — pass | Verified |
+| NFR-10 | F-04 | 1 | AC-22; (v2.0) AC-38 | TEST-22; (v2.0) TEST-38c | PR5 (#20); Lab 7 PR-L7-2 | `server/tests/logging.test.ts` TEST-22 (two simultaneous submissions, repeated 5×) — pass. Corrections part (TEST-38c): planned | Verified (entries); Planned (corrections) |
 
 ## 4. Acceptance criteria not tied to a single FR/BR/NFR
 
@@ -88,7 +92,7 @@ This version is written before Sprint 1 feature implementation; the **Actual tes
 | AC-02 | Same 401 message for unknown email and wrong password | SDS §5.3 (no account enumeration) | TEST-02 | PR2 (#17) |
 | AC-08 | minValue ≥ maxValue → 422; from F-02 v1.2 also minValue < 0 → 422 | Decision D-06; Lab 6 #86 | TEST-08, TEST-L6-86 | PR3 (#18); Lab 6 #86 |
 
-Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
+Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4. The Lab 7 change adds AC-34..AC-39 (sections 1–3 and 10).
 
 ---
 
@@ -115,6 +119,7 @@ Every Sprint 1 AC (AC-01..AC-33) appears at least once in sections 1–4.
 | Work allocation reduced from ~30 parts to 8 PRs | PR1 (brief §11) | Fewer review round-trips; no requirement or AC removed |
 | F-02 §4 empty-state text "…template below." corrected to "…template above." | Lab 6 PR-4 (Issue #66) | The contract text contradicted the reviewed layout (create form above the list); the code was already right, so only the text changes |
 | F-02 v1.2: `minValue` must be 0 or more (422 `INVALID_RANGE`, checked before `minValue < maxValue`); AC-08 extended | Lab 6 Part D (Issue #86, partner-team finding EXP-01) | D-06 allowed any `minValue < maxValue`, so a template such as −10..0 could be published although F-03 / BR-08 need a positive target inside the range: no goal could ever be set. A non-negative minimum makes every template usable and rules out negative entries and percentages; existing templates are not changed |
+| Entry correction with revision history: FR-15, FR-16, BR-13 added; D-03 revised; NFR-10 extended; SRS §3.3 exclusion narrowed; F-04 v1.2, F-05 v1.2, System SDS v0.5; AC-34..AC-39 | Lab 7 (Issue #99, team-approved per the instructor's announcement "Lab 7 Spec Sheet Change") | Requirement change: a mistyped value left that day's progress permanently wrong because Sprint 1 entries were immutable (D-03). Participants may now correct recent entries (inside the BR-03 window) with a reason; every correction is kept as a revision, out-of-date corrections are rejected (409), and older entries stay locked so history cannot be rewritten. Details: section 10, `docs/labs/lab-07/impact-CR-99.md` |
 
 ---
 
@@ -156,3 +161,20 @@ Defect found by the Product Team while reviewing PR #91, not a partner-team find
 | Issue | Deviation | Contract | Test | Delivered in | Result |
 |---|---|---|---|---|---|
 | #94 (Product Team O-11, minor) | At 375 px a long display name (30 characters with spaces or 40 characters without spaces) stayed on one line (`text-nowrap`) and pushed the role label and Sign out off screen (page scroll width 396–682 px on Windows Chromium; 388 px for `E2E Cards Manager` in CI run 46030798846) | F-01 §UI (Header), SRS A-05 | `e2e/header.spec.ts` TEST-L6-94 (375 px, both roles, two name shapes, seed-name control) | branch `fix/94-header-long-name` | RED 4 failed / 5 passed, GREEN 9 passed; server 84, client 39, E2E 18 (`docs/evidence/lab-06/94/`) |
+
+---
+
+## 10. Lab 7 approved change — entry correction with revision history
+
+Change request: Issue #99 (team-approved; no Instructor/TA approval needed per the instructor's announcement "Lab 7 Spec Sheet Change"). Accepted Sprint 1 baseline `v0.1.0-sprint1` (`bfd125f`); pre-change implementation `v0.2.5-lab6` (`bd97c01`, revision `sf4618437-00012-r2h`). Contract: F-04 v1.2 §1.7 (written and reviewed before implementation). Impact analysis: `docs/labs/lab-07/impact-CR-99.md`.
+
+| AC | Requirement | What it verifies | Tests | Delivered in | Result |
+|---|---|---|---|---|---|
+| AC-34 | FR-15, FR-16 | Correction with a reason → 200, `version` +1, `updatedAt`, revision stored and readable newest first; new entries `version` 0 | TEST-34a, TEST-34b | PR-L7-2 | Planned |
+| AC-35 | BR-13(a), NFR-09 | 6 days old correctable, 7 days old → `ENTRY_LOCKED`; lock moves at Bangkok midnight | TEST-35a, TEST-35b | PR-L7-2 | Planned |
+| AC-36 | BR-13(c), BR-01 | Invalid corrections → 422 (`VALIDATION_ERROR`, `VALUE_OUT_OF_RANGE`, `NO_CHANGE`), nothing changes | TEST-36 | PR-L7-2 | Planned |
+| AC-37 | BR-05, BR-07, NFR-01 | Both new routes: 401 / 403 / 404 | TEST-37 | PR-L7-2 | Planned |
+| AC-38 | BR-13(b), BR-04, NFR-10, FR-09 | Stale version → 409 `STALE_ENTRY`; simultaneous corrections → one wins; revisions = version; progress follows | TEST-38a, TEST-38b, TEST-38c, TEST-38d | PR-L7-2 | Planned |
+| AC-39 | F-04 §4 UI | Edit inside the window, reason, Edited badge, History, conflict handling | TEST-39a–e, TEST-E2E-L7 | PR-L7-3 | Planned |
+
+Unchanged behaviour protected by the existing suites (no existing test is changed): F-04 POST rules and races (TEST-17..TEST-23, TEST-19b), privacy (TEST-04, TEST-25, TEST-26, TEST-MGR), progress (TEST-24, TEST-L6-87), persistence (TEST-28, `scripts/verify-nfr04-restart.cjs`), UI (`client/tests/*`), E2E journey and layout (`e2e/*`).

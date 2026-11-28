@@ -4,6 +4,7 @@
 |---|---|---|---|---|
 | 1.0 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | Contract written before implementation (PR6, Issue #21) |
 | 1.1 | 2026-11-14 | Nitithorn Ketkaew | Nara Kosiyaporn | TEST-25/TEST-26 add a positive control (owner reads own progress → 200) so they cannot pass just because the route is missing; TDD note updated (before any test was written) |
+| 1.2 | 2026-11-29 | Nitithorn Ketkaew | Nara Kosiyaporn | Lab 7 approved change (CR #99): §1.1 and §1.2 state that progress uses each entry's current value, which may have been corrected (F-04 v1.2, FR-15); covered by AC-38 / TEST-38a. The formula itself is unchanged |
 
 **Requirements:** FR-09 · BR-05 (participant isolation) · BR-07 (manager privacy) · NFR-05 (safe, uniform errors) · decision D-08 (progress formula), D-10 (404 vs 403)
 **Acceptance criteria:** AC-24, AC-25, AC-26, AC-29 (AC-32 was delivered in F-03, PR #28; AC-27 E2E is in PR7)
@@ -17,7 +18,7 @@
 ### 1.1 Behaviour and workflow
 1. A participant opens **Goals**. For each goal the client calls `GET /api/goals/:id/progress`.
 2. The server checks the session, the role and that the goal belongs to the caller, then calculates progress from the stored entries and the goal's daily target.
-3. The Goals page shows, per goal, "Achieved X of Y logged days" and, next to each logged entry, its percentage and an "Achieved" badge when the target was met. After a new entry is saved, progress is fetched again.
+3. The Goals page shows, per goal, "Achieved X of Y logged days" and, next to each logged entry, its percentage and an "Achieved" badge when the target was met. After a new entry is saved — and (v1.2) after an entry is corrected — progress is fetched again.
 
 ### 1.2 Progress calculation (D-08)
 For each entry of the goal:
@@ -27,6 +28,8 @@ For each entry of the goal:
 Summary: `entriesCount` = number of entries; `achievedCount` = number of entries with `achieved = true`. Days without an entry are not counted (streaks and weekly/monthly summaries are Sprint 2, FR-12/FR-13).
 
 The calculation is a pure function (`calculateProgress`) so it can be unit-tested without the database.
+
+(v1.2, CR #99) `value` is the entry's current value. When an entry is corrected (F-04 §1.7), its percent and achieved flag — and `achievedCount` — follow the corrected value at the next request; the revision history keeps the earlier values. Verified by AC-38 / TEST-38a.
 
 ### 1.3 Privacy rules (checked in this order — SDS §5.3)
 | # | Check | Response |
