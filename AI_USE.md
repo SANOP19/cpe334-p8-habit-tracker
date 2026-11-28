@@ -82,7 +82,7 @@ Partner team: CPMS (Theme 6). The partner's own AI use is declared in their repo
 | Findings #38–#42, #45 and decision comments | Claude Code drafted the reports; screenshots checked byte for byte | Nitithorn and Nara reviewed every text before posting; both decided the decisions | Nitithorn, Nara |
 
 Lab 6 limits on AI (in addition to the list below):
-- Passwords were exchanged only privately between the teams (ours by direct message, the partner's in the team chat) and never put in Git, an Issue or a screenshot. In Nitithorn's runs Claude Code never typed or saw a password: Nitithorn signed in to every account. In Nara's runs (NK1, NK2): TODO(Nara) — state who typed the passwords and whether Antigravity saw them.
+- Passwords were exchanged only privately between the teams (ours by direct message, the partner's in the team chat) and never put in Git, an Issue or a screenshot. In Nitithorn's runs Claude Code never typed or saw a password: Nitithorn signed in to every account. In Nara's runs (NK1, NK2) Nara typed the passwords; Antigravity did not type them.
 - PASS/FAIL, triage decisions and both acceptance decisions were made by the students; every run record names the tester and says "AI-assisted".
 - No AI tool deployed, merged into `main`, ran `gcloud` or changed the partner's data beyond normal user actions with our own run tags.
 
